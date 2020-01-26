@@ -6,7 +6,7 @@ import { Button } from 'boot-cell/source/Form/Button';
 import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
 import { parse } from 'yaml';
 
-import { repository } from '../model';
+import { repository } from '../../model';
 
 interface Contact {
     name: string;
@@ -77,6 +77,7 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                 {contact && (
                     <DropMenu
                         className="d-inline-block ml-3"
+                        alignType="right"
                         title="联系方式"
                         list={contact
                             .map(({ name, numbers }) =>
@@ -95,8 +96,14 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
     render(_, { loading, list }: HospitalPageState) {
         return (
             <SpinnerBox cover={loading}>
-                <h2>医院急需物资</h2>
-
+                <header className="d-flex justify-content-between align-item-center my-3">
+                    <h2>医院急需物资</h2>
+                    <span>
+                        <Button kind="warning" href="hospital/edit">
+                            需求发布
+                        </Button>
+                    </span>
+                </header>
                 <div className="card-deck">{list.map(this.renderItem)}</div>
             </SpinnerBox>
         );

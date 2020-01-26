@@ -9,7 +9,7 @@
 
 谷歌 Chrome、谋智 Firefox、欧朋、微软 Edge、UC 浏览器、小米浏览器、QQ 浏览器等均可**安装本网站到桌面**（Safari 对 [W3C 国际标准][4]支持迟缓，只能添加图标，**网络缓存**、**离线启动**等高级功能可能无法使用）
 
-![](source/image/WuHan2020-PWA.jpg)
+<img style="max-height: 70vh" src="source/image/WuHan2020-PWA.jpg">
 
 ## 技术栈
 

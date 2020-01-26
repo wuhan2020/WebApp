@@ -7,6 +7,7 @@ import { history } from '../model';
 import menu from './menu';
 import { HomePage } from './Home';
 import { HospitalPage } from './Hospital';
+import { HospitalEdit } from './Hospital/Edit';
 import { LogisticsPage } from './Logistics';
 
 @observer
@@ -19,6 +20,7 @@ export class PageRouter extends HTMLRouter {
     protected routes = [
         { paths: [''], component: HomePage },
         { paths: ['hospital'], component: HospitalPage },
+        { paths: ['hospital/edit'], component: HospitalEdit },
         { paths: ['logistics'], component: LogisticsPage }
     ];
 
