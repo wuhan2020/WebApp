@@ -3,7 +3,7 @@
 [渐进式 Web 应用][1]项目
 
 [![NPM Dependency](https://david-dm.org/wuhan2020/wuhan2020.github.io.svg)][2]
-[![Build Status](https://travis-ci.com/wuhan2020/wuhan2020.github.io.svg?branch=master)][3]
+[![Build Status](https://travis-ci.com/wuhan2020/wuhan2020.github.io.svg?branch=dev)][3]
 
 ## 技术栈
 
