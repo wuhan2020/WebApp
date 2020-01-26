@@ -3,6 +3,7 @@ import { component, mixin, createCell } from 'web-cell';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { Card } from 'boot-cell/source/Content/Card';
 import { Button } from 'boot-cell/source/Form/Button';
+import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
 import { parse } from 'yaml';
 
 import { repository } from '../model';
@@ -68,17 +69,26 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                 ))}
             </ol>
 
-            <Button block onClick={() => this.clip2board(address)}>
-                邮寄地址
-            </Button>
+            <footer className="text-center">
+                <Button onClick={() => this.clip2board(address)}>
+                    邮寄地址
+                </Button>
 
-            {contact?.map(({ name, numbers }) =>
-                numbers.map(item => (
-                    <Button block href={'tel:+86-' + item}>
-                        {name}：+86-{item}
-                    </Button>
-                ))
-            )}
+                {contact && (
+                    <DropMenu
+                        className="d-inline-block ml-3"
+                        title="联系方式"
+                        list={contact
+                            .map(({ name, numbers }) =>
+                                numbers.map(item => ({
+                                    title: `${name}：+86-${item}`,
+                                    href: 'tel:+86-' + item
+                                }))
+                            )
+                            .flat()}
+                    />
+                )}
+            </footer>
         </Card>
     );
 

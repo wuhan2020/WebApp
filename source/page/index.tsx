@@ -4,6 +4,7 @@ import { HTMLRouter } from 'cell-router/source';
 import { NavBar } from 'boot-cell/source/Navigator/NavBar';
 
 import { history } from '../model';
+import menu from './menu';
 import { HomePage } from './Home';
 import { HospitalPage } from './Hospital';
 import { LogisticsPage } from './Logistics';
@@ -21,29 +22,10 @@ export class PageRouter extends HTMLRouter {
         { paths: ['logistics'], component: LogisticsPage }
     ];
 
-    menu = [
-        {
-            title: '首页',
-            href: ''
-        },
-        {
-            title: '医院',
-            href: 'hospital'
-        },
-        {
-            title: '物流',
-            href: 'logistics'
-        },
-        {
-            title: '开放源代码',
-            href: 'https://github.com/EasyWebApp/wuhan2020'
-        }
-    ];
-
     render() {
         return (
             <Fragment>
-                <NavBar title="2020 援助武汉" menu={this.menu} narrow />
+                <NavBar title="2020 援助武汉" menu={menu} narrow />
 
                 <main
                     className="container my-5 pt-3"
