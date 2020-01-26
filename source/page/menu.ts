@@ -14,6 +14,26 @@ export default [
         icon: 'shipping-fast'
     },
     {
+        title: '酒店',
+        href: 'hotel',
+        icon: 'hotel'
+    },
+    {
+        title: '生产',
+        href: 'factory',
+        icon: 'medkit'
+    },
+    {
+        title: '捐赠',
+        href: 'donation',
+        icon: 'heart'
+    },
+    {
+        title: '义诊',
+        href: 'clinic',
+        icon: 'user-md'
+    },
+    {
         title: '开放源代码',
         href: 'https://github.com/EasyWebApp/wuhan2020'
     }
