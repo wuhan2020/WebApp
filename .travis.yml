@@ -1,6 +1,6 @@
 branches:
     only:
-        - master
+        - dev
 
 language: node_js
 node_js:
@@ -16,9 +16,9 @@ script:
 deploy:
     provider: pages
     on:
-        branch: master
+        branch: dev
     skip_cleanup: true
     local_dir: dist/
     # fqdn: ${DOMAIN}        # Custom Domain
-    # target_branch: master  # namespace/namespace.github.io needs this
+    target_branch: master
     token: ${TOKEN}
