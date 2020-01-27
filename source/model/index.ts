@@ -13,6 +13,6 @@ export const repository = new GitHubModel({
     repo: 'wuhan2020'
 });
 
-export * from './Service';
+export * from './HTTPService';
 export * from './SuppliesRequirement';
 export * from './AMap';

@@ -1,6 +1,6 @@
 import { observable } from 'mobx';
 
-import service, { DataItem, PageData } from './service';
+import service, { DataItem, PageData } from './HTTPService';
 
 export interface Contact {
     name: string;
