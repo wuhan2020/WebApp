@@ -33,8 +33,17 @@ export class HospitalEdit extends mixin<
     async connectedCallback() {
         super.connectedCallback();
 
-        if (this.srid)
-            this.setState(await suppliesRequirement.getOne(this.srid));
+        if (!this.srid) return;
+
+        const {
+            hospital,
+            address,
+            coords,
+            supplies,
+            contacts
+        } = await suppliesRequirement.getOne(this.srid);
+
+        this.setState({ hospital, address, coords, supplies, contacts });
     }
 
     changeText = ({ target }: Event) => {
@@ -126,9 +135,7 @@ export class HospitalEdit extends mixin<
                         label="机构地址"
                         placeholder="先填上一项可自动搜索"
                     />
-                    <fieldset name="supplies">
-                        <legend>物资列表</legend>
-
+                    <FormField label="物资列表">
                         {supplies.map((item, index) => (
                             <div
                                 className="input-group my-1"
@@ -139,7 +146,7 @@ export class HospitalEdit extends mixin<
                                 <input
                                     type="text"
                                     className="form-control"
-                                    name="name"
+                                    name="supplies"
                                     value={item}
                                     placeholder="物资名称"
                                 />
@@ -155,11 +162,9 @@ export class HospitalEdit extends mixin<
                                 </div>
                             </div>
                         ))}
-                    </fieldset>
+                    </FormField>
 
-                    <fieldset name="contact">
-                        <legend>联系方式</legend>
-
+                    <FormField label="联系方式">
                         {contacts.map(({ name, number }, index) => (
                             <div
                                 className="input-group my-1"
@@ -195,7 +200,7 @@ export class HospitalEdit extends mixin<
                                 </div>
                             </div>
                         ))}
-                    </fieldset>
+                    </FormField>
 
                     <div className="form-group mt-3">
                         <Button type="submit" block>
