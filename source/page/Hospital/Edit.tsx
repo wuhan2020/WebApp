@@ -1,29 +1,24 @@
-import { component, mixin, createCell, Fragment } from 'web-cell';
+import { component, mixin, createCell } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
-import { history } from '../../model';
-
-interface Contact {
-    name: string;
-    number: string;
-}
-
-interface HospitalEditState {
-    hospital?: string;
-    address?: string;
-    supplies?: string[];
-    contacts?: Contact[];
-}
+import {
+    SuppliesRequirement,
+    searchAddress,
+    suppliesRequirement,
+    history
+} from '../../model';
+import { SessionBox } from '../../component';
 
 @component({
     tagName: 'hospital-edit',
     renderTarget: 'children'
 })
-export class HospitalEdit extends mixin<{}, HospitalEditState>() {
+export class HospitalEdit extends mixin<{}, SuppliesRequirement>() {
     state = {
         hospital: '',
         address: '',
+        coords: [],
         supplies: [''],
         contacts: [{ name: '', number: '' }]
     };
@@ -34,7 +29,22 @@ export class HospitalEdit extends mixin<{}, HospitalEditState>() {
         this.state[name] = value;
     };
 
+    searchAddress = async ({ target }: Event) => {
+        const { value } = target as HTMLInputElement;
+
+        const [
+            { pname, cityname, adname, address, location }
+        ] = await searchAddress(value);
+
+        await this.setState({
+            address: pname + cityname + adname + address,
+            coords: location.split(',').map(Number)
+        });
+    };
+
     changeSupply(index: number, event: Event) {
+        event.stopPropagation();
+
         const { value } = event.target as HTMLInputElement;
 
         this.state.supplies[index] = value;
@@ -51,6 +61,8 @@ export class HospitalEdit extends mixin<{}, HospitalEditState>() {
     }
 
     changeContact(index: number, event: Event) {
+        event.stopPropagation();
+
         const { name, value } = event.target as HTMLInputElement;
 
         this.state.contacts[index][name] = value;
@@ -69,31 +81,36 @@ export class HospitalEdit extends mixin<{}, HospitalEditState>() {
         this.setState({ contacts });
     }
 
-    handleSubmit = (event: Event) => {
+    handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        console.log(this.state);
+        await suppliesRequirement.create(this.state);
+
+        self.alert('发布成功！');
+
+        history.push('hospital');
     };
 
-    render(_, { hospital, address, supplies, contacts }: HospitalEditState) {
+    render(_, { hospital, address, supplies, contacts }: SuppliesRequirement) {
         return (
-            <Fragment>
+            <SessionBox>
                 <h2>医用物资需求发布</h2>
 
-                <form onSubmit={this.handleSubmit}>
+                <form onChange={this.changeText} onSubmit={this.handleSubmit}>
                     <FormField
                         name="hospital"
                         required
                         defaultValue={hospital}
                         label="医疗机构"
                         placeholder="可详细至分院、院区、科室"
-                        onChange={this.changeText}
+                        onChange={this.searchAddress}
                     />
                     <FormField
                         name="address"
-                        readOnly
+                        required
                         defaultValue={address}
                         label="机构地址"
+                        placeholder="先填上一项可自动搜索"
                     />
                     <fieldset name="supplies">
                         <legend>物资列表</legend>
@@ -148,7 +165,7 @@ export class HospitalEdit extends mixin<{}, HospitalEditState>() {
                                     className="form-control"
                                     name="number"
                                     value={number}
-                                    placeholder="电话号码"
+                                    placeholder="电话号码（不含 +86 和区号的先导 0）"
                                 />
                                 <div className="input-group-append">
                                     <Button onClick={this.addContact}>+</Button>
@@ -174,13 +191,13 @@ export class HospitalEdit extends mixin<{}, HospitalEditState>() {
                             type="reset"
                             kind="danger"
                             block
-                            onClick={() => history.back()}
+                            onClick={() => history.push('hospital')}
                         >
                             取消
                         </Button>
                     </div>
                 </form>
-            </Fragment>
+            </SessionBox>
         );
     }
 }

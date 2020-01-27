@@ -2,8 +2,9 @@ import { component, createCell, Fragment } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 import { HTMLRouter } from 'cell-router/source';
 import { NavBar } from 'boot-cell/source/Navigator/NavBar';
+import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
 
-import { history } from '../model';
+import { history, session } from '../model';
 import menu from './menu';
 import { HomePage } from './Home';
 import { HospitalPage } from './Hospital';
@@ -24,10 +25,31 @@ export class PageRouter extends HTMLRouter {
         { paths: ['logistics'], component: LogisticsPage }
     ];
 
+    async signOut() {
+        await session.signOut();
+
+        location.href = '.';
+    }
+
     render() {
         return (
             <Fragment>
-                <NavBar title="2020 援助武汉" menu={menu} narrow />
+                <NavBar title="2020 援助武汉" menu={menu} narrow>
+                    {session.user && (
+                        <DropMenu
+                            title={session.user.username}
+                            alignType="right"
+                            alignSize="md"
+                            list={[
+                                {
+                                    title: '登出',
+                                    href: '#',
+                                    onClick: this.signOut
+                                }
+                            ]}
+                        />
+                    )}
+                </NavBar>
 
                 <main
                     className="container my-5 pt-3"

@@ -10,9 +10,9 @@ export default new HTTPClient({
 });
 
 export interface DataItem {
-    objectId: string;
-    createdAt: string;
-    updatedAt: string;
+    objectId?: string;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export interface PageData<T> {

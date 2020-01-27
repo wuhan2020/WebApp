@@ -1,47 +1,38 @@
 import * as clipboard from 'clipboard-polyfill';
 import { component, mixin, createCell } from 'web-cell';
+import { observer } from 'mobx-web-cell';
+
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { Card } from 'boot-cell/source/Content/Card';
 import { Button } from 'boot-cell/source/Form/Button';
 import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
-import { parse } from 'yaml';
+import 'boot-cell/source/Content/EdgeDetector';
+import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 
-import { repository } from '../../model';
-
-interface Contact {
-    name: string;
-    numbers: string[];
-}
-
-interface Hospital {
-    name: string;
-    url: string;
-    address: string;
-    size: number;
-    supplies: string[];
-    contact?: Contact[];
-    remark: string;
-}
+import { suppliesRequirement, SuppliesRequirement } from '../../model';
 
 interface HospitalPageState {
     loading?: boolean;
-    list?: Hospital[];
+    noMore?: boolean;
 }
 
+@observer
 @component({
     tagName: 'hospital-page',
     renderTarget: 'children'
 })
 export class HospitalPage extends mixin<{}, HospitalPageState>() {
-    state = { loading: true, list: [] };
+    state = { loading: false, noMore: false };
 
-    async connectedCallback() {
-        super.connectedCallback();
+    loadMore = async ({ detail }: EdgeEvent) => {
+        if (detail !== 'bottom' || this.state.noMore) return;
 
-        const data = await repository.getContents('data/Hospital.yml');
+        await this.setState({ loading: true });
 
-        await this.setState({ loading: false, list: parse(data) });
-    }
+        const data = await suppliesRequirement.getNextPage();
+
+        await this.setState({ loading: false, noMore: !data });
+    };
 
     async clip2board(raw: string) {
         await clipboard.writeText(raw);
@@ -49,20 +40,13 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
         self.alert('已复制到剪贴板');
     }
 
-    renderItem = ({ url, name, supplies = [], address, contact }: Hospital) => (
-        <Card
-            className="mb-4"
-            style={{ minWidth: '20rem' }}
-            title={
-                url ? (
-                    <a target="_blank" href={url}>
-                        {name}
-                    </a>
-                ) : (
-                    name
-                )
-            }
-        >
+    renderItem = ({
+        hospital,
+        supplies = [],
+        address,
+        contacts
+    }: SuppliesRequirement) => (
+        <Card className="mb-4" style={{ minWidth: '20rem' }} title={hospital}>
             <ol>
                 {supplies.map(item => (
                     <li>{item}</li>
@@ -74,26 +58,22 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                     邮寄地址
                 </Button>
 
-                {contact && (
+                {contacts && (
                     <DropMenu
                         className="d-inline-block ml-3"
                         alignType="right"
                         title="联系方式"
-                        list={contact
-                            .map(({ name, numbers }) =>
-                                numbers.map(item => ({
-                                    title: `${name}：+86-${item}`,
-                                    href: 'tel:+86-' + item
-                                }))
-                            )
-                            .flat()}
+                        list={contacts.map(({ name, number }) => ({
+                            title: `${name}：+86-${number}`,
+                            href: 'tel:+86-' + number
+                        }))}
                     />
                 )}
             </footer>
         </Card>
     );
 
-    render(_, { loading, list }: HospitalPageState) {
+    render(_, { loading, noMore }: HospitalPageState) {
         return (
             <SpinnerBox cover={loading}>
                 <header className="d-flex justify-content-between align-item-center my-3">
@@ -104,7 +84,15 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                         </Button>
                     </span>
                 </header>
-                <div className="card-deck">{list.map(this.renderItem)}</div>
+
+                <edge-detector onTouchEdge={this.loadMore}>
+                    <div className="card-deck">
+                        {suppliesRequirement.list.map(this.renderItem)}
+                    </div>
+                    <p slot="bottom" className="text-center mt-2">
+                        {noMore ? '没有更多数据了' : '加载更多...'}
+                    </p>
+                </edge-detector>
             </SpinnerBox>
         );
     }
