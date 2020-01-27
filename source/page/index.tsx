@@ -12,6 +12,8 @@ import { HospitalPage } from './Hospital';
 import { HospitalEdit } from './Hospital/Edit';
 import { LogisticsPage } from './Logistics';
 
+import './index.css';
+
 @observer
 @component({
     tagName: 'page-router',
@@ -34,7 +36,7 @@ export class PageRouter extends HTMLRouter {
 
     render() {
         return (
-            <Fragment>
+            <div className="wrapper">
                 <NavBar
                     title="2020 援助武汉"
                     menu={menu.map(({ title, href }) => ({
@@ -63,7 +65,7 @@ export class PageRouter extends HTMLRouter {
                 </NavBar>
 
                 <main
-                    className="container my-5 pt-3"
+                    className="main-container container my-5 pt-3"
                     style={{ minHeight: '60vh' }}
                 >
                     {super.render()}
@@ -87,7 +89,7 @@ export class PageRouter extends HTMLRouter {
                         BootCell v1
                     </a>
                 </footer>
-            </Fragment>
+            </div>
         );
     }
 }
