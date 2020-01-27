@@ -1,6 +1,6 @@
 {
     "name": "wuhan2020",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "license": "AGPL-3.0",
     "author": "shiy2008@gmail.com",
     "description": "针对 2020 新冠病毒疫情中的武汉援助信息网站",
@@ -21,6 +21,7 @@
         "classnames": "^2.2.6",
         "clipboard-polyfill": "^2.8.6",
         "js-base64": "^2.5.1",
+        "koajax": "^0.5.3",
         "mobx": "^5.15.3",
         "mobx-web-cell": "^0.2.5",
         "web-cell": "^2.0.0-rc.15",
