@@ -9,7 +9,8 @@ import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
 import 'boot-cell/source/Content/EdgeDetector';
 import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 
-import { suppliesRequirement, SuppliesRequirement } from '../../model';
+import { relativeTimeTo, TimeUnitName } from '../../utility';
+import { suppliesRequirement, SuppliesRequirement, session } from '../../model';
 
 interface HospitalPageState {
     loading?: boolean;
@@ -41,37 +42,66 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
     }
 
     renderItem = ({
+        createdAt,
         hospital,
         supplies = [],
         address,
-        contacts
-    }: SuppliesRequirement) => (
-        <Card className="mb-4" style={{ minWidth: '20rem' }} title={hospital}>
-            <ol>
-                {supplies.map(item => (
-                    <li>{item}</li>
-                ))}
-            </ol>
+        contacts,
+        creator: { mobilePhoneNumber, objectId: uid },
+        objectId
+    }: SuppliesRequirement) => {
+        const { distance, unit } = relativeTimeTo(createdAt);
 
-            <footer className="text-center">
-                <Button onClick={() => this.clip2board(address)}>
-                    邮寄地址
-                </Button>
+        return (
+            <Card
+                className="mx-auto mb-4 mx-sm-1"
+                style={{ minWidth: '20rem', maxWidth: '20rem' }}
+                title={hospital}
+            >
+                <ol>
+                    {supplies.map(item => (
+                        <li>{item}</li>
+                    ))}
+                </ol>
 
-                {contacts && (
-                    <DropMenu
-                        className="d-inline-block ml-3"
-                        alignType="right"
-                        title="联系方式"
-                        list={contacts.map(({ name, number }) => ({
-                            title: `${name}：+86-${number}`,
-                            href: 'tel:+86-' + number
-                        }))}
-                    />
-                )}
-            </footer>
-        </Card>
-    );
+                <div className="text-center">
+                    <Button onClick={() => this.clip2board(address)}>
+                        邮寄地址
+                    </Button>
+
+                    {contacts && (
+                        <DropMenu
+                            className="d-inline-block ml-3"
+                            alignType="right"
+                            title="联系方式"
+                            list={contacts.map(({ name, number }) => ({
+                                title: `${name}：+86-${number}`,
+                                href: 'tel:+86-' + number
+                            }))}
+                        />
+                    )}
+                </div>
+
+                <footer className="mt-3 text-center text-mute">
+                    <a href={'tel:+86-' + mobilePhoneNumber}>
+                        {mobilePhoneNumber}
+                    </a>{' '}
+                    发布于 {Math.abs(distance)} {TimeUnitName[unit]}前
+                    {session.user?.objectId === uid ||
+                    session.hasRole('Admin') ? (
+                        <Button
+                            kind="warning"
+                            block
+                            className="mt-3"
+                            href={'hospital/edit?srid=' + objectId}
+                        >
+                            编辑
+                        </Button>
+                    ) : null}
+                </footer>
+            </Card>
+        );
+    };
 
     render(_, { loading, noMore }: HospitalPageState) {
         return (
@@ -86,7 +116,7 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                 </header>
 
                 <edge-detector onTouchEdge={this.loadMore}>
-                    <div className="card-deck">
+                    <div className="card-deck justify-content-around">
                         {suppliesRequirement.list.map(this.renderItem)}
                     </div>
                     <p slot="bottom" className="text-center mt-2">

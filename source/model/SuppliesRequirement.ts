@@ -1,6 +1,6 @@
 import { observable } from 'mobx';
 
-import service, { DataItem, PageData } from './HTTPService';
+import service, { DataItem, User, PageData } from './HTTPService';
 
 export interface Contact {
     name: string;
@@ -13,6 +13,7 @@ export interface SuppliesRequirement extends DataItem {
     coords?: number[];
     supplies?: string[];
     contacts?: Contact[];
+    creator?: User;
 }
 
 export class SuppliesRequirementModel {
@@ -45,8 +46,10 @@ export class SuppliesRequirementModel {
         return data;
     }
 
-    create(data: SuppliesRequirement) {
-        return service.post('/supplies/requirement', data);
+    update(data: SuppliesRequirement, id?: string) {
+        return id
+            ? service.put('/supplies/requirement/' + id, data)
+            : service.post('/supplies/requirement', data);
     }
 
     async getOne(id: string) {

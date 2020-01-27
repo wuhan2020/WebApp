@@ -1,7 +1,8 @@
-import { component, mixin, createCell } from 'web-cell';
+import { component, mixin, watch, createCell } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
+import { RouteRoot } from '../menu';
 import {
     SuppliesRequirement,
     searchAddress,
@@ -14,7 +15,13 @@ import { SessionBox } from '../../component';
     tagName: 'hospital-edit',
     renderTarget: 'children'
 })
-export class HospitalEdit extends mixin<{}, SuppliesRequirement>() {
+export class HospitalEdit extends mixin<
+    { srid: string },
+    SuppliesRequirement
+>() {
+    @watch
+    srid = '';
+
     state = {
         hospital: '',
         address: '',
@@ -22,6 +29,13 @@ export class HospitalEdit extends mixin<{}, SuppliesRequirement>() {
         supplies: [''],
         contacts: [{ name: '', number: '' }]
     };
+
+    async connectedCallback() {
+        super.connectedCallback();
+
+        if (this.srid)
+            this.setState(await suppliesRequirement.getOne(this.srid));
+    }
 
     changeText = ({ target }: Event) => {
         const { name, value } = target as HTMLInputElement;
@@ -84,11 +98,11 @@ export class HospitalEdit extends mixin<{}, SuppliesRequirement>() {
     handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        await suppliesRequirement.create(this.state);
+        await suppliesRequirement.update(this.state, this.srid);
 
         self.alert('发布成功！');
 
-        history.push('hospital');
+        history.push(RouteRoot.Hospital);
     };
 
     render(_, { hospital, address, supplies, contacts }: SuppliesRequirement) {
@@ -117,7 +131,7 @@ export class HospitalEdit extends mixin<{}, SuppliesRequirement>() {
 
                         {supplies.map((item, index) => (
                             <div
-                                className="input-group"
+                                className="input-group my-1"
                                 onChange={(event: Event) =>
                                     this.changeSupply(index, event)
                                 }
@@ -148,7 +162,7 @@ export class HospitalEdit extends mixin<{}, SuppliesRequirement>() {
 
                         {contacts.map(({ name, number }, index) => (
                             <div
-                                className="input-group"
+                                className="input-group my-1"
                                 onChange={(event: Event) =>
                                     this.changeContact(index, event)
                                 }
@@ -191,7 +205,7 @@ export class HospitalEdit extends mixin<{}, SuppliesRequirement>() {
                             type="reset"
                             kind="danger"
                             block
-                            onClick={() => history.push('hospital')}
+                            onClick={() => history.push(RouteRoot.Hospital)}
                         >
                             取消
                         </Button>
