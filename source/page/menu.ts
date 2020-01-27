@@ -23,6 +23,26 @@ export function getMenu(path?: string) {
             active: path === Href.Logistics
         },
         {
+            title: '酒店',
+            href: 'hotel',
+            icon: 'hotel'
+        },
+        {
+            title: '生产',
+            href: 'factory',
+            icon: 'medkit'
+        },
+        {
+            title: '捐赠',
+            href: 'donation',
+            icon: 'heart'
+        },
+        {
+            title: '义诊',
+            href: 'clinic',
+            icon: 'user-md'
+        },
+        {
             title: '开放源代码',
             href: Href.OpenSource
         }
