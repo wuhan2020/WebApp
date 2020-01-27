@@ -1,8 +1,7 @@
 import { createCell, Fragment } from 'web-cell';
 import { Jumbotron } from 'boot-cell/source/Content/Jumbotron';
 import { Card } from 'boot-cell/source/Content/Card';
-
-import menu from './menu';
+import { getMenu } from './menu';
 
 export function HomePage() {
     return (
@@ -12,7 +11,7 @@ export function HomePage() {
                 description="新冠病毒疫情中的武汉援助信息网站"
             />
             <div className="container card-deck m-auto text-center">
-                {menu.slice(1, -1).map(({ title, href, icon }) => (
+                {getMenu().slice(1, -1).map(({ title, href, icon }) => (
                     <Card
                         title={title}
                         image={

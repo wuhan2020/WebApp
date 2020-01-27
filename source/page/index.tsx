@@ -4,10 +4,10 @@ import { HTMLRouter } from 'cell-router/source';
 import { NavBar } from 'boot-cell/source/Navigator/NavBar';
 
 import { history } from '../model';
-import menu from './menu';
 import { HomePage } from './Home';
 import { HospitalPage } from './Hospital';
 import { LogisticsPage } from './Logistics';
+import { getMenu } from './menu';
 
 @observer
 @component({
@@ -25,7 +25,11 @@ export class PageRouter extends HTMLRouter {
     render() {
         return (
             <Fragment>
-                <NavBar title="2020 援助武汉" menu={menu} narrow />
+                <NavBar
+                    title="2020 援助武汉"
+                    menu={getMenu(history.path)}
+                    narrow
+                />
 
                 <main
                     className="container my-5 pt-3"
