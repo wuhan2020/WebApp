@@ -5,11 +5,11 @@ import { NavBar } from 'boot-cell/source/Navigator/NavBar';
 import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
 
 import { history, session } from '../model';
-import menu from './menu';
 import { HomePage } from './Home';
 import { HospitalPage } from './Hospital';
 import { HospitalEdit } from './Hospital/Edit';
 import { LogisticsPage } from './Logistics';
+import { getMenu } from './menu';
 
 @observer
 @component({
@@ -34,7 +34,11 @@ export class PageRouter extends HTMLRouter {
     render() {
         return (
             <Fragment>
-                <NavBar title="2020 援助武汉" menu={menu} narrow>
+                <NavBar
+                    title="2020 援助武汉"
+                    menu={getMenu(history.path)}
+                    narrow
+                >
                     {session.user && (
                         <DropMenu
                             title={session.user.username}
