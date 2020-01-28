@@ -11,6 +11,7 @@ import { HomePage } from './Home';
 import { HospitalPage } from './Hospital';
 import { HospitalEdit } from './Hospital/Edit';
 import { LogisticsPage } from './Logistics';
+import { FactoryPage } from './Factory';
 
 import './index.css';
 
@@ -25,7 +26,8 @@ export class PageRouter extends HTMLRouter {
         { paths: [''], component: HomePage },
         { paths: ['hospital'], component: HospitalPage },
         { paths: ['hospital/edit'], component: HospitalEdit },
-        { paths: ['logistics'], component: LogisticsPage }
+        { paths: ['logistics'], component: LogisticsPage },
+        { paths: ['factory'], component: FactoryPage }
     ];
 
     async signOut() {

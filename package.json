@@ -20,10 +20,13 @@
         "cell-router": "^2.0.0-rc.6",
         "classnames": "^2.2.6",
         "clipboard-polyfill": "^2.8.6",
+        "csv": "^5.3.1",
+        "csvtojson": "^2.0.10",
         "js-base64": "^2.5.1",
         "koajax": "^0.5.3",
         "mobx": "^5.15.3",
         "mobx-web-cell": "^0.2.5",
+        "papaparse": "^5.1.1",
         "web-cell": "^2.0.0-rc.15",
         "yaml": "^1.7.2"
     },
