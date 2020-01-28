@@ -70,7 +70,12 @@ export class HotelPage extends mixin<{}, HotelPageState>() {
         return (
             <SpinnerBox cover={loading}>
                 <header className="d-flex justify-content-between align-item-center my-3">
-                    <h2>酒店指南</h2>
+                    <h2>湖北籍同胞全国住宿指南</h2>
+                    <span>
+                        <Button kind="warning" href="hotel/edit">
+                            发布住宿信息
+                        </Button>
+                    </span>
                 </header>
                 <edge-detector onTouchEdge={this.loadMore}>
                     <div className="card-deck justify-content-around">

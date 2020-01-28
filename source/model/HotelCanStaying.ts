@@ -63,7 +63,7 @@ const mockData = [
 export interface HotelCanStaying extends DataItem {
     hotel?: string;
     address?: string;
-    capacity?: number;
+    capacity?: string;
     coords?: number[];
     contacts?: Contact[];
     creator?: User;
@@ -96,5 +96,18 @@ export class HotelCanStayingModel {
 
         this.list = mockData;
         return mockData;
+    }
+
+    update(data: HotelCanStaying, id?: string) {
+        return id
+            ? service.put('/supplies/requirement/' + id, data)
+            : service.post('/supplies/requirement', data);
+    }
+
+    async getOne(id: string) {
+        const { body } = await service.get<HotelCanStaying>(
+            '/supplies/requirement/' + id
+        );
+        return body;
     }
 }
