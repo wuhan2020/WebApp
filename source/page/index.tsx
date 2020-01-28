@@ -31,7 +31,8 @@ export class PageRouter extends HTMLRouter {
         { paths: ['hotel'], component: HotelPage },
         { paths: ['factory'], component: FactoryPage },
         { paths: ['donation'], component: DonationPage },
-        { paths: ['clinic'], component: ClinicPage }
+        { paths: ['clinic'], component: ClinicPage },
+        { paths: ['logistics'], component: LogisticsPage }
     ];
 
     connectedCallback() {
