@@ -37,25 +37,17 @@ export class HotelPage extends mixin<{}, HotelPageState>() {
         self.alert('已复制到剪贴板');
     }
 
-    renderItem = ({ name, hotelAddress, capacity, contacts }: any) => {
+    renderItem = ({ name, address, capacity, contacts }: any) => {
         return (
             <Card
                 className="mx-auto mb-4 mx-sm-1"
                 style={{ minWidth: '20rem', maxWidth: '20rem' }}
                 title={name}
             >
-                <div>
-                    详细地址：{`${hotelAddress.area}-${hotelAddress.address}`}
-                </div>
+                <div>详细地址：{address}</div>
                 <p>可接待人数：{capacity}</p>
                 <div className="text-center">
-                    <Button
-                        onClick={() =>
-                            this.clip2board(
-                                `${hotelAddress.area}-${hotelAddress.address}`
-                            )
-                        }
-                    >
+                    <Button onClick={() => this.clip2board(address)}>
                         复制地址
                     </Button>
                     {contacts && (
