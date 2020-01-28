@@ -1,6 +1,7 @@
 export enum RouteRoot {
     Hospital = 'hospital',
-    Logistics = 'logistics'
+    Logistics = 'logistics',
+    Donation = 'donation'
 }
 
 export default [
@@ -30,7 +31,7 @@ export default [
     },
     {
         title: '捐赠',
-        href: 'donation',
+        href: RouteRoot.Donation,
         icon: 'heart'
     },
     {
