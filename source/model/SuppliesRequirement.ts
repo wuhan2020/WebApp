@@ -25,14 +25,14 @@ export class SuppliesRequirementModel {
     totalCount = 0;
 
     @observable
-    list = [];
+    list: SuppliesRequirement[] = [];
 
     async getNextPage() {
         if (this.pageIndex && this.list.length === this.totalCount) return;
 
         const {
             body: { count, data }
-        } = await service.get<PageData<SuppliesRequirement[]>>(
+        } = await service.get<PageData<SuppliesRequirement>>(
             '/supplies/requirement?' +
                 new URLSearchParams({
                     pageIndex: this.pageIndex + 1 + '',
@@ -46,10 +46,23 @@ export class SuppliesRequirementModel {
         return data;
     }
 
-    update(data: SuppliesRequirement, id?: string) {
-        return id
-            ? service.put('/supplies/requirement/' + id, data)
-            : service.post('/supplies/requirement', data);
+    async update(data: SuppliesRequirement, id?: string) {
+        if (!id) {
+            const { body } = await service.post<SuppliesRequirement>(
+                '/supplies/requirement',
+                data
+            );
+
+            this.list = [body].concat(this.list);
+        } else {
+            const { body } = await service.put<SuppliesRequirement>(
+                    '/supplies/requirement/' + id,
+                    data
+                ),
+                index = this.list.findIndex(({ objectId }) => objectId === id);
+
+            this.list[index] = body;
+        }
     }
 
     async getOne(id: string) {
@@ -57,5 +70,11 @@ export class SuppliesRequirementModel {
             '/supplies/requirement/' + id
         );
         return body;
+    }
+
+    async delete(id: string) {
+        await service.delete('/supplies/requirement/' + id);
+
+        this.list = this.list.filter(({ objectId }) => objectId !== id);
     }
 }

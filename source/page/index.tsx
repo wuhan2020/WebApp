@@ -12,8 +12,6 @@ import { HospitalPage } from './Hospital';
 import { HospitalEdit } from './Hospital/Edit';
 import { LogisticsPage } from './Logistics';
 
-import './index.css';
-
 @observer
 @component({
     tagName: 'page-router',
@@ -28,6 +26,12 @@ export class PageRouter extends HTMLRouter {
         { paths: ['logistics'], component: LogisticsPage }
     ];
 
+    connectedCallback() {
+        this.classList.add('d-flex', 'flex-column', 'vh-100');
+
+        super.connectedCallback();
+    }
+
     async signOut() {
         await session.signOut();
 
@@ -36,7 +40,7 @@ export class PageRouter extends HTMLRouter {
 
     render() {
         return (
-            <div className="wrapper">
+            <Fragment>
                 <NavBar
                     title="2020 援助武汉"
                     menu={menu.map(({ title, href }) => ({
@@ -64,10 +68,7 @@ export class PageRouter extends HTMLRouter {
                     )}
                 </NavBar>
 
-                <main
-                    className="main-container container my-5 pt-3"
-                    style={{ minHeight: '60vh' }}
-                >
+                <main className="flex-grow-1 container my-5 pt-3">
                     {super.render()}
                 </main>
 
@@ -89,7 +90,7 @@ export class PageRouter extends HTMLRouter {
                         BootCell v1
                     </a>
                 </footer>
-            </div>
+            </Fragment>
         );
     }
 }

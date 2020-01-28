@@ -11,18 +11,18 @@ import {
 } from '../../model';
 import { SessionBox } from '../../component';
 
+type HospitalEditProps = SuppliesRequirement & { loading?: boolean };
+
 @component({
     tagName: 'hospital-edit',
     renderTarget: 'children'
 })
-export class HospitalEdit extends mixin<
-    { srid: string },
-    SuppliesRequirement
->() {
+export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
     @watch
     srid = '';
 
     state = {
+        loading: false,
         hospital: '',
         address: '',
         coords: [],
@@ -35,6 +35,8 @@ export class HospitalEdit extends mixin<
 
         if (!this.srid) return;
 
+        await this.setState({ loading: true });
+
         const {
             hospital,
             address,
@@ -43,7 +45,14 @@ export class HospitalEdit extends mixin<
             contacts
         } = await suppliesRequirement.getOne(this.srid);
 
-        this.setState({ hospital, address, coords, supplies, contacts });
+        this.setState({
+            loading: false,
+            hospital,
+            address,
+            coords,
+            supplies,
+            contacts
+        });
     }
 
     changeText = ({ target }: Event) => {
@@ -55,11 +64,14 @@ export class HospitalEdit extends mixin<
     searchAddress = async ({ target }: Event) => {
         const { value } = target as HTMLInputElement;
 
+        await this.setState({ loading: true });
+
         const [
             { pname, cityname, adname, address, location }
         ] = await searchAddress(value);
 
         await this.setState({
+            loading: false,
             address: pname + cityname + adname + address,
             coords: location.split(',').map(Number)
         });
@@ -107,14 +119,24 @@ export class HospitalEdit extends mixin<
     handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        await suppliesRequirement.update(this.state, this.srid);
+        await this.setState({ loading: true });
+
+        const data = { ...this.state };
+        delete data.loading;
+
+        await suppliesRequirement.update(data, this.srid);
+
+        await this.setState({ loading: false });
 
         self.alert('发布成功！');
 
         history.push(RouteRoot.Hospital);
     };
 
-    render(_, { hospital, address, supplies, contacts }: SuppliesRequirement) {
+    render(
+        _,
+        { hospital, address, supplies, contacts, loading }: HospitalEditProps
+    ) {
         return (
             <SessionBox>
                 <h2>医用物资需求发布</h2>
@@ -203,7 +225,7 @@ export class HospitalEdit extends mixin<
                     </FormField>
 
                     <div className="form-group mt-3">
-                        <Button type="submit" block>
+                        <Button type="submit" block disabled={loading}>
                             提交
                         </Button>
                         <Button
