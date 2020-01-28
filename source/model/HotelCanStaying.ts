@@ -5,10 +5,7 @@ import { Contact } from './SuppliesRequirement';
 const mockData = [
     {
         name: '柏曼酒店黄冈武穴店',
-        hotelAddress: {
-            area: '武穴市',
-            address: '玉湖路'
-        },
+        address: '武穴市 玉湖路',
         capacity: 100,
         contacts: [
             {
@@ -19,10 +16,7 @@ const mockData = [
     },
     {
         name: '城市便捷武穴客运站店',
-        hotelAddress: {
-            area: '武穴市',
-            address: '刊江大道188号'
-        },
+        address: '武穴市 刊江大道188号',
         capacity: 100,
         contacts: [
             {
@@ -33,10 +27,7 @@ const mockData = [
     },
     {
         name: '城市便捷武穴万达广场店',
-        hotelAddress: {
-            area: '黄州区',
-            address: '赤壁大道99号'
-        },
+        address: '黄州区 赤壁大道99号',
         capacity: 100,
         contacts: [
             {
@@ -47,10 +38,7 @@ const mockData = [
     },
     {
         name: '城市便捷罗田桥南店',
-        hotelAddress: {
-            area: '罗田县',
-            address: '凤山镇城南新区凤城大道2号'
-        },
+        address: '罗田县 凤山镇城南新区凤城大道2号',
         capacity: 100,
         contacts: [
             {
@@ -61,10 +49,7 @@ const mockData = [
     },
     {
         name: '城市便捷红安将军广场店',
-        hotelAddress: {
-            area: '红安县',
-            address: '将军国际广场旁边'
-        },
+        address: '红安县 将军国际广场旁边',
         capacity: 100,
         contacts: [
             {
@@ -75,13 +60,9 @@ const mockData = [
     }
 ];
 
-interface IHotelAddress {
-    area: string;
-    address: string;
-}
 export interface HotelCanStaying extends DataItem {
     hotel?: string;
-    hotelAddress?: IHotelAddress;
+    address?: string;
     capacity?: number;
     coords?: number[];
     contacts?: Contact[];
