@@ -11,6 +11,10 @@ import { HomePage } from './Home';
 import { HospitalPage } from './Hospital';
 import { HospitalEdit } from './Hospital/Edit';
 import { LogisticsPage } from './Logistics';
+import { HotelPage } from './Hotel';
+import { FactoryPage } from './Factory';
+import { DonationPage } from './Donation';
+import { ClinicPage } from './Clinic';
 
 @observer
 @component({
@@ -23,7 +27,11 @@ export class PageRouter extends HTMLRouter {
         { paths: [''], component: HomePage },
         { paths: ['hospital'], component: HospitalPage },
         { paths: ['hospital/edit'], component: HospitalEdit },
-        { paths: ['logistics'], component: LogisticsPage }
+        { paths: ['logistics'], component: LogisticsPage },
+        { paths: ['hotel'], component: HotelPage },
+        { paths: ['factory'], component: FactoryPage },
+        { paths: ['donation'], component: DonationPage },
+        { paths: ['clinic'], component: ClinicPage }
     ];
 
     connectedCallback() {
