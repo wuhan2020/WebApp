@@ -40,6 +40,6 @@ export default [
     },
     {
         title: '开放源代码',
-        href: 'https://github.com/wuhan2020/wuhan2020.github.io'
+        href: 'https://github.com/wuhan2020/WebApp'
     }
 ];
