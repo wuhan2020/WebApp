@@ -24,19 +24,26 @@ interface HospitalPageState {
 })
 export class HospitalPage extends mixin<{}, HospitalPageState>() {
     state = { loading: false, noMore: false };
+    cities = [];
+    data = [];
+    selectedCity = '选择城市|全部';
 
     loadMore = async ({ detail }: EdgeEvent) => {
         if (detail !== 'bottom' || this.state.noMore) return;
 
         await this.setState({ loading: true });
-
         const data = await suppliesRequirement.getNextPage();
-
         this.getAllCities(data);
         await this.setState({ loading: false, noMore: !data });
     };
-    cities = [];
+    getQueryString = function(field, url = null) {
+        var href = url ? url : window.location.href;
+        var reg = new RegExp('[?&]' + field + '=([^&#]*)', 'i');
+        var string = reg.exec(href);
+        return string ? string[1] : null;
+    };
     getAllCities = data => {
+        this.cities = [];
         for (let i of data) {
             let currentCity = i.address.city;
             if (this.cities.indexOf(currentCity) === -1) {
@@ -45,10 +52,16 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
         }
 
         this.cities = this.cities.map(name => {
-            return {
-                title: name,
-                href: `hospital/index?filter=${name}`
-            };
+            if (name) {
+                return {
+                    title: name,
+                    href: `hospital/index?filter=${name}`
+                };
+            }
+        });
+        this.cities.push({
+            title: '查看全部',
+            href: `hospital/`
         });
     };
 
@@ -141,9 +154,49 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
         );
     };
 
+    StartRender() {
+        let filter = decodeURI(this.getQueryString('filter'));
+        if (filter !== 'null') {
+            this.selectedCity = `选择城市|${filter}`;
+        } else {
+            this.selectedCity = `选择城市|全部`;
+        }
+        this.data = suppliesRequirement.list;
+        this.data = this.data
+            .map(
+                ({
+                    createdAt,
+                    hospital,
+                    supplies = [],
+                    address: { province, city, district, detail },
+                    contacts,
+                    creator: { mobilePhoneNumber, objectId: uid },
+                    objectId
+                }) => {
+                    return {
+                        createdAt,
+                        hospital,
+                        supplies,
+                        address: { province, city, district, detail },
+                        contacts,
+                        creator: { mobilePhoneNumber, objectId: uid },
+                        objectId
+                    };
+                }
+            )
+            .filter(item => {
+                if (filter !== 'null') {
+                    return item.address.city === filter;
+                } else {
+                    return true;
+                }
+            });
+    }
+
     render(_, { loading, noMore }: HospitalPageState) {
+        this.StartRender();
         return (
-            <SpinnerBox cover={false}>
+            <SpinnerBox cover={loading}>
                 {/*// */}
                 <header className="d-flex  justify-content-between align-item-center my-3">
                     <h2>医院急需物资</h2>
@@ -154,27 +207,14 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                     </span>
                 </header>
                 <div>
-                    <DropMenu title={'选择城市'} list={this.cities}>
+                    <DropMenu title={this.selectedCity} list={this.cities}>
                         选择
                     </DropMenu>
                 </div>
 
                 <edge-detector onTouchEdge={this.loadMore}>
                     <div className="card-deck justify-content-around">
-                        {(() => {
-                            console.log('reloadData');
-                            let urlParams = new URLSearchParams(
-                                window.location.search
-                            );
-                            let filter = urlParams.get('filter');
-                            let data = suppliesRequirement.list;
-                            if (filter) {
-                                data = data.filter(item => {
-                                    item.address.city === filter;
-                                });
-                            }
-                            return data.map(this.renderItem);
-                        })()}
+                        {this.data.map(this.renderItem)}
                     </div>
                     <p slot="bottom" className="text-center mt-2">
                         {noMore ? '没有更多数据了' : '加载更多...'}
