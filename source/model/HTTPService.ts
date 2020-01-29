@@ -1,6 +1,6 @@
 import { HTTPClient } from 'koajax';
 
-export default new HTTPClient({
+export const service = new HTTPClient({
     baseURI:
         location.hostname === 'localhost' && process.env.HTTP_ENV === 'local'
             ? 'http://localhost:3000'
