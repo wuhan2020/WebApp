@@ -1,10 +1,7 @@
 import { HTTPClient } from 'koajax';
 
 export default new HTTPClient({
-    baseURI:
-        location.hostname === 'localhost'
-            ? 'http://localhost:3000'
-            : 'https://vuqjf9paihid.leanapp.cn',
+    baseURI: 'https://vuqjf9paihid.leanapp.cn',
     withCredentials: true,
     responseType: 'json'
 });

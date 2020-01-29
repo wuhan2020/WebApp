@@ -9,7 +9,7 @@
 
 谷歌 Chrome、谋智 Firefox、欧朋、微软 Edge、UC 浏览器、小米浏览器、QQ 浏览器等均可**安装本网站到桌面**（Safari 对 [W3C 国际标准][4]支持迟缓，只能添加图标，**网络缓存**、**离线启动**等高级功能可能无法使用）
 
-<img style="max-height: 70vh" src="source/image/WuHan2020-PWA.jpg">
+![](source/image/WuHan2020-PWA.jpg)
 
 ## 技术栈
 
@@ -20,6 +20,12 @@
 -   PWA 框架: [Workbox v4][9]
 -   打包工具: [Parcel v1][10]
 -   CI / CD: [Travis CI][11] + [GitHub Pages][12]
+
+## 开发需求
+
+-   任务看板：https://github.com/orgs/wuhan2020/projects/1?fullscreen=true
+
+-   UI 设计：正在赶制，参与开发的先参照现有页面
 
 ## 本地开发
 
@@ -33,6 +39,8 @@
 npm install
 npm start
 ```
+
+4. 安装、启动[后端项目](https://github.com/wuhan2020/rest-api)
 
 [1]: https://developers.google.cn/web/progressive-web-apps
 [2]: https://david-dm.org/wuhan2020/wuhan2020.github.io
