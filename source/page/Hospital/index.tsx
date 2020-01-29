@@ -1,5 +1,5 @@
 import * as clipboard from 'clipboard-polyfill';
-import { component, mixin, createCell, Fragment } from 'web-cell';
+import { component, createCell, Fragment, mixin } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
@@ -10,7 +10,7 @@ import 'boot-cell/source/Content/EdgeDetector';
 import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 
 import { relativeTimeTo, TimeUnitName } from '../../utility';
-import { suppliesRequirement, SuppliesRequirement, session } from '../../model';
+import { session, SuppliesRequirement, suppliesRequirement } from '../../model';
 
 interface HospitalPageState {
     loading?: boolean;
@@ -32,7 +32,24 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
 
         const data = await suppliesRequirement.getNextPage();
 
+        this.getAllCities(data);
         await this.setState({ loading: false, noMore: !data });
+    };
+    cities = [];
+    getAllCities = data => {
+        for (let i of data) {
+            let currentCity = i.address.city;
+            if (this.cities.indexOf(currentCity) === -1) {
+                this.cities.push(currentCity);
+            }
+        }
+
+        this.cities = this.cities.map(name => {
+            return {
+                title: name,
+                href: `hospital/index?filter=${name}`
+            };
+        });
     };
 
     async clip2board(raw: string) {
@@ -126,8 +143,9 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
 
     render(_, { loading, noMore }: HospitalPageState) {
         return (
-            <SpinnerBox cover={loading}>
-                <header className="d-flex justify-content-between align-item-center my-3">
+            <SpinnerBox cover={false}>
+                {/*// */}
+                <header className="d-flex  justify-content-between align-item-center my-3">
                     <h2>医院急需物资</h2>
                     <span>
                         <Button kind="warning" href="hospital/edit">
@@ -135,10 +153,28 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                         </Button>
                     </span>
                 </header>
+                <div>
+                    <DropMenu title={'选择城市'} list={this.cities}>
+                        选择
+                    </DropMenu>
+                </div>
 
                 <edge-detector onTouchEdge={this.loadMore}>
                     <div className="card-deck justify-content-around">
-                        {suppliesRequirement.list.map(this.renderItem)}
+                        {(() => {
+                            console.log('reloadData');
+                            let urlParams = new URLSearchParams(
+                                window.location.search
+                            );
+                            let filter = urlParams.get('filter');
+                            let data = suppliesRequirement.list;
+                            if (filter) {
+                                data = data.filter(item => {
+                                    item.address.city === filter;
+                                });
+                            }
+                            return data.map(this.renderItem);
+                        })()}
                     </div>
                     <p slot="bottom" className="text-center mt-2">
                         {noMore ? '没有更多数据了' : '加载更多...'}
