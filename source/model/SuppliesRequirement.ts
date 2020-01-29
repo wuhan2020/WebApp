@@ -2,7 +2,7 @@ import { observable } from 'mobx';
 
 import {
     DataItem,
-    Address,
+    Place,
     Contact,
     User,
     service,
@@ -16,9 +16,8 @@ export interface Supplies {
     count: number;
 }
 
-export interface SuppliesRequirement extends DataItem {
+export interface SuppliesRequirement extends DataItem, Place {
     hospital?: string;
-    address?: Address;
     url?: string;
     supplies?: Supplies[];
     contacts?: Contact[];

@@ -39,10 +39,15 @@ export interface Contact {
     number: string;
 }
 
-export interface Address {
-    province: string;
-    city: string;
-    district: string;
-    detail: string;
-    coords: number[];
+export interface GeoCoord {
+    latitude: number;
+    longitude: number;
+}
+
+export interface Place {
+    province?: string;
+    city?: string;
+    district?: string;
+    address?: string;
+    coords?: GeoCoord;
 }

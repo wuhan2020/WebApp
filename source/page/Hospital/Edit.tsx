@@ -7,7 +7,7 @@ import { RouteRoot } from '../menu';
 import CommonSupplies from './Supplies';
 import {
     SuppliesRequirement,
-    Address,
+    GeoCoord,
     Supplies,
     Contact,
     searchAddress,
@@ -29,7 +29,11 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
     state = {
         loading: false,
         hospital: '',
-        address: {} as Address,
+        province: '',
+        city: '',
+        district: '',
+        address: '',
+        coords: {} as GeoCoord,
         url: '',
         supplies: CommonSupplies as Supplies[],
         contacts: [{} as Contact],
@@ -45,7 +49,11 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
 
         const {
             hospital,
+            province,
+            city,
+            district,
             address,
+            coords,
             url,
             supplies,
             contacts,
@@ -55,7 +63,11 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
         this.setState({
             loading: false,
             hospital,
+            province,
+            city,
+            district,
             address,
+            coords,
             url,
             supplies: mergeList<Supplies>(
                 'name',
@@ -83,15 +95,15 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
                 { pname, cityname, adname, address, location }
             ] = await searchAddress(value);
 
+            const [longitude, latitude] = location.split(',').map(Number);
+
             await this.setState({
                 loading: false,
-                address: {
-                    province: pname,
-                    city: cityname,
-                    district: adname,
-                    detail: address,
-                    coords: location.split(',').map(Number)
-                }
+                province: pname,
+                city: cityname,
+                district: adname,
+                address,
+                coords: { latitude, longitude }
             });
         } catch {
             await this.setState({ loading: false });
@@ -149,10 +161,14 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
         _,
         {
             hospital,
-            address: { province, city, district, detail },
+            province,
+            city,
+            district,
+            address,
             url,
             supplies,
             contacts,
+            remark,
             loading
         }: HospitalEditProps
     ) {
@@ -199,9 +215,9 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
                             <input
                                 type="text"
                                 className="form-control"
-                                name="detail"
+                                name="address"
                                 required
-                                defaultValue={detail}
+                                defaultValue={address}
                                 placeholder="详细地址"
                             />
                         </div>
@@ -312,6 +328,12 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
                         ))}
                     </FormField>
 
+                    <FormField
+                        is="textarea"
+                        name="remark"
+                        label="备注"
+                        defaultValue={remark}
+                    />
                     <div className="form-group mt-3">
                         <Button type="submit" block disabled={loading}>
                             提交
