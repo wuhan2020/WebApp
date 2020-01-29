@@ -30,7 +30,6 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
         super.connectedCallback();
 
         const data = await repository.getContents('data/Logistics.yml');
-        console.log(parse(data));
         await this.setState({ loading: false, list: parse(data) });
     }
 

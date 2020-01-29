@@ -57,7 +57,8 @@
     },
     "scripts": {
         "test": "lint-staged",
-        "start": "rm -rf dist/  &&  parcel source/index.html --open",
+        "start": "rm -rf dist/ && export HTTP_ENV='local' &&  parcel source/index.html --open",
+        "start:remote": "rm -rf dist/&&  parcel source/index.html --open",
         "pack-dist": "parcel build source/index.html --public-url .",
         "pack-sw": "rm -f dist/sw.js.map  &&  workbox generateSW",
         "build": "rm -rf dist/  &&  npm run pack-dist  &&  npm run pack-sw"
