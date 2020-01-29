@@ -2,8 +2,8 @@
 
 [渐进式 Web 应用][1]项目
 
-[![NPM Dependency](https://david-dm.org/wuhan2020/WebApp.svg)][2]
-[![Build Status](https://travis-ci.com/wuhan2020/WebApp.svg?branch=dev)][3]
+[![NPM Dependency](https://david-dm.org/wuhan2020/wuhan2020.github.io.svg)][2]
+[![Build Status](https://travis-ci.com/wuhan2020/wuhan2020.github.io.svg?branch=dev)][3]
 
 ## 基本用法
 
@@ -31,7 +31,7 @@
 
 1. [安装 Node.js](https://nodejs.org/en/download/package-manager/)
 
-2. `git clone https://github.com/wuhan2020/WebApp.git`
+2. `git clone https://github.com/wuhan2020/wuhan2020.github.io.git`
 
 3. 在本项目文件夹中执行命令
 
@@ -43,8 +43,8 @@ npm start
 4. 安装、启动[后端项目](https://github.com/wuhan2020/rest-api)
 
 [1]: https://developers.google.cn/web/progressive-web-apps
-[2]: https://david-dm.org/wuhan2020/WebApp
-[3]: https://travis-ci.com/wuhan2020/WebApp
+[2]: https://david-dm.org/wuhan2020/wuhan2020.github.io
+[3]: https://travis-ci.com/wuhan2020/wuhan2020.github.io
 [4]: https://www.w3.org/
 [5]: https://typescriptlang.org
 [6]: https://web-cell.dev/

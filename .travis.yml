@@ -19,6 +19,6 @@ deploy:
     branch: dev
   skip_cleanup: true
   local_dir: dist/
-  fqdn: wuhan2020.kaiyuanshe.cn
+  # fqdn: wuhan2020.github.io
   target_branch: master
   token: ${TOKEN}

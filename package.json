@@ -4,10 +4,10 @@
     "license": "AGPL-3.0",
     "author": "shiy2008@gmail.com",
     "description": "针对 2020 新冠病毒疫情中的武汉援助信息网站",
-    "homepage": "https://wuhan2020.kaiyuanshe.cn/",
+    "homepage": "https://wuhan2020.github.io/",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/wuhan2020/WebApp.git"
+        "url": "git+https://github.com/wuhan2020/wuhan2020.github.io.git"
     },
     "bugs": {
         "url": "https://github.com/EasyWebApp/wuhan2020/issues"
