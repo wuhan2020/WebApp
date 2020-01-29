@@ -28,6 +28,12 @@ export class PageRouter extends HTMLRouter {
         { paths: ['clinic'], component: ClinicPage }
     ];
 
+    connectedCallback() {
+        this.classList.add('d-flex', 'flex-column', 'vh-100');
+
+        super.connectedCallback();
+    }
+
     async signOut() {
         await session.signOut();
 
@@ -64,10 +70,7 @@ export class PageRouter extends HTMLRouter {
                     )}
                 </NavBar>
 
-                <main
-                    className="container my-5 pt-3"
-                    style={{ minHeight: '60vh' }}
-                >
+                <main className="flex-grow-1 container my-5 pt-3">
                     {super.render()}
                 </main>
 

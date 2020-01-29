@@ -1,5 +1,5 @@
 import * as clipboard from 'clipboard-polyfill';
-import { component, mixin, createCell } from 'web-cell';
+import { component, mixin, createCell, Fragment } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
@@ -50,7 +50,11 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
         creator: { mobilePhoneNumber, objectId: uid },
         objectId
     }: SuppliesRequirement) => {
-        const { distance, unit } = relativeTimeTo(createdAt);
+        const { distance, unit } = relativeTimeTo(createdAt),
+            authorized =
+                session.user?.objectId === uid ||
+                session.hasRole('Admin') ||
+                null;
 
         return (
             <Card
@@ -87,17 +91,28 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                         {mobilePhoneNumber}
                     </a>{' '}
                     发布于 {Math.abs(distance)} {TimeUnitName[unit]}前
-                    {session.user?.objectId === uid ||
-                    session.hasRole('Admin') ? (
-                        <Button
-                            kind="warning"
-                            block
-                            className="mt-3"
-                            href={'hospital/edit?srid=' + objectId}
-                        >
-                            编辑
-                        </Button>
-                    ) : null}
+                    {authorized && (
+                        <Fragment>
+                            <Button
+                                kind="warning"
+                                block
+                                className="mt-3"
+                                href={'hospital/edit?srid=' + objectId}
+                            >
+                                编辑
+                            </Button>
+                            <Button
+                                kind="danger"
+                                block
+                                className="mt-3"
+                                onClick={() =>
+                                    suppliesRequirement.delete(objectId)
+                                }
+                            >
+                                删除
+                            </Button>
+                        </Fragment>
+                    )}
                 </footer>
             </Card>
         );
