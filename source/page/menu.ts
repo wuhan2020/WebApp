@@ -1,6 +1,10 @@
 export enum RouteRoot {
     Hospital = 'hospital',
-    Logistics = 'logistics'
+    Logistics = 'logistics',
+    Hotel = 'hotel',
+    Factory = 'factory',
+    Donation = 'donation',
+    Clinic = 'clinic'
 }
 
 export default [
@@ -20,7 +24,7 @@ export default [
     },
     {
         title: '医护人员免费住宿信息',
-        href: 'hotel',
+        href: RouteRoot.Hotel,
         icon: 'hotel'
     },
     // {
