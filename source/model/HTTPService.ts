@@ -34,6 +34,11 @@ export interface FileData extends DataItem {
     url: string;
 }
 
+export interface Contact {
+    name: string;
+    number: string;
+}
+
 export interface Address {
     province: string;
     city: string;
