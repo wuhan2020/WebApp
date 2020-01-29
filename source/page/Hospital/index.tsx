@@ -68,7 +68,10 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                 <ol>
                     {supplies.map(({ name, count, remark }) => (
                         <li title={remark}>
-                            {name} {count}个
+                            {name}{' '}
+                            <span className="badge badge-danger">
+                                {count}个
+                            </span>
                         </li>
                     ))}
                 </ol>
