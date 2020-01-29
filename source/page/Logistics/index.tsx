@@ -3,19 +3,11 @@ import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { Table } from 'boot-cell/source/Content/Table';
 import { Button } from 'boot-cell/source/Form/Button';
 
-import { repository } from '../model';
-
-interface Logistics {
-    name: string;
-    url: string;
-    area: string;
-    capability: string;
-    phones: string[];
-}
+import { logistics, LogisticsItem } from '../../model';
 
 interface LogisticsPageState {
     loading?: boolean;
-    list?: Logistics[];
+    list?: LogisticsItem[];
 }
 
 @component({
@@ -27,10 +19,8 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
 
     async connectedCallback() {
         super.connectedCallback();
-
-        const list = await repository.getContents('data/Logistics.yml');
-
-        await this.setState({ loading: false, list });
+        const data = await logistics.getResultPage();
+        await this.setState({ loading: false, list: data.result });
     }
 
     render(_, { loading, list }: LogisticsPageState) {
@@ -41,10 +31,10 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
                 <Table center striped hover>
                     <thead>
                         <tr>
-                            <th>名称</th>
-                            <th>区域</th>
-                            <th>能力</th>
-                            <th>电话</th>
+                            <th>物流名称</th>
+                            <th>物流区域</th>
+                            <th>备注</th>
+                            <th>联系方式</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,9 +43,9 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
                                 url,
                                 name,
                                 area,
-                                capability,
-                                phones
-                            }: Logistics) => (
+                                note,
+                                contacts
+                            }: LogisticsItem) => (
                                 <tr>
                                     <td className="text-nowrap">
                                         {url ? (
@@ -67,14 +57,14 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
                                         )}
                                     </td>
                                     <td className="text-nowrap">{area}</td>
-                                    <td className="text-nowrap">
-                                        {capability}
-                                    </td>
+                                    <td className="text-nowrap">{note}</td>
                                     <td>
                                         <div className="btn-group">
-                                            {phones.map(item => (
-                                                <Button href={'tel:' + item}>
-                                                    {item}
+                                            {contacts.map(item => (
+                                                <Button
+                                                    href={'tel:' + item.number}
+                                                >
+                                                    {item.name || name}
                                                 </Button>
                                             ))}
                                         </div>
