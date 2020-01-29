@@ -1,6 +1,7 @@
 export enum RouteRoot {
     Hospital = 'hospital',
-    Logistics = 'logistics'
+    Logistics = 'logistics',
+    Clinic = 'clinic'
 }
 
 export default [
@@ -35,7 +36,7 @@ export default [
     },
     {
         title: '义诊',
-        href: 'clinic',
+        href: RouteRoot.Clinic,
         icon: 'user-md'
     },
     {
