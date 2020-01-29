@@ -2,7 +2,9 @@ import { component, mixin, watch, createCell } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
+import { mergeList } from '../../utility';
 import { RouteRoot } from '../menu';
+import CommonSupplies from './Supplies';
 import {
     SuppliesRequirement,
     Address,
@@ -29,7 +31,7 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
         hospital: '',
         address: {} as Address,
         url: '',
-        supplies: [{} as Supplies],
+        supplies: CommonSupplies as Supplies[],
         contacts: [{} as Contact],
         remark: ''
     };
@@ -55,7 +57,11 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
             hospital,
             address,
             url,
-            supplies,
+            supplies: mergeList<Supplies>(
+                'name',
+                this.state.supplies,
+                supplies
+            ),
             contacts,
             remark
         });
@@ -124,12 +130,13 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
 
         await this.setState({ loading: true });
 
-        const data = { ...this.state };
-        delete data.loading;
+        const { loading, supplies, ...data } = { ...this.state };
 
         try {
-            await suppliesRequirement.update(data, this.srid);
-
+            await suppliesRequirement.update(
+                { ...data, supplies: supplies.filter(({ count }) => count) },
+                this.srid
+            );
             self.alert('发布成功！');
 
             history.push(RouteRoot.Hospital);
