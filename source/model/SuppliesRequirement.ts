@@ -1,6 +1,13 @@
 import { observable } from 'mobx';
 
-import service, { DataItem, User, PageData } from './HTTPService';
+import { DataItem, Address, User, service, PageData } from './HTTPService';
+
+export interface Supplies {
+    name: string;
+    type: 'face' | 'leg' | 'disinfection' | 'device' | 'other';
+    remark: string;
+    count: number;
+}
 
 export interface Contact {
     name: string;
@@ -9,10 +16,11 @@ export interface Contact {
 
 export interface SuppliesRequirement extends DataItem {
     hospital?: string;
-    address?: string;
-    coords?: number[];
-    supplies?: string[];
+    address?: Address;
+    url?: string;
+    supplies?: Supplies[];
     contacts?: Contact[];
+    remark?: string;
     creator?: User;
 }
 

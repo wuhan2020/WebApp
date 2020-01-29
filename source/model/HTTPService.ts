@@ -1,11 +1,10 @@
 import { HTTPClient } from 'koajax';
 
-export default new HTTPClient({
-    // baseURI:
-    //     location.hostname === 'localhost'
-    //         ? 'http://localhost:3000'
-    //         : 'https://vuqjf9paihid.leanapp.cn',
-    baseURI: 'https://vuqjf9paihid.leanapp.cn',
+export const service = new HTTPClient({
+    baseURI:
+        location.hostname === 'localhost'
+            ? 'http://localhost:3000'
+            : 'https://vuqjf9paihid.leanapp.cn',
     withCredentials: true,
     responseType: 'json'
 });
@@ -33,4 +32,12 @@ export interface User extends DataItem {
 
 export interface FileData extends DataItem {
     url: string;
+}
+
+export interface Address {
+    province: string;
+    city: string;
+    district: string;
+    detail: string;
+    coords: number[];
 }

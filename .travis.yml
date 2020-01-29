@@ -1,24 +1,24 @@
 branches:
-    only:
-        - dev
+  only:
+    - dev
 
 language: node_js
 node_js:
-    - lts/*
+  - lts/*
 cache:
-    directories:
-        - node_modules
+  directories:
+    - node_modules
 
 install:
-    - npm install
+  - npm install
 script:
-    - npm run build
+  - npm run build
 deploy:
-    provider: pages
-    on:
-        branch: dev
-    skip_cleanup: true
-    local_dir: dist/
-    # fqdn: ${DOMAIN}        # Custom Domain
-    target_branch: master
-    token: ${TOKEN}
+  provider: pages
+  on:
+    branch: dev
+  skip_cleanup: true
+  local_dir: dist/
+  # fqdn: wuhan2020.github.io
+  target_branch: master
+  token: ${TOKEN}

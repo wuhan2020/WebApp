@@ -1,7 +1,7 @@
 import { observable } from 'mobx';
 import { blobOf } from 'koajax';
 
-import client, { User, FileData, Role } from './HTTPService';
+import { User, service, FileData, Role } from './HTTPService';
 
 export class Session {
     @observable
@@ -23,7 +23,7 @@ export class Session {
 
     async getProfile() {
         try {
-            const { body } = await client.get<User>('/session');
+            const { body } = await service.get<User>('/session');
 
             return this.save(body);
         } catch (error) {
@@ -32,17 +32,17 @@ export class Session {
     }
 
     sendSMSCode(phone: string) {
-        return client.post('/session/smsCode', { phone });
+        return service.post('/session/smsCode', { phone });
     }
 
     async signIn(phone: string, code: string) {
-        const { body } = await client.post<User>('/session', { phone, code });
+        const { body } = await service.post<User>('/session', { phone, code });
 
         return this.save(body);
     }
 
     async signOut() {
-        await client.delete('/session');
+        await service.delete('/session');
 
         this.save(null);
     }
@@ -62,7 +62,7 @@ export class Session {
 
         const {
             body: { url }
-        } = await client.post<FileData>('/file', data);
+        } = await service.post<FileData>('/file', data);
 
         return url;
     }
