@@ -45,7 +45,7 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
         createdAt,
         hospital,
         supplies = [],
-        address,
+        address: { province, city, district, detail },
         contacts,
         creator: { mobilePhoneNumber, objectId: uid },
         objectId
@@ -63,13 +63,19 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                 title={hospital}
             >
                 <ol>
-                    {supplies.map(item => (
-                        <li>{item}</li>
+                    {supplies.map(({ name, count, remark }) => (
+                        <li title={remark}>
+                            {name} {count}个
+                        </li>
                     ))}
                 </ol>
 
                 <div className="text-center">
-                    <Button onClick={() => this.clip2board(address)}>
+                    <Button
+                        onClick={() =>
+                            this.clip2board(province + city + district + detail)
+                        }
+                    >
                         邮寄地址
                     </Button>
 

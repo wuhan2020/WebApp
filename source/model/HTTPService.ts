@@ -33,3 +33,11 @@ export interface User extends DataItem {
 export interface FileData extends DataItem {
     url: string;
 }
+
+export interface Address {
+    province: string;
+    city: string;
+    district: string;
+    detail: string;
+    coords: number[];
+}
