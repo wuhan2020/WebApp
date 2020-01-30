@@ -1,6 +1,6 @@
-# WE PROVIDE ENGLISH VERSION, PLEASE CLICK [HERE](https://github.com/CNYoki/WebApp/blob/dev/README_EN.md)
-
 # 武汉新型冠状病毒防疫信息收集平台
+
+简体中文 | [English](./README_EN.md)
 
 [渐进式 Web 应用][1]项目
 
