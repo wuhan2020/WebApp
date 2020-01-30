@@ -46,12 +46,26 @@ export class HotelEdit extends mixin<
         const {
             name,
             address,
-            coords,
+            province,
+            city,
+            district,
             contacts,
-            capacity
+            capacity,
+            coords,
+            url
         } = await hotelCanStaying.getOne(this.srid);
 
-        this.setState({ name, address, coords, contacts, capacity });
+        this.setState({
+            name,
+            address,
+            province,
+            city,
+            district,
+            contacts,
+            capacity,
+            coords,
+            url
+        });
     }
 
     changeText = ({ target }: Event) => {

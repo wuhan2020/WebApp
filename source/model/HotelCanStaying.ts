@@ -33,10 +33,6 @@ export class HotelCanStayingModel {
                     pageSize: this.pageSize + ''
                 })
         );
-        console.log('========================');
-        console.log('count', count);
-        console.log('data', data);
-        console.log('========================');
         this.pageIndex++, (this.totalCount = count);
         this.list = this.list.concat(data);
         return data;
@@ -44,8 +40,13 @@ export class HotelCanStayingModel {
 
     update(data: HotelCanStaying, id?: string) {
         return id
-            ? service.put('/hotel' + id, data)
+            ? service.put('/hotel/' + id, data)
             : service.post('/hotel', data);
+    }
+
+    async delete(id: string) {
+        await service.delete('/hotel/' + id);
+        this.list = this.list.filter(({ objectId }) => objectId !== id);
     }
 
     async getOne(id: string) {
