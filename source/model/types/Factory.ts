@@ -1,5 +1,4 @@
-import { Contact } from '../SuppliesRequirement';
-import { DataItem } from '../HTTPService';
+import { DataItem, Contact, User } from '../HTTPService';
 
 export interface Factory extends DataItem {
     name?: string;
@@ -8,4 +7,5 @@ export interface Factory extends DataItem {
     category?: string;
     capability?: string;
     contacts?: Contact[];
+    creator?: User;
 }

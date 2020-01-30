@@ -1,29 +1,123 @@
-import { component, mixin, createCell } from 'web-cell';
+import { component, mixin, createCell, Fragment } from 'web-cell';
+import * as clipboard from 'clipboard-polyfill';
+
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { Table } from 'boot-cell/source/Content/Table';
 import { Button } from 'boot-cell/source/Form/Button';
-import { FactoryStore, Factory } from '../../model';
+import { FactoryStore, Factory, session } from '../../model';
+import { relativeTimeTo, TimeUnitName } from '../../utility';
+import { Card } from 'boot-cell/source/Content/Card';
+import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
+import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
+import { observer } from 'mobx-web-cell';
 
 interface FactoryPageState {
     loading?: boolean;
-    list?: Factory[];
+    noMore?: boolean;
 }
 
+@observer
 @component({
     tagName: 'factory-page',
     renderTarget: 'children'
 })
 export class FactoryPage extends mixin<{}, FactoryPageState>() {
-    state = { loading: true, list: [] };
+    state = { loading: false, noMore: false };
 
-    async connectedCallback() {
-        super.connectedCallback();
+    loadMore = async ({ detail }: EdgeEvent) => {
+        if (detail !== 'bottom' || this.state.noMore) return;
 
-        const data = await FactoryStore.getResultPage();
-        await this.setState({ loading: false, list: data });
+        await this.setState({ loading: true });
+
+        const data = await FactoryStore.getNextPage();
+
+        await this.setState({ loading: false, noMore: !data });
+    };
+
+    async clip2board(raw: string) {
+        await clipboard.writeText(raw);
+
+        self.alert('已复制到剪贴板');
     }
 
-    render(_, { loading, list }: FactoryPageState) {
+    renderItem = ({
+        createdAt,
+        name,
+        certificate,
+        address,
+        category,
+        capability,
+        contacts,
+        creator: { mobilePhoneNumber, objectId: uid },
+        objectId
+    }: Factory) => {
+        const { distance, unit } = relativeTimeTo(createdAt),
+            authorized =
+                session.user?.objectId === uid ||
+                session.hasRole('Admin') ||
+                null;
+
+        return (
+            <Card
+                className="mx-auto mb-4 mx-sm-1"
+                style={{ minWidth: '20rem', maxWidth: '20rem' }}
+                title={name}
+            >
+                <p>
+                    厂商地址: {address}
+                    <br />
+                    生产物资类型: {category}
+                    <br />
+                    产能: {capability}
+                    <br />
+                </p>
+                <div className="text-center">
+                    <Button href={certificate} target="_blank">
+                        资质证明
+                    </Button>
+                    {contacts && (
+                        <DropMenu
+                            className="d-inline-block ml-3"
+                            alignType="right"
+                            title="联系方式"
+                            list={contacts.map(({ name, number }) => ({
+                                title: `${name}：+86-${number}`,
+                                href: 'tel:+86-' + number
+                            }))}
+                        />
+                    )}
+                </div>
+
+                <footer className="mt-3 text-center text-mute">
+                    <a href={'tel:+86-' + mobilePhoneNumber}>
+                        {mobilePhoneNumber}
+                    </a>{' '}
+                    发布于 {Math.abs(distance)} {TimeUnitName[unit]}前
+                    {authorized && (
+                        <Fragment>
+                            <Button
+                                kind="warning"
+                                block
+                                className="mt-3"
+                                href={'hospital/edit?srid=' + objectId}
+                            >
+                                编辑
+                            </Button>
+                            <Button
+                                kind="danger"
+                                block
+                                className="mt-3"
+                                onClick={() => FactoryStore.delete(objectId)}
+                            >
+                                删除
+                            </Button>
+                        </Fragment>
+                    )}
+                </footer>
+            </Card>
+        );
+    };
+    render(_, { loading, noMore }: FactoryPageState) {
         return (
             <SpinnerBox cover={loading}>
                 <header className="d-flex justify-content-between align-item-center my-3">
@@ -34,58 +128,15 @@ export class FactoryPage extends mixin<{}, FactoryPageState>() {
                         </Button>
                     </span>
                 </header>
-                <Table center striped hover>
-                    <thead>
-                        <tr>
-                            <th>厂商名字</th>
-                            <th>资质证明</th>
-                            <th>厂商地址</th>
-                            <th>生产物资类型</th>
-                            <th>产能</th>
-                            <th>联系方式</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {list.map(
-                            ({
-                                name,
-                                certificate,
-                                address,
-                                category,
-                                capability,
-                                contacts
-                            }: Factory) => (
-                                <tr>
-                                    <td className="text-nowrap">{name}</td>
-                                    <td className="text-nowrap">
-                                        <Button
-                                            href={certificate}
-                                            target="_blank"
-                                        >
-                                            证明
-                                        </Button>
-                                    </td>
-                                    <td>{address}</td>
-                                    <td>{category}</td>
-                                    <td className="text-nowrap">
-                                        {capability}
-                                    </td>
-                                    <td>
-                                        <div className="btn-group">
-                                            {contacts.map(item => (
-                                                <Button
-                                                    href={'tel:' + item.number}
-                                                >
-                                                    {item.name || name}
-                                                </Button>
-                                            ))}
-                                        </div>
-                                    </td>
-                                </tr>
-                            )
-                        )}
-                    </tbody>
-                </Table>
+
+                <edge-detector onTouchEdge={this.loadMore}>
+                    <div className="card-deck justify-content-around">
+                        {FactoryStore.list.map(this.renderItem)}
+                    </div>
+                    <p slot="bottom" className="text-center mt-2">
+                        {noMore ? '没有更多数据了' : '加载更多...'}
+                    </p>
+                </edge-detector>
             </SpinnerBox>
         );
     }

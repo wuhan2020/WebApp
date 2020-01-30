@@ -1,4 +1,6 @@
-import service from '../HTTPService';
+import { observable } from 'mobx';
+import { service, PageData } from '../HTTPService';
+import { Factory } from '../types/Factory';
 let mock = {
     data: [
         {
@@ -19,10 +21,35 @@ let mock = {
 };
 
 export class FactoryService {
+    @observable
+    pageIndex = 0;
+
+    pageSize = 10;
+
+    totalCount = 0;
+
+    @observable
+    list: Factory[] = [];
+
     constructor() {}
-    async getResultPage() {
-        // TODO: Add API get
-        return mock.data;
+    async getNextPage() {
+        if (this.pageIndex && this.list.length === this.totalCount) return;
+
+        const {
+            body: { count, data }
+        } = await service.get<PageData<Factory>>(
+            '/supplies/requirement?' +
+                new URLSearchParams({
+                    pageIndex: this.pageIndex + 1 + '',
+                    pageSize: this.pageSize + ''
+                })
+        );
+        this.pageIndex++, (this.totalCount = count);
+        console.log(data);
+
+        this.list = this.list.concat(data);
+
+        return data;
     }
 
     async update(data: any, id?: string) {

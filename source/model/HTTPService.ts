@@ -1,9 +1,15 @@
 import { HTTPClient } from 'koajax';
 
+export const baseUri = {
+    local: 'http://localhost:3000',
+    remote: 'https://vuqjf9paihid.leanapp.cn',
+    test: 'https://vsw505fxbitp.leanapp.cn/'
+};
+
 export const service = new HTTPClient({
     baseURI:
-        location.hostname === 'localhost' && process.env.HTTP_ENV === 'local'
-            ? 'http://localhost:3000'
+        location.hostname === 'localhost'
+            ? baseUri[process.env.HTTP_ENV]
             : 'https://vuqjf9paihid.leanapp.cn',
     withCredentials: true,
     responseType: 'json'
