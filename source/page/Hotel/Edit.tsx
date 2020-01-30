@@ -7,38 +7,51 @@ import {
     searchAddress,
     HotelCanStaying,
     hotelCanStaying,
-    history
+    history,
+    GeoCoord,
+    Contact
 } from '../../model';
 import { SessionBox } from '../../component';
+
+type HotelCanStayingEditProps = HotelCanStaying & { loading?: boolean };
 
 @component({
     tagName: 'hotel-edit',
     renderTarget: 'children'
 })
-export class HotelEdit extends mixin<{ srid: string }, HotelCanStaying>() {
+export class HotelEdit extends mixin<
+    { srid: string },
+    HotelCanStayingEditProps
+>() {
     @watch
     srid = '';
 
     state = {
-        hotel: '',
+        name: '',
         address: '',
-        capacity: '',
-        coords: [],
-        contacts: [{ name: '', number: '' }]
+        capacity: 0,
+        loading: false,
+        province: '',
+        city: '',
+        district: '',
+        coords: {} as GeoCoord,
+        url: '',
+        contacts: [{} as Contact],
+        remark: ''
     };
 
     async connectedCallback() {
         super.connectedCallback();
         if (!this.srid) return;
         const {
-            hotel,
+            name,
             address,
             coords,
             contacts,
             capacity
         } = await hotelCanStaying.getOne(this.srid);
 
-        this.setState({ hotel, address, coords, contacts, capacity });
+        this.setState({ name, address, coords, contacts, capacity });
     }
 
     changeText = ({ target }: Event) => {
@@ -48,14 +61,23 @@ export class HotelEdit extends mixin<{ srid: string }, HotelCanStaying>() {
 
     searchAddress = async ({ target }: Event) => {
         const { value } = target as HTMLInputElement;
-        const [
-            { pname, cityname, adname, address, location }
-        ] = await searchAddress(value);
-
-        await this.setState({
-            address: pname + cityname + adname + address,
-            coords: location.split(',').map(Number)
-        });
+        await this.setState({ loading: true });
+        try {
+            const [
+                { pname, cityname, adname, address, location }
+            ] = await searchAddress(value);
+            const [longitude, latitude] = location.split(',').map(Number);
+            await this.setState({
+                loading: false,
+                province: pname,
+                city: cityname,
+                district: adname,
+                address,
+                coords: { latitude, longitude }
+            });
+        } catch {
+            await this.setState({ loading: false });
+        }
     };
 
     changeContact = (index: number, event: Event) => {
@@ -78,39 +100,93 @@ export class HotelEdit extends mixin<{ srid: string }, HotelCanStaying>() {
 
     handleSubmit = async (event: Event) => {
         event.preventDefault();
-        await hotelCanStaying.update(this.state, this.srid);
+        const params = { ...this.state };
+        params.capacity *= 1;
+        await hotelCanStaying.update(params, this.srid);
         self.alert('发布成功！');
         history.push(RouteRoot.Hotel);
     };
 
-    render(_, { hotel, address, capacity, contacts }: HotelCanStaying) {
+    render(
+        _,
+        {
+            name,
+            address,
+            capacity,
+            contacts,
+            url,
+            province,
+            city,
+            district
+        }: HotelCanStaying
+    ) {
         return (
             <SessionBox>
                 <h2>发布住宿信息</h2>
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
                     <FormField
-                        name="hotel"
+                        name="name"
                         required
-                        defaultValue={hotel}
+                        defaultValue={name}
                         label="酒店"
                         placeholder="酒店名称"
                         onChange={this.searchAddress}
                     />
-                    <FormField
-                        name="address"
-                        required
-                        defaultValue={address}
-                        label="酒店地址"
-                        placeholder="先填上一项可自动搜索"
-                    />
-                    <FormField
-                        name="capacity"
-                        required
-                        defaultValue={capacity}
-                        label="可接待人数"
-                        placeholder="可接待人数"
-                    />
+                    <FormField label="酒店地址">
+                        <div className="input-group">
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="province"
+                                required
+                                defaultValue={province}
+                                placeholder="省/直辖市/自治区/特别行政区"
+                            />
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="city"
+                                required
+                                defaultValue={city}
+                                placeholder="地级市/自治州"
+                            />
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="district"
+                                required
+                                defaultValue={district}
+                                placeholder="区/县/县级市"
+                            />
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="address"
+                                required
+                                defaultValue={address}
+                                placeholder="详细地址"
+                            />
+                        </div>
+                    </FormField>
 
+                    <FormField label="可接待人数">
+                        <input
+                            type="number"
+                            className="form-control"
+                            name="capacity"
+                            required
+                            defaultValue={capacity}
+                            placeholder="可接待人数"
+                        />
+                    </FormField>
+
+                    <FormField
+                        type="url"
+                        name="url"
+                        required
+                        defaultValue={url}
+                        label="信息来源网址"
+                    />
                     <FormField label="联系方式">
                         {contacts.map(({ name, number }, index) => (
                             <div
