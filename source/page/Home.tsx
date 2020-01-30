@@ -16,7 +16,7 @@ export function HomePage() {
                         <li class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
                             <a
                                 className="card text-center"
-                                style={{ marginBottom: '1rem' }}
+                                style={{ marginBottom: '1rem', textDecoration: 'none' }}
                                 href={href}
                             >
                                 <i

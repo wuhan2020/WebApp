@@ -23,7 +23,7 @@ interface HospitalPageState {
     renderTarget: 'children'
 })
 export class HospitalPage extends mixin<{}, HospitalPageState>() {
-    state = { loading: false, noMore: false };
+    state = { loading: true, noMore: false };
 
     loadMore = async ({ detail }: EdgeEvent) => {
         if (detail !== 'bottom' || this.state.noMore) return;
