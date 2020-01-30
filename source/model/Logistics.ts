@@ -1,32 +1,74 @@
-import { Contact } from './SuppliesRequirement';
+import { observable } from 'mobx';
+import service, { DataItem, User, PageData } from './HTTPService';
 
-const mockData = [
-    {
-        name: '顺丰集团',
-        area: '武汉寄入寄出',
-        contacts: [
-            {
-                name: '',
-                number: '95338'
-            }
-        ],
-        url: 'https://mp.weixin.qq.com/s/42UEPYlYR1EDCM8JKZQyqw',
-        note: '无',
-        status: '已审核'
-    }
-];
+export interface ServiceArea {
+    city: string;
+    direction: 'in' | 'out' | 'both';
+    personal: boolean;
+}
 
-export interface LogisticsItem {
+interface Contact {
     name: string;
-    area: string;
-    contacts: Contact[];
-    url: string;
-    note: string;
-    status: string;
+    phone: string;
+}
+
+export interface LogisticsItem extends DataItem {
+    name?: string;
+    url?: string;
+    contacts?: Contact[];
+    serviceArea?: ServiceArea[];
+    remark?: string;
 }
 
 export class LogisticsModel {
-    async getResultPage() {
-        return { result: mockData };
+    @observable
+    pageIndex = 0;
+    pageSize = 10;
+    totalCount = 0;
+
+    @observable
+    list: LogisticsItem[] = [];
+
+    async getList() {
+        const {
+            body: { count, data }
+        } = await service.get<PageData<LogisticsItem>>(
+            '/logistics?' +
+                new URLSearchParams({
+                    pageIndex: this.pageIndex + '',
+                    pageSize: this.pageSize + ''
+                })
+        );
+        this.list = data;
+        return data;
+    }
+
+    async update(data: LogisticsItem, id?: string) {
+        if (!id) {
+            const { body } = await service.post<LogisticsItem>(
+                '/logistics',
+                data
+            );
+            this.list = [body].concat(this.list);
+        } else {
+            const { body } = await service.put<LogisticsItem>(
+                '/logistics/' + id,
+                data
+            );
+            const index = this.list.findIndex(
+                ({ objectId }) => objectId === id
+            );
+            this.list[index] = body;
+        }
+    }
+
+    async getOne(id: string) {
+        const { body } = await service.get<LogisticsItem>('/logistics/' + id);
+        return body;
+    }
+
+    async delete(id: string) {
+        await service.delete('/logistics/' + id);
+        this.list = this.list.filter(({ objectId }) => objectId !== id);
     }
 }
