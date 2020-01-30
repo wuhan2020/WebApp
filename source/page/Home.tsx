@@ -15,8 +15,8 @@ export function HomePage() {
                     {menu.slice(1, -1).map(({ title, href, icon }) => (
                         <li class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
                             <a
-                                className="card text-center"
-                                style={{ marginBottom: '1rem', textDecoration: 'none' }}
+                                className="card text-center text-decoration-none"
+                                style={{ marginBottom: '1rem' }}
                                 href={href}
                             >
                                 <i
