@@ -1,4 +1,4 @@
-# WE PROVIDE ENGLISH VERSION, PLEASE CLICK [HERE](https://github.com/CNYoki/WebApp/blob/dev/README_EN.md)
+# WE PROVIDE ENGLISH VERSION, PLEASE CLICK [HERE](https://github.com/wuhan2020/WebApp/blob/dev/README_EN.md)
 
 # 武汉新型冠状病毒防疫信息收集平台
 
