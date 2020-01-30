@@ -13,6 +13,9 @@ import { HospitalEdit } from './Hospital/Edit';
 import { LogisticsPage } from './Logistics';
 import { FactoryPage } from './Factory';
 import { FactoryEdit } from './Factory/edit';
+import { HotelPage } from './Hotel';
+import { DonationPage } from './Donation';
+import { ClinicPage } from './Clinic';
 
 @observer
 @component({
@@ -27,7 +30,10 @@ export class PageRouter extends HTMLRouter {
         { paths: ['hospital/edit'], component: HospitalEdit },
         { paths: ['logistics'], component: LogisticsPage },
         { paths: ['factory'], component: FactoryPage },
-        { paths: ['factory/edit'], component: FactoryEdit }
+        { paths: ['factory/edit'], component: FactoryEdit },
+        { paths: ['hotel'], component: HotelPage },
+        { paths: ['donation'], component: DonationPage },
+        { paths: ['clinic'], component: ClinicPage }
     ];
 
     connectedCallback() {

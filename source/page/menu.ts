@@ -1,7 +1,10 @@
 export enum RouteRoot {
     Hospital = 'hospital',
     Logistics = 'logistics',
-    Factory = 'factory'
+    Hotel = 'hotel',
+    Factory = 'factory',
+    Donation = 'donation',
+    Clinic = 'clinic'
 }
 
 export default [
@@ -21,7 +24,7 @@ export default [
     },
     {
         title: '酒店',
-        href: 'hotel',
+        href: RouteRoot.Hotel,
         icon: 'hotel'
     },
     {
@@ -31,16 +34,16 @@ export default [
     },
     {
         title: '捐赠',
-        href: 'donation',
+        href: RouteRoot.Donation,
         icon: 'heart'
     },
     {
         title: '义诊',
-        href: 'clinic',
+        href: RouteRoot.Clinic,
         icon: 'user-md'
     },
     {
         title: '开放源代码',
-        href: 'https://github.com/wuhan2020/wuhan2020.github.io'
+        href: 'https://github.com/wuhan2020/WebApp'
     }
 ];
