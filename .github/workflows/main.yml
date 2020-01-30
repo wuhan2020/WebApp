@@ -27,3 +27,5 @@ jobs:
           PUBLISH_DIR: ./dist
           PUBLISH_BRANCH: gh-pages
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          forceOrphan: true
