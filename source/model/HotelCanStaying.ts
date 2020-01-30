@@ -1,72 +1,14 @@
 import { observable } from 'mobx';
-import service, { DataItem, User, PageData } from './HTTPService';
-import { Contact } from './SuppliesRequirement';
+import { service, DataItem, User, PageData, Place } from './HTTPService';
+import { Contact } from './HTTPService';
 
-const mockData = [
-    {
-        name: '柏曼酒店黄冈武穴店',
-        address: '武穴市 玉湖路',
-        capacity: 100,
-        contacts: [
-            {
-                name: '王丽君',
-                number: '15926715506'
-            }
-        ]
-    },
-    {
-        name: '城市便捷武穴客运站店',
-        address: '武穴市 刊江大道188号',
-        capacity: 100,
-        contacts: [
-            {
-                name: '许良师',
-                number: '0713-6273377'
-            }
-        ]
-    },
-    {
-        name: '城市便捷武穴万达广场店',
-        address: '黄州区 赤壁大道99号',
-        capacity: 100,
-        contacts: [
-            {
-                name: '徐偲',
-                number: '18694054334'
-            }
-        ]
-    },
-    {
-        name: '城市便捷罗田桥南店',
-        address: '罗田县 凤山镇城南新区凤城大道2号',
-        capacity: 100,
-        contacts: [
-            {
-                name: '刘力',
-                number: '18207170535'
-            }
-        ]
-    },
-    {
-        name: '城市便捷红安将军广场店',
-        address: '红安县 将军国际广场旁边',
-        capacity: 100,
-        contacts: [
-            {
-                name: '易德照',
-                number: '17371462811'
-            }
-        ]
-    }
-];
-
-export interface HotelCanStaying extends DataItem {
-    hotel?: string;
+export interface HotelCanStaying extends DataItem, Place {
+    name?: string;
     address?: string;
-    capacity?: string;
-    coords?: number[];
+    capacity?: number;
     contacts?: Contact[];
     creator?: User;
+    url?: string;
 }
 
 export class HotelCanStayingModel {
@@ -81,33 +23,33 @@ export class HotelCanStayingModel {
     list = [];
 
     async getNextPage() {
-        // if (this.pageIndex && this.list.length === this.totalCount) return;
-
-        // const {
-        //     body: { count, data }
-        // } = await service.get<PageData<HotelCanStaying[]>>(
-        //     '/supplies/requirement?' +
-        //         new URLSearchParams({
-        //             pageIndex: this.pageIndex + 1 + '',
-        //             pageSize: this.pageSize + ''
-        //         })
-        // );
-        // this.pageIndex++, (this.totalCount = count);
-
-        this.list = mockData;
-        return mockData;
+        if (this.pageIndex && this.list.length === this.totalCount) return;
+        const {
+            body: { count, data }
+        } = await service.get<PageData<HotelCanStaying[]>>(
+            '/hotel?' +
+                new URLSearchParams({
+                    pageIndex: this.pageIndex + 1 + '',
+                    pageSize: this.pageSize + ''
+                })
+        );
+        console.log('========================');
+        console.log('count', count);
+        console.log('data', data);
+        console.log('========================');
+        this.pageIndex++, (this.totalCount = count);
+        this.list = this.list.concat(data);
+        return data;
     }
 
     update(data: HotelCanStaying, id?: string) {
         return id
-            ? service.put('/supplies/requirement/' + id, data)
-            : service.post('/supplies/requirement', data);
+            ? service.put('/hotel' + id, data)
+            : service.post('/hotel', data);
     }
 
     async getOne(id: string) {
-        const { body } = await service.get<HotelCanStaying>(
-            '/supplies/requirement/' + id
-        );
+        const { body } = await service.get<HotelCanStaying>('/hotel/' + id);
         return body;
     }
 }
