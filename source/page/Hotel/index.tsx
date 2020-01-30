@@ -1,5 +1,5 @@
 import * as clipboard from 'clipboard-polyfill';
-import { component, mixin, createCell } from 'web-cell';
+import { component, mixin, createCell, Fragment } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { Card } from 'boot-cell/source/Content/Card';
@@ -7,7 +7,8 @@ import { Button } from 'boot-cell/source/Form/Button';
 import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
 import 'boot-cell/source/Content/EdgeDetector';
 import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
-import { hotelCanStaying } from '../../model';
+import { hotelCanStaying, session } from '../../model';
+import { relativeTimeTo, TimeUnitName } from '../../utility';
 
 interface HotelPageState {
     loading?: boolean;
@@ -37,7 +38,21 @@ export class HotelPage extends mixin<{}, HotelPageState>() {
         self.alert('已复制到剪贴板');
     }
 
-    renderItem = ({ name, address, capacity, contacts }: any) => {
+    renderItem = ({
+        name,
+        address,
+        capacity,
+        contacts,
+        creator: { mobilePhoneNumber, objectId: uid },
+        objectId,
+        createdAt
+    }: any) => {
+        const { distance, unit } = relativeTimeTo(createdAt),
+            authorized =
+                session.user?.objectId === uid ||
+                session.hasRole('Admin') ||
+                null;
+
         return (
             <Card
                 className="mx-auto mb-4 mx-sm-1"
@@ -62,6 +77,34 @@ export class HotelPage extends mixin<{}, HotelPageState>() {
                         />
                     )}
                 </div>
+                <footer className="mt-3 text-center text-mute">
+                    <a href={'tel:+86-' + mobilePhoneNumber}>
+                        {mobilePhoneNumber}
+                    </a>
+                    发布于 {Math.abs(distance)} {TimeUnitName[unit]}前
+                    {authorized && (
+                        <Fragment>
+                            <Button
+                                kind="warning"
+                                block
+                                className="mt-3"
+                                href={'hotel/edit?srid=' + objectId}
+                            >
+                                编辑
+                            </Button>
+                            <Button
+                                kind="danger"
+                                block
+                                className="mt-3"
+                                onClick={() => {
+                                    hotelCanStaying.delete(objectId);
+                                }}
+                            >
+                                删除
+                            </Button>
+                        </Fragment>
+                    )}
+                </footer>
             </Card>
         );
     };
