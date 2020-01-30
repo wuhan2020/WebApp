@@ -3,11 +3,13 @@ import { observer } from 'mobx-web-cell';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { Table } from 'boot-cell/source/Content/Table';
 import { Button } from 'boot-cell/source/Form/Button';
+import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 
 import { logistics, LogisticsItem, ServiceArea } from '../../model';
 
 interface LogisticsPageState {
     loading?: boolean;
+    noMore?: boolean;
     list?: LogisticsItem[];
 }
 
@@ -23,15 +25,22 @@ const DIREACTION = {
     renderTarget: 'children'
 })
 export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
-    state = { loading: true, list: [] };
+    state = { loading: true, noMore: false, list: [] };
 
     async connectedCallback() {
         super.connectedCallback();
-        const data = await logistics.getList();
+        const data = await logistics.getNextPage();
         await this.setState({ loading: false, list: data });
     }
 
-    render(_, { loading, list }: LogisticsPageState) {
+    loadMore = async ({ detail }: EdgeEvent) => {
+        if (detail !== 'bottom' || this.state.noMore) return;
+        await this.setState({ loading: true });
+        const data = await logistics.getNextPage();
+        await this.setState({ loading: false, noMore: !data });
+    };
+
+    render(_, { loading, list, noMore }: LogisticsPageState) {
         return (
             <SpinnerBox cover={loading}>
                 <div className="container">
@@ -48,126 +57,137 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
                     </div>
                 </div>
 
-                <Table center striped hover>
-                    <thead>
-                        <tr>
-                            <th>名称</th>
-                            <th>区域</th>
-                            <th>电话</th>
-                            <th>备注</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {list.map(
-                            ({
-                                url,
-                                name,
-                                serviceArea,
-                                contacts,
-                                remark,
-                                objectId
-                            }: LogisticsItem) => (
-                                <tr>
-                                    <td className="text-nowrap">
-                                        {url ? (
-                                            <a target="_blank" href={url}>
-                                                {name}
-                                            </a>
-                                        ) : (
-                                            name
-                                        )}
-                                    </td>
-                                    <td className="text-nowrap">
-                                        {serviceArea.map(
-                                            ({
-                                                city,
-                                                direction,
-                                                personal
-                                            }: ServiceArea) => {
-                                                return (
-                                                    <div>
-                                                        <div
-                                                            style={{
-                                                                paddingTop:
-                                                                    '5px'
-                                                            }}
-                                                        >
-                                                            地区: {city}
+                <edge-detector onTouchEdge={this.loadMore}>
+                    <Table center striped hover>
+                        <thead>
+                            <tr>
+                                <th>名称</th>
+                                <th>区域</th>
+                                <th>电话</th>
+                                <th>备注</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {logistics.list.map(
+                                ({
+                                    url,
+                                    name,
+                                    serviceArea,
+                                    contacts,
+                                    remark,
+                                    objectId
+                                }: LogisticsItem) => (
+                                    <tr>
+                                        <td className="text-nowrap">
+                                            {url ? (
+                                                <a target="_blank" href={url}>
+                                                    {name}
+                                                </a>
+                                            ) : (
+                                                name
+                                            )}
+                                        </td>
+                                        <td className="text-nowrap">
+                                            {serviceArea.map(
+                                                ({
+                                                    city,
+                                                    direction,
+                                                    personal
+                                                }: ServiceArea) => {
+                                                    return (
+                                                        <div>
+                                                            <div
+                                                                style={{
+                                                                    paddingTop:
+                                                                        '5px'
+                                                                }}
+                                                            >
+                                                                地区: {city}
+                                                            </div>
+                                                            <div
+                                                                style={{
+                                                                    paddingTop:
+                                                                        '10px'
+                                                                }}
+                                                            >
+                                                                方向:
+                                                                {
+                                                                    DIREACTION[
+                                                                        direction
+                                                                    ]
+                                                                }
+                                                            </div>
+                                                            <div
+                                                                style={{
+                                                                    paddingTop:
+                                                                        '10px'
+                                                                }}
+                                                            >
+                                                                {personal
+                                                                    ? '接受个人捐赠'
+                                                                    : '不接受个人捐赠'}
+                                                            </div>
                                                         </div>
-                                                        <div
-                                                            style={{
-                                                                paddingTop:
-                                                                    '10px'
-                                                            }}
-                                                        >
-                                                            方向:
-                                                            {
-                                                                DIREACTION[
-                                                                    direction
-                                                                ]
-                                                            }
-                                                        </div>
-                                                        <div
-                                                            style={{
-                                                                paddingTop:
-                                                                    '10px'
-                                                            }}
-                                                        >
-                                                            {personal
-                                                                ? '接受个人捐赠'
-                                                                : '不接受个人捐赠'}
-                                                        </div>
-                                                    </div>
-                                                );
-                                            }
-                                        )}
-                                    </td>
-                                    <td className="text-nowrap">
-                                        {contacts.map(item => (
+                                                    );
+                                                }
+                                            )}
+                                        </td>
+                                        <td className="text-nowrap">
+                                            {contacts.map(item => (
+                                                <div
+                                                    style={{ padding: '5px 0' }}
+                                                >
+                                                    <Button
+                                                        href={
+                                                            'tel:' + item.phone
+                                                        }
+                                                    >
+                                                        {item.name}
+                                                    </Button>
+                                                </div>
+                                            ))}
+                                        </td>
+                                        <td
+                                            className="text-wrap"
+                                            style={{ maxWidth: '150px' }}
+                                        >
+                                            {remark}
+                                        </td>
+                                        <td className="text-nowrap">
                                             <div style={{ padding: '5px 0' }}>
                                                 <Button
-                                                    href={'tel:' + item.phone}
+                                                    className="btn-warning"
+                                                    href={
+                                                        'logistics/edit?srid=' +
+                                                        objectId
+                                                    }
                                                 >
-                                                    {item.name}
+                                                    编辑
                                                 </Button>
                                             </div>
-                                        ))}
-                                    </td>
-                                    <td
-                                        className="text-wrap"
-                                        style={{ maxWidth: '150px' }}
-                                    >
-                                        {remark}
-                                    </td>
-                                    <td className="text-nowrap">
-                                        <div style={{ padding: '5px 0' }}>
-                                            <Button
-                                                className="btn-warning"
-                                                href={
-                                                    'logistics/edit?srid=' +
-                                                    objectId
-                                                }
-                                            >
-                                                编辑
-                                            </Button>
-                                        </div>
-                                        <div style={{ padding: '5px 0' }}>
-                                            <Button
-                                                className="btn-danger"
-                                                onClick={() =>
-                                                    logistics.delete(objectId)
-                                                }
-                                            >
-                                                删除
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            )
-                        )}
-                    </tbody>
-                </Table>
+                                            <div style={{ padding: '5px 0' }}>
+                                                <Button
+                                                    className="btn-danger"
+                                                    onClick={() =>
+                                                        logistics.delete(
+                                                            objectId
+                                                        )
+                                                    }
+                                                >
+                                                    删除
+                                                </Button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )
+                            )}
+                        </tbody>
+                    </Table>
+                    <p slot="bottom" className="text-center mt-2">
+                        {noMore ? '没有更多数据了' : '加载更多...'}
+                    </p>
+                </edge-detector>
             </SpinnerBox>
         );
     }

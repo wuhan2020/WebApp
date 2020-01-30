@@ -29,17 +29,18 @@ export class LogisticsModel {
     @observable
     list: LogisticsItem[] = [];
 
-    async getList() {
+    async getNextPage() {
         const {
             body: { count, data }
         } = await service.get<PageData<LogisticsItem>>(
             '/logistics?' +
                 new URLSearchParams({
-                    pageIndex: this.pageIndex + '',
+                    pageIndex: this.pageIndex + 1 + '',
                     pageSize: this.pageSize + ''
                 })
         );
-        this.list = data;
+        this.pageIndex++, (this.totalCount = count);
+        this.list = this.list.concat(data);
         return data;
     }
 
