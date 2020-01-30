@@ -8,9 +8,14 @@ import {
     suppliesRequirement,
     history,
     FactoryStore,
-    Factory
+    Factory,
+    GeoCoord,
+    Contact,
+    Supplies
 } from '../../model';
+import CommonSupplies from '../Hospital/Supplies';
 import { SessionBox } from '../../component';
+import { mergeList } from '../../utility';
 
 type FactoryEditProps = Factory & { loading?: boolean };
 
@@ -25,11 +30,16 @@ export class FactoryEdit extends mixin<{ srid: string }, FactoryEditProps>() {
     state = {
         loading: false,
         name: '',
-        certificate: '',
+        province: '',
+        city: '',
+        district: '',
         address: '',
-        category: '',
-        capability: '',
-        contacts: [{ name: '', number: '' }]
+        qualification: '',
+        coords: {} as GeoCoord,
+        url: '',
+        supplies: CommonSupplies as Supplies[],
+        contacts: [{} as Contact],
+        remark: ''
     };
 
     async connectedCallback() {
@@ -40,21 +50,36 @@ export class FactoryEdit extends mixin<{ srid: string }, FactoryEditProps>() {
         await this.setState({ loading: true });
 
         const {
-            certificate,
+            name,
+            qualification,
+            province,
+            city,
+            district,
             address,
-            category,
-            capability,
-            contacts
+            coords,
+            url,
+            supplies,
+            contacts,
+            remark
         } = await FactoryStore.getOne(this.srid);
 
         this.setState({
             loading: false,
-            name: '',
-            certificate,
+            name,
+            qualification,
+            province,
+            city,
+            district,
             address,
-            category,
-            capability,
-            contacts
+            coords,
+            url,
+            supplies: mergeList<Supplies>(
+                'name',
+                this.state.supplies,
+                supplies
+            ),
+            contacts,
+            remark
         });
     }
 
@@ -69,15 +94,27 @@ export class FactoryEdit extends mixin<{ srid: string }, FactoryEditProps>() {
 
         await this.setState({ loading: true });
 
-        const [{ pname, cityname, adname, address }] = await searchAddress(
-            value
-        );
+        try {
+            const [
+                { pname, cityname, adname, address, location }
+            ] = await searchAddress(value);
 
-        await this.setState({
-            loading: false,
-            address: pname + cityname + adname + address
-        });
+            const [longitude, latitude] = location.split(',').map(Number);
+
+            await this.setState({
+                loading: false,
+                province: pname,
+                city: cityname,
+                district: adname,
+                address,
+                coords: { latitude, longitude }
+            });
+        } catch {
+            await this.setState({ loading: false });
+        }
     };
+
+    addSupply = () => this.setState({ supplies: [...this.state.supplies, {}] });
 
     changeContact(index: number, event: Event) {
         event.stopPropagation();
@@ -85,6 +122,22 @@ export class FactoryEdit extends mixin<{ srid: string }, FactoryEditProps>() {
         const { name, value } = event.target as HTMLInputElement;
 
         this.state.contacts[index][name] = value;
+    }
+
+    deleteListItem(key: keyof Factory, index: number) {
+        const list = this.state[key];
+
+        list.splice(index, 1);
+
+        this.setState({ [key]: list });
+    }
+
+    changeListItem(key: keyof Factory, index: number, event: Event) {
+        event.stopPropagation();
+
+        const { name, value } = event.target as HTMLInputElement;
+
+        this.state[key][index][name] = value;
     }
 
     addContact = () =>
@@ -105,27 +158,34 @@ export class FactoryEdit extends mixin<{ srid: string }, FactoryEditProps>() {
 
         await this.setState({ loading: true });
 
-        const data = { ...this.state };
-        delete data.loading;
+        const { loading, supplies, ...data } = { ...this.state };
 
-        await suppliesRequirement.update(data, this.srid);
+        try {
+            await FactoryStore.update(
+                { ...data, supplies: supplies.filter(({ count }) => count) },
+                this.srid
+            );
+            self.alert('发布成功！');
 
-        await this.setState({ loading: false });
-
-        self.alert('发布成功！');
-
-        history.push(RouteRoot.Factory);
+            history.push(RouteRoot.Hospital);
+        } finally {
+            await this.setState({ loading: false });
+        }
     };
 
     render(
         _,
         {
             name,
-            certificate,
+            qualification,
+            province,
+            city,
+            district,
             address,
-            category,
-            capability,
+            url,
+            supplies,
             contacts,
+            remark,
             loading
         }: FactoryEditProps
     ) {
@@ -141,31 +201,101 @@ export class FactoryEdit extends mixin<{ srid: string }, FactoryEditProps>() {
                         label="厂商名字"
                         onChange={this.searchAddress}
                     />
+                    <FormField label="机构地址">
+                        <div className="input-group">
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="province"
+                                required
+                                defaultValue={province}
+                                placeholder="省/直辖市/自治区/特别行政区"
+                            />
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="city"
+                                required
+                                defaultValue={city}
+                                placeholder="地级市/自治州"
+                            />
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="district"
+                                required
+                                defaultValue={district}
+                                placeholder="区/县/县级市"
+                            />
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="address"
+                                required
+                                defaultValue={address}
+                                placeholder="详细地址"
+                            />
+                        </div>
+                    </FormField>
+
                     <FormField
-                        name="address"
+                        name="qualification"
                         required
-                        defaultValue={address}
-                        label="机构地址"
-                        placeholder="先填上一项可自动搜索"
-                    />
-                    <FormField
-                        name="certificate"
-                        required
-                        defaultValue={certificate}
+                        defaultValue={qualification}
                         label="资质证明"
                     />
-                    <FormField
-                        name="category"
-                        required
-                        defaultValue={category}
-                        label="生产物资类型"
-                    />
-                    <FormField
-                        name="capability"
-                        required
-                        defaultValue={capability}
-                        label="产能"
-                    />
+                    <FormField label="物资列表">
+                        {supplies.map(({ name, count, remark }, index) => (
+                            <div
+                                className="input-group my-1"
+                                onChange={(event: Event) =>
+                                    this.changeListItem(
+                                        'supplies',
+                                        index,
+                                        event
+                                    )
+                                }
+                            >
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    name="name"
+                                    value={name}
+                                    placeholder="名称"
+                                />
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    name="count"
+                                    defaultValue="0"
+                                    value={count}
+                                    placeholder="数量"
+                                />
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    name="remark"
+                                    value={remark}
+                                    placeholder="备注"
+                                />
+                                <div className="input-group-append">
+                                    <Button onClick={this.addSupply}>+</Button>
+                                    <Button
+                                        kind="danger"
+                                        disabled={supplies.length < 2}
+                                        onClick={() =>
+                                            this.deleteListItem(
+                                                'supplies',
+                                                index
+                                            )
+                                        }
+                                    >
+                                        -
+                                    </Button>
+                                </div>
+                            </div>
+                        ))}
+                    </FormField>
 
                     <FormField label="联系方式">
                         {contacts.map(({ name, number }, index) => (
@@ -204,6 +334,20 @@ export class FactoryEdit extends mixin<{ srid: string }, FactoryEditProps>() {
                             </div>
                         ))}
                     </FormField>
+
+                    <FormField
+                        is="textarea"
+                        name="remark"
+                        label="备注"
+                        defaultValue={remark}
+                    />
+
+                    <FormField
+                        name="url"
+                        required
+                        defaultValue={url}
+                        label="信息发布源链接"
+                    />
 
                     <div className="form-group mt-3">
                         <Button type="submit" block disabled={loading}>

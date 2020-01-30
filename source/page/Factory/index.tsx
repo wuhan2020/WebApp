@@ -43,11 +43,15 @@ export class FactoryPage extends mixin<{}, FactoryPageState>() {
     renderItem = ({
         createdAt,
         name,
-        certificate,
+        qualification,
+        supplies = [],
+        province,
+        city,
+        district,
         address,
-        category,
-        capability,
         contacts,
+        remark,
+        url,
         creator: { mobilePhoneNumber, objectId: uid },
         objectId
     }: Factory) => {
@@ -63,17 +67,41 @@ export class FactoryPage extends mixin<{}, FactoryPageState>() {
                 style={{ minWidth: '20rem', maxWidth: '20rem' }}
                 title={name}
             >
-                <p>
-                    厂商地址: {address}
-                    <br />
-                    生产物资类型: {category}
-                    <br />
-                    产能: {capability}
-                    <br />
-                </p>
+                <ul class="list-unstyled">
+                    <li>
+                        <b>资质证明</b>: {qualification}
+                        <br />
+                    </li>
+                    <li>
+                        <b>地址</b>: {province + city + district + address}
+                        <br />
+                    </li>
+                    <li>
+                        <b>备注</b>:{remark}
+                        <br />
+                    </li>
+                    <li>
+                        <b>物资</b>:
+                        <ol>
+                            {supplies.map(({ name, count, remark }) => (
+                                <li title={remark}>
+                                    {name}{' '}
+                                    <span className="badge">{count}个</span>
+                                </li>
+                            ))}
+                        </ol>
+                    </li>
+                </ul>
+
                 <div className="text-center">
-                    <Button href={certificate} target="_blank">
-                        资质证明
+                    <Button
+                        onClick={() =>
+                            this.clip2board(
+                                province + city + district + address
+                            )
+                        }
+                    >
+                        复制地址
                     </Button>
                     {contacts && (
                         <DropMenu
@@ -92,7 +120,10 @@ export class FactoryPage extends mixin<{}, FactoryPageState>() {
                     <a href={'tel:+86-' + mobilePhoneNumber}>
                         {mobilePhoneNumber}
                     </a>{' '}
-                    发布于 {Math.abs(distance)} {TimeUnitName[unit]}前
+                    发布于 {Math.abs(distance)} {TimeUnitName[unit]}前<br />
+                    <a href="{url}" target="_blank">
+                        消息来源
+                    </a>
                     {authorized && (
                         <Fragment>
                             <Button

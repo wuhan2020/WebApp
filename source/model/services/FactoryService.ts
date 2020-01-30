@@ -5,7 +5,7 @@ let mock = {
     data: [
         {
             name: 'test name',
-            certificate:
+            qualification:
                 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2330000107,3882251350&fm=15&gp=0.jpg',
             address: 'test address',
             category: 'test category',
@@ -38,7 +38,7 @@ export class FactoryService {
         const {
             body: { count, data }
         } = await service.get<PageData<Factory>>(
-            '/supplies/requirement?' +
+            '/vendor?' +
                 new URLSearchParams({
                     pageIndex: this.pageIndex + 1 + '',
                     pageSize: this.pageSize + ''
@@ -52,20 +52,27 @@ export class FactoryService {
         return data;
     }
 
-    async update(data: any, id?: string) {
-        // TODO: Add API post
-        const { body } = await service.post(' ', data);
-        return body;
+    async update(data: Factory, id?: string) {
+        if (!id) {
+            const { body } = await service.post<Factory>('/vendor', data);
+
+            this.list = [body].concat(this.list);
+        } else {
+            const { body } = await service.put<Factory>('/vendor/' + id, data),
+                index = this.list.findIndex(({ objectId }) => objectId === id);
+
+            this.list[index] = body;
+        }
     }
 
     async getOne(id: string) {
-        // TODO: Add API post
-        const { body } = await service.get(' ' + id);
+        const { body } = await service.get<Factory>('/vendor/' + id);
         return body;
     }
 
     async delete(id: string) {
-        // TODO: Add API delete
-        await service.delete('', id);
+        await service.delete('/vendor/' + id);
+
+        this.list = this.list.filter(({ objectId }) => objectId !== id);
     }
 }
