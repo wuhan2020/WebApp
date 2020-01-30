@@ -1,5 +1,7 @@
 # 武汉新型冠状病毒防疫信息收集平台
 
+简体中文 | [English](./README_EN.md)
+
 [渐进式 Web 应用][1]项目
 
 [![NPM Dependency](https://david-dm.org/wuhan2020/WebApp.svg)][2]
@@ -9,7 +11,7 @@
 
 谷歌 Chrome、谋智 Firefox、欧朋、微软 Edge、UC 浏览器、小米浏览器、QQ 浏览器等均可**安装本网站到桌面**（Safari 对 [W3C 国际标准][4]支持迟缓，只能添加图标，**网络缓存**、**离线启动**等高级功能可能无法使用）
 
-![](source/image/WuHan2020-PWA.jpg)
+<img width='280' src='source/image/WuHan2020-PWA.jpg' />
 
 ## 技术栈
 
