@@ -1,31 +1,22 @@
 import { observable } from 'mobx';
 
-import {
-    DataItem,
-    Place,
-    Contact,
-    User,
-    service,
-    PageData
-} from './HTTPService';
+import { DataItem, Contact, service, PageData } from './HTTPService';
 
-export interface Supplies {
-    name: string;
-    type: 'face' | 'leg' | 'disinfection' | 'device' | 'other';
-    remark: string;
-    count: number;
+export interface ServiceArea {
+    city: string;
+    direction: 'in' | 'out' | 'both';
+    personal: boolean;
 }
 
-export interface SuppliesRequirement extends DataItem, Place {
-    hospital?: string;
+export interface Logistics extends DataItem {
+    name?: string;
     url?: string;
-    supplies?: Supplies[];
     contacts?: Contact[];
+    serviceArea?: ServiceArea[];
     remark?: string;
-    creator?: User;
 }
 
-export class SuppliesRequirementModel {
+export class LogisticsModel {
     @observable
     pageIndex = 0;
 
@@ -34,15 +25,15 @@ export class SuppliesRequirementModel {
     totalCount = 0;
 
     @observable
-    list: SuppliesRequirement[] = [];
+    list: Logistics[] = [];
 
     async getNextPage() {
         if (this.pageIndex && this.list.length === this.totalCount) return;
 
         const {
             body: { count, data }
-        } = await service.get<PageData<SuppliesRequirement>>(
-            '/supplies/requirement?' +
+        } = await service.get<PageData<Logistics>>(
+            '/logistics?' +
                 new URLSearchParams({
                     pageIndex: this.pageIndex + 1 + '',
                     pageSize: this.pageSize + ''
@@ -55,17 +46,14 @@ export class SuppliesRequirementModel {
         return data;
     }
 
-    async update(data: SuppliesRequirement, id?: string) {
+    async update(data: Logistics, id?: string) {
         if (!id) {
-            const { body } = await service.post<SuppliesRequirement>(
-                '/supplies/requirement',
-                data
-            );
+            const { body } = await service.post<Logistics>('/logistics', data);
 
             this.list = [body].concat(this.list);
         } else {
-            const { body } = await service.put<SuppliesRequirement>(
-                    '/supplies/requirement/' + id,
+            const { body } = await service.put<Logistics>(
+                    '/logistics/' + id,
                     data
                 ),
                 index = this.list.findIndex(({ objectId }) => objectId === id);
@@ -75,14 +63,13 @@ export class SuppliesRequirementModel {
     }
 
     async getOne(id: string) {
-        const { body } = await service.get<SuppliesRequirement>(
-            '/supplies/requirement/' + id
-        );
+        const { body } = await service.get<Logistics>('/logistics/' + id);
+
         return body;
     }
 
     async delete(id: string) {
-        await service.delete('/supplies/requirement/' + id);
+        await service.delete('/logistics/' + id);
 
         this.list = this.list.filter(({ objectId }) => objectId !== id);
     }

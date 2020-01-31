@@ -2,7 +2,6 @@ import { component, mixin, createCell } from 'web-cell';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { Table } from 'boot-cell/source/Content/Table';
 import { Button } from 'boot-cell/source/Form/Button';
-import { parse } from 'yaml';
 
 import { repository } from '../model';
 
@@ -29,9 +28,9 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
     async connectedCallback() {
         super.connectedCallback();
 
-        const data = await repository.getContents('data/Logistics.yml');
+        const list = await repository.getContents('data/Logistics.yml');
 
-        await this.setState({ loading: false, list: parse(data) });
+        await this.setState({ loading: false, list });
     }
 
     render(_, { loading, list }: LogisticsPageState) {

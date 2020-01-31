@@ -1,15 +1,17 @@
 # 武汉新型冠状病毒防疫信息收集平台
 
+简体中文 | [English](./README_EN.md)
+
 [渐进式 Web 应用][1]项目
 
-[![NPM Dependency](https://david-dm.org/wuhan2020/wuhan2020.github.io.svg)][2]
-[![Build Status](https://travis-ci.com/wuhan2020/wuhan2020.github.io.svg?branch=dev)][3]
+[![NPM Dependency](https://david-dm.org/wuhan2020/WebApp.svg)][2]
+[![Build Status](https://travis-ci.com/wuhan2020/WebApp.svg?branch=dev)][3]
 
 ## 基本用法
 
 谷歌 Chrome、谋智 Firefox、欧朋、微软 Edge、UC 浏览器、小米浏览器、QQ 浏览器等均可**安装本网站到桌面**（Safari 对 [W3C 国际标准][4]支持迟缓，只能添加图标，**网络缓存**、**离线启动**等高级功能可能无法使用）
 
-![](source/image/WuHan2020-PWA.jpg)
+<img width='280' src='source/image/WuHan2020-PWA.jpg' />
 
 ## 技术栈
 
@@ -31,7 +33,7 @@
 
 1. [安装 Node.js](https://nodejs.org/en/download/package-manager/)
 
-2. `git clone https://github.com/wuhan2020/wuhan2020.github.io.git`
+2. `git clone https://github.com/wuhan2020/WebApp.git`
 
 3. 在本项目文件夹中执行命令
 
@@ -42,9 +44,17 @@ npm start
 
 4. 安装、启动[后端项目](https://github.com/wuhan2020/rest-api)
 
+### 注意
+
+-   Windows 用户请在 [PowerShell 5.1+][13]、[Git Bash][14] 或 [WSL][15] 中运行
+
+## 特别感谢
+
+[开源社][16] 提供国内备案域名 https://wuhan2020.kaiyuanshe.cn/ ，以解决[国内应用软件内分享时的障碍][17]。
+
 [1]: https://developers.google.cn/web/progressive-web-apps
-[2]: https://david-dm.org/wuhan2020/wuhan2020.github.io
-[3]: https://travis-ci.com/wuhan2020/wuhan2020.github.io
+[2]: https://david-dm.org/wuhan2020/WebApp
+[3]: https://travis-ci.com/wuhan2020/WebApp
 [4]: https://www.w3.org/
 [5]: https://typescriptlang.org
 [6]: https://web-cell.dev/
@@ -54,3 +64,8 @@ npm start
 [10]: https://parceljs.org
 [11]: https://travis-ci.com/
 [12]: https://pages.github.com/
+[13]: https://docs.microsoft.com/zh-cn/powershell/scripting/learn/using-familiar-command-names?view=powershell-5.1
+[14]: https://gitforwindows.org/#bash
+[15]: https://docs.microsoft.com/en-us/windows/wsl/install-win10
+[16]: https://kaiyuanshe.cn/
+[17]: https://github.com/wuhan2020/WebApp/issues/21
