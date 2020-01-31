@@ -80,7 +80,7 @@ export class HotelPage extends mixin<{}, HotelPageState>() {
                 <footer className="mt-3 text-center text-mute">
                     <a href={'tel:+86-' + mobilePhoneNumber}>
                         {mobilePhoneNumber}
-                    </a>
+                    </a>{' '}
                     发布于 {Math.abs(distance)} {TimeUnitName[unit]}前
                     {authorized && (
                         <Fragment>
@@ -113,10 +113,10 @@ export class HotelPage extends mixin<{}, HotelPageState>() {
         return (
             <SpinnerBox cover={loading}>
                 <header className="d-flex justify-content-between align-item-center my-3">
-                    <h2>湖北籍同胞全国住宿指南</h2>
+                    <h2>湖北同胞住宿指南</h2>
                     <span>
                         <Button kind="warning" href="hotel/edit">
-                            发布住宿信息
+                            住宿发布
                         </Button>
                     </span>
                 </header>

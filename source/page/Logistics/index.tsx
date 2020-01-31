@@ -92,7 +92,7 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
                                                                         '5px'
                                                                 }}
                                                             >
-                                                                地区: {city}
+                                                                地区：{city}
                                                             </div>
                                                             <div
                                                                 style={{
@@ -100,7 +100,7 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
                                                                         '10px'
                                                                 }}
                                                             >
-                                                                方向:
+                                                                方向：
                                                                 {
                                                                     DIREACTION[
                                                                         direction
