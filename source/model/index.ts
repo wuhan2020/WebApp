@@ -5,6 +5,7 @@ import { SuppliesRequirementModel } from './SuppliesRequirement';
 import { LogisticsModel } from './Logistics';
 import { HotelCanStayingModel } from './HotelCanStaying';
 import { ClinicModel } from './Clinic';
+import { FactoryService } from './services/FactoryService';
 
 export const history = new History();
 export const session = new Session();
@@ -12,6 +13,7 @@ export const suppliesRequirement = new SuppliesRequirementModel();
 export const logistics = new LogisticsModel();
 export const hotelCanStaying = new HotelCanStayingModel();
 export const clinic = new ClinicModel();
+export const FactoryStore = new FactoryService();
 
 export * from './HTTPService';
 export * from './GitService';

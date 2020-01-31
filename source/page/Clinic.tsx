@@ -41,21 +41,15 @@ export class ClinicPage extends mixin<{}, ClinicPageState>() {
 
                 <Table center striped hover>
                     <thead>
-                    <tr>
-                        <th>机构/个人名</th>
-                        <th>官网网址</th>
-                        <th>联系人（姓名、电话）</th>
-                        <th>每日接诊起止时刻</th>
-                    </tr>
+                        <tr>
+                            <th>机构/个人名</th>
+                            <th>官网网址</th>
+                            <th>联系人（姓名、电话）</th>
+                            <th>每日接诊起止时刻</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    {list.map(
-                        ({
-                             name,
-                             url,
-                             contacts,
-                             time
-                         }: Clinic) => (
+                        {list.map(({ name, url, contacts, time }: Clinic) => (
                             <tr>
                                 <td className="text-nowrap">
                                     {url ? (
@@ -70,8 +64,7 @@ export class ClinicPage extends mixin<{}, ClinicPageState>() {
                                 <td className="text-nowrap">{contacts}</td>
                                 <td className="text-nowrap">{time}</td>
                             </tr>
-                        )
-                    )}
+                        ))}
                     </tbody>
                 </Table>
             </SpinnerBox>
