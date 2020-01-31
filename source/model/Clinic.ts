@@ -27,10 +27,10 @@ export class ClinicModel {
             body: { count, data }
         } = await service.get<PageData<Clinic>>(
             '/clinic?' +
-            new URLSearchParams({
-                pageIndex: this.pageIndex + 1 + '',
-                pageSize: this.pageSize + ''
-            })
+                new URLSearchParams({
+                    pageIndex: this.pageIndex + 1 + '',
+                    pageSize: this.pageSize + ''
+                })
         );
         this.pageIndex++, (this.totalCount = count);
 
@@ -45,10 +45,7 @@ export class ClinicModel {
 
             this.list = [body].concat(this.list);
         } else {
-            const { body } = await service.put<Clinic>(
-                '/clinic/' + id,
-                data
-                ),
+            const { body } = await service.put<Clinic>('/clinic/' + id, data),
                 index = this.list.findIndex(({ objectId }) => objectId === id);
 
             this.list[index] = body;
