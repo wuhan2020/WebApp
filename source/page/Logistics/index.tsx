@@ -59,7 +59,7 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
                                 <th>区域</th>
                                 <th>电话</th>
                                 <th>备注</th>
-                                <th>操作</th>
+                                {/* <th>操作</th> */}
                             </tr>
                         </thead>
                         <tbody>
@@ -149,7 +149,7 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
                                         >
                                             {remark}
                                         </td>
-                                        <td className="text-nowrap">
+                                        {/* <td className="text-nowrap">
                                             <Button
                                                 className="btn-warning"
                                                 href={
@@ -168,7 +168,7 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
                                             >
                                                 删除
                                             </Button>
-                                        </td>
+                                        </td> */}
                                     </tr>
                                 )
                             )}
