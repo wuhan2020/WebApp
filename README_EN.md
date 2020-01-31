@@ -44,6 +44,12 @@ npm start
 
 4. Install and start [rest-api](https://github.com/wuhan2020/rest-api)
 
+## Attention
+Windows users should run in PowerShell 5.1+, Git Bash or WSL please.
+
+## Thanks
+Kaiyuansha provides the domestic registered domain name https://wuhan2020.kaiyuanshe.cn/ in order to solve the obstacles in sharing within domestic application software.
+
 [1]: https://developers.google.cn/web/progressive-web-apps
 [2]: https://david-dm.org/wuhan2020/WebApp
 [3]: https://travis-ci.com/wuhan2020/WebApp
