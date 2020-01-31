@@ -100,7 +100,7 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
         }
         if (
             this.filter.district !== '全部' &&
-            this.filter.distinct !== district
+            this.filter.district !== district
         ) {
             return;
         }
