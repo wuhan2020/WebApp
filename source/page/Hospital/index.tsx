@@ -10,8 +10,12 @@ import 'boot-cell/source/Content/EdgeDetector';
 import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 
 import { relativeTimeTo, TimeUnitName } from '../../utility';
-import { session, SuppliesRequirement, suppliesRequirement } from '../../model';
-import { getSubDistrict } from '../../model/AMap';
+import {
+    area,
+    session,
+    suppliesRequirement,
+    SuppliesRequirement
+} from '../../model';
 
 class AreaFilter {
     city = '全部';
@@ -40,65 +44,7 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
             district: '全部'
         }
     };
-    initPage = () => {
-        this.initProvince();
-    };
 
-    area = [];
-
-    getAreas = async (provinceName, city = undefined) => {
-        let province = this.area.find(item => {
-            return item.name === provinceName;
-        });
-        if (!province.cities) {
-            province.cities = await getSubDistrict(province.name);
-        }
-        if (city) {
-            if (city === '全部') {
-                return [];
-            }
-            let cityFound = province.cities.find(item => {
-                return item.name === city;
-            });
-            if (!cityFound.subs) {
-                cityFound.subs = await getSubDistrict(cityFound.name);
-            }
-            console.log(cityFound.subs);
-            return cityFound.subs;
-        }
-        return province.cities;
-    };
-
-    initDistrict = async name => {
-        let initArray = [{ name: '全部' }];
-        this.districtList = await this.getAreas(
-            this.state.filter.province,
-            name
-        );
-
-        this.districtList = initArray.concat(this.districtList);
-        console.log(this.districtList);
-    };
-
-    initCity = async name => {
-        let initArray = [{ name: '全部' }];
-        this.cityList = await this.getAreas(name);
-        this.cityList = initArray.concat(this.cityList);
-    };
-
-    initProvince = async () => {
-        let initArray = [{ name: '全部' }];
-        this.provinceList = await getSubDistrict();
-        this.area = this.provinceList;
-        this.provinceList = initArray.concat(this.provinceList);
-    };
-
-    @watch
-    provinceList = [];
-    @watch
-    cityList = [];
-    @watch
-    districtList = [];
     @watch
     currentDist = {};
 
@@ -108,7 +54,7 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
         await this.setState({ loading: true });
 
         const data = await suppliesRequirement.getNextPage();
-        this.initProvince();
+
         await this.setState({ loading: false, noMore: !data });
     };
 
@@ -116,6 +62,11 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
         await clipboard.writeText(raw);
 
         self.alert('已复制到剪贴板');
+    }
+
+    connectedCallback(): void {
+        //初始化省级行政区
+        area.loadProvince();
     }
 
     renderItem = ({
@@ -241,7 +192,7 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                 <div className="d-flex justify-content-left">
                     <DropMenu
                         title={'省|' + filter.province}
-                        list={this.provinceList.map(item => {
+                        list={area.provinceList.map(item => {
                             let name = item.name;
                             return {
                                 title: name,
@@ -251,14 +202,14 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                                     filter.province = name;
                                     filter.district = '全部';
                                     filter.city = '全部';
-                                    this.initCity(filter.province);
+                                    area.loadCities(filter.province);
                                 }
                             };
                         })}
                     ></DropMenu>
                     <DropMenu
                         title={'市|' + filter.city}
-                        list={this.cityList.map(item => {
+                        list={area.cityList.map(item => {
                             let name = item.name;
                             return {
                                 title: name,
@@ -267,14 +218,14 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                                     console.log(name);
                                     filter.city = name;
                                     filter.district = '全部';
-                                    this.initDistrict(name);
+                                    area.loadDistrict(filter.province, name);
                                 }
                             };
                         })}
                     ></DropMenu>
                     <DropMenu
                         title={'区|' + filter.district}
-                        list={this.districtList.map(item => {
+                        list={area.districtList.map(item => {
                             let name = item.name;
                             return {
                                 title: name,
