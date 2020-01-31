@@ -13,37 +13,37 @@ export default [
         href: ''
     },
     {
-        title: '医院',
+        title: '医院急需物资',
         href: RouteRoot.Hospital,
         icon: 'hospital'
     },
     {
-        title: '物流',
+        title: '物流公司',
         href: RouteRoot.Logistics,
         icon: 'shipping-fast'
     },
     {
-        title: '酒店',
+        title: '医护人员免费住宿信息',
         href: RouteRoot.Hotel,
         icon: 'hotel'
     },
+    // {
+    //     title: '生产',
+    //     href: 'factory',
+    //     icon: 'medkit'
+    // },
     {
-        title: '生产',
-        href: RouteRoot.Factory,
-        icon: 'medkit'
-    },
-    {
-        title: '捐赠',
-        href: RouteRoot.Donation,
+        title: '捐赠信息汇总',
+        href: 'donation',
         icon: 'heart'
     },
-    {
-        title: '义诊',
-        href: RouteRoot.Clinic,
-        icon: 'user-md'
-    },
+    // {
+    //     title: '义诊',
+    //     href: 'clinic',
+    //     icon: 'user-md'
+    // },
     {
         title: '开放源代码',
-        href: 'https://github.com/wuhan2020/WebApp'
+        href: 'https://github.com/wuhan2020/wuhan2020.github.io'
     }
 ];

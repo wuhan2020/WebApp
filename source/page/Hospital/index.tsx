@@ -1,5 +1,5 @@
 import * as clipboard from 'clipboard-polyfill';
-import { component, mixin, createCell, Fragment } from 'web-cell';
+import { component, createCell, Fragment, mixin, watch } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
@@ -10,7 +10,8 @@ import 'boot-cell/source/Content/EdgeDetector';
 import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 
 import { relativeTimeTo, TimeUnitName } from '../../utility';
-import { suppliesRequirement, SuppliesRequirement, session } from '../../model';
+import { session, SuppliesRequirement, suppliesRequirement } from '../../model';
+import { getSubDistrict } from '../../model/AMap';
 
 interface HospitalPageState {
     loading?: boolean;
@@ -24,6 +25,15 @@ interface HospitalPageState {
 })
 export class HospitalPage extends mixin<{}, HospitalPageState>() {
     state = { loading: true, noMore: false };
+    initPage = () => {
+        this.initProvince();
+    };
+    @watch
+    filter = {
+        city: '全部',
+        province: '全部',
+        district: '全部'
+    };
 
     loadMore = async ({ detail }: EdgeEvent) => {
         if (detail !== 'bottom' || this.state.noMore) return;
@@ -33,6 +43,27 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
         const data = await suppliesRequirement.getNextPage();
 
         await this.setState({ loading: false, noMore: !data });
+    };
+    @watch
+    provinceList = [];
+    @watch
+    cityList = [];
+    @watch
+    districtList = [];
+    initDistrict = async name => {
+        let initArray = [{ name: '全部' }];
+        this.districtList = await getSubDistrict(name);
+        this.districtList = initArray.concat(this.districtList);
+    };
+    initCity = async name => {
+        let initArray = [{ name: '全部' }];
+        this.cityList = await getSubDistrict(name);
+        this.cityList = initArray.concat(this.cityList);
+    };
+    initProvince = async () => {
+        let initArray = [{ name: '全部' }];
+        this.provinceList = await getSubDistrict();
+        this.provinceList = initArray.concat(this.provinceList);
     };
 
     async clip2board(raw: string) {
@@ -58,6 +89,21 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                 session.user?.objectId === uid ||
                 session.hasRole('Admin') ||
                 null;
+        if (
+            this.filter.province !== '全部' &&
+            this.filter.province !== province
+        ) {
+            return;
+        }
+        if (this.filter.city !== '全部' && this.filter.city !== city) {
+            return;
+        }
+        if (
+            this.filter.district !== '全部' &&
+            this.filter.distinct !== district
+        ) {
+            return;
+        }
 
         return (
             <Card
@@ -133,6 +179,8 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
     };
 
     render(_, { loading, noMore }: HospitalPageState) {
+        this.initPage();
+
         return (
             <SpinnerBox cover={loading}>
                 <header className="d-flex justify-content-between align-item-center my-3">
@@ -143,6 +191,59 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                         </Button>
                     </span>
                 </header>
+                <div className="d-flex justify-content-left">
+                    <DropMenu
+                        title={'省|' + this.filter.province}
+                        list={this.provinceList.map(item => {
+                            let name = item.name;
+                            return {
+                                title: name,
+                                href: '#hospital',
+                                onClick: async () => {
+                                    console.log(name);
+
+                                    this.filter.province = name;
+                                    this.initCity(this.filter.province);
+                                }
+                            };
+                        })}
+                    >
+                        选择
+                    </DropMenu>
+                    <DropMenu
+                        title={'市|' + this.filter.city}
+                        list={this.cityList.map(item => {
+                            let name = item.name;
+                            return {
+                                title: name,
+                                href: '#hospital',
+                                onClick: async () => {
+                                    console.log(name);
+                                    this.filter.city = name;
+                                    this.initDistrict(name);
+                                }
+                            };
+                        })}
+                    >
+                        选择
+                    </DropMenu>
+                    <DropMenu
+                        title={'区|' + this.filter.district}
+                        list={this.districtList.map(item => {
+                            let name = item.name;
+                            return {
+                                title: name,
+                                href: '#hospital',
+                                onClick: async () => {
+                                    console.log(name);
+                                    this.filter.district = name;
+                                }
+                            };
+                        })}
+                    >
+                        选择
+                    </DropMenu>
+                </div>
 
                 <edge-detector onTouchEdge={this.loadMore}>
                     <div className="card-deck justify-content-around">
