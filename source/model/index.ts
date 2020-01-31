@@ -16,8 +16,9 @@ export const clinic = new ClinicModel();
 export const FactoryStore = new FactoryService();
 
 export * from './HTTPService';
-export * from './SuppliesRequirement';
+export * from './GitService';
 export * from './AMap';
+export * from './SuppliesRequirement';
 export * from './Logistics';
 export * from './HotelCanStaying';
 export * from './Clinic';
