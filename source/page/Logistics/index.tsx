@@ -37,19 +37,14 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
     render(_, { loading, list, noMore }: LogisticsPageState) {
         return (
             <SpinnerBox cover={loading}>
-                <div className="container">
-                    <div className="row">
-                        <h2 className="col-auto mr-auto">物流公司</h2>
-                        <div className="col-auto">
-                            <Button
-                                className=" btn btn-success"
-                                href="logistics/edit"
-                            >
-                                物流发布
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+                <header className="d-flex justify-content-between align-item-center my-3">
+                    <h2>物流公司</h2>
+                    <span>
+                        <Button kind="success" href="logistics/edit">
+                        物流发布
+                        </Button>
+                    </span>
+                </header>
 
                 <edge-detector onTouchEdge={this.loadMore}>
                     <Table center striped hover>
@@ -82,7 +77,7 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
                                                 name
                                             )}
                                         </td>
-                                        <td className="text-nowrap">
+                                        <td className="text-nowrap text-left">
                                             {serviceArea.map(
                                                 ({
                                                     city,
@@ -132,14 +127,12 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
                                                 <div
                                                     style={{ padding: '5px 0' }}
                                                 >
-                                                    <Button
-                                                        className="btn btn-primary"
-                                                        href={
-                                                            'tel:' + item.phone
-                                                        }
+                                                    <a 
+                                                        className="text-center text-decoration-none"
+                                                        href={ 'tel:' + item.phone }
                                                     >
-                                                        {item.name}
-                                                    </Button>
+                                                        <i className="fa fa-phone btn btn-lg btn-primary" aria-hidden="true" />
+                                                    </a>
                                                 </div>
                                             ))}
                                         </td>
