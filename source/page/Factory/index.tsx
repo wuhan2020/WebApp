@@ -22,7 +22,7 @@ interface FactoryPageState {
     renderTarget: 'children'
 })
 export class FactoryPage extends mixin<{}, FactoryPageState>() {
-    state = { loading: false, noMore: false };
+    state = { loading: true, noMore: false };
 
     loadMore = async ({ detail }: EdgeEvent) => {
         if (detail !== 'bottom' || this.state.noMore) return;
