@@ -2,44 +2,39 @@ import { component, mixin, watch, createCell } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
-import { mergeList } from '../../utility';
 import { RouteRoot } from '../menu';
-import CommonSupplies from './Supplies';
 import {
-    SuppliesRequirement,
+    HotelCanStaying,
+    hotelCanStaying,
+    history,
     GeoCoord,
-    Supplies,
-    Contact,
-    suppliesRequirement,
-    history
+    Contact
 } from '../../model';
-import {
-    SessionBox,
-    ContactField,
-    AddressField,
-    SuppliesField
-} from '../../component';
+import { SessionBox, AddressField, ContactField } from '../../component';
 
-type HospitalEditProps = SuppliesRequirement & { loading?: boolean };
+type HotelCanStayingEditState = HotelCanStaying & { loading?: boolean };
 
 @component({
-    tagName: 'hospital-edit',
+    tagName: 'hotel-edit',
     renderTarget: 'children'
 })
-export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
+export class HotelEdit extends mixin<
+    { srid: string },
+    HotelCanStayingEditState
+>() {
     @watch
     srid = '';
 
     state = {
+        name: '',
+        address: '',
+        capacity: 0,
         loading: false,
-        hospital: '',
         province: '',
         city: '',
         district: '',
-        address: '',
         coords: {} as GeoCoord,
         url: '',
-        supplies: CommonSupplies as Supplies[],
         contacts: [{} as Contact],
         remark: ''
     };
@@ -49,37 +44,28 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
 
         if (!this.srid) return;
 
-        await this.setState({ loading: true });
-
         const {
-            hospital,
+            name,
+            address,
             province,
             city,
             district,
-            address,
-            coords,
-            url,
-            supplies,
             contacts,
-            remark
-        } = await suppliesRequirement.getOne(this.srid);
+            capacity,
+            coords,
+            url
+        } = await hotelCanStaying.getOne(this.srid);
 
         this.setState({
-            loading: false,
-            hospital,
+            name,
+            address,
             province,
             city,
             district,
-            address,
-            coords,
-            url,
-            supplies: mergeList<Supplies>(
-                'name',
-                this.state.supplies,
-                supplies
-            ),
             contacts,
-            remark
+            capacity,
+            coords,
+            url
         });
     }
 
@@ -93,7 +79,7 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
         event.stopPropagation();
 
         this.setState({
-            hospital: (event.target as HTMLInputElement).value
+            name: (event.target as HTMLInputElement).value
         });
     };
 
@@ -111,16 +97,14 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
 
         await this.setState({ loading: true });
 
-        const { loading, supplies, ...data } = { ...this.state };
+        const params = { ...this.state };
 
         try {
-            await suppliesRequirement.update(
-                { ...data, supplies: supplies.filter(({ count }) => count) },
-                this.srid
-            );
+            await hotelCanStaying.update(params, this.srid);
+
             self.alert('发布成功！');
 
-            history.push(RouteRoot.Hospital);
+            history.push(RouteRoot.Hotel);
         } finally {
             await this.setState({ loading: false });
         }
@@ -129,63 +113,56 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
     render(
         _,
         {
-            hospital,
+            name,
+            address,
+            capacity,
+            contacts,
+            url,
             province,
             city,
             district,
-            address,
-            url,
-            supplies,
-            contacts,
-            remark,
             loading
-        }: HospitalEditProps
+        }: HotelCanStayingEditState
     ) {
         return (
             <SessionBox>
-                <h2>医用物资需求发布</h2>
-
+                <h2>发布住宿信息</h2>
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
                     <FormField
-                        name="hospital"
+                        name="name"
                         required
-                        defaultValue={hospital}
-                        label="医疗机构"
-                        placeholder="可详细至分院、院区、科室"
+                        defaultValue={name}
+                        label="酒店"
+                        placeholder="酒店名称"
                         onChange={this.updateText}
                     />
-                    <FormField label="机构地址">
+                    <FormField label="酒店地址">
                         <AddressField
-                            place={hospital}
+                            place={name}
                             {...{ province, city, district, address }}
                             onChange={this.changeAddress}
                         />
                     </FormField>
 
                     <FormField
+                        type="number"
+                        name="capacity"
+                        required
+                        defaultValue={capacity + ''}
+                        label="可接待人数"
+                    />
+                    <FormField
                         type="url"
                         name="url"
                         required
                         defaultValue={url}
-                        label="官方网址"
-                    />
-                    <SuppliesField
-                        list={supplies}
-                        onChange={(event: CustomEvent) =>
-                            (this.state.supplies = event.detail)
-                        }
+                        label="信息来源网址"
                     />
                     <ContactField
                         list={contacts}
                         onChange={(event: CustomEvent) =>
                             (this.state.contacts = event.detail)
                         }
-                    />
-                    <FormField
-                        is="textarea"
-                        name="remark"
-                        label="备注"
-                        defaultValue={remark}
                     />
                     <div className="form-group mt-3">
                         <Button type="submit" block disabled={loading}>
@@ -195,7 +172,7 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
                             type="reset"
                             kind="danger"
                             block
-                            onClick={() => history.push(RouteRoot.Hospital)}
+                            onClick={() => history.push(RouteRoot.Hotel)}
                         >
                             取消
                         </Button>
