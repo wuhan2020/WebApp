@@ -71,7 +71,8 @@ export class ClinicPage extends mixin<{}, ClinicPageState>() {
                                         name
                                     )}
                                 </td>
-                                <td className="text-nowrap">{url}</td>
+                                <td className="text-nowrap"
+                                    style="overflow:auto">{url}</td>
                                 <td className="text-nowrap">{contacts}</td>
                                 <td className="text-nowrap">{startTime}</td>
                                 <td className="text-nowrap">{endTime}</td>
