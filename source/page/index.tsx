@@ -11,6 +11,7 @@ import { HomePage } from './Home';
 import { HospitalPage } from './Hospital';
 import { HospitalEdit } from './Hospital/Edit';
 import { LogisticsPage } from './Logistics';
+import { LogisticsEdit } from './Logistics/Edit';
 import { HotelPage } from './Hotel';
 import { HotelEdit } from './Hotel/Edit';
 import { FactoryPage } from './Factory';
@@ -30,13 +31,13 @@ export class PageRouter extends HTMLRouter {
         { paths: ['hospital'], component: HospitalPage },
         { paths: ['hospital/edit'], component: HospitalEdit },
         { paths: ['logistics'], component: LogisticsPage },
+        { paths: ['logistics/edit'], component: LogisticsEdit },
         { paths: ['hotel'], component: HotelPage },
         { paths: ['hotel/edit'], component: HotelEdit },
         { paths: ['factory'], component: FactoryPage },
         { paths: ['factory/edit'], component: FactoryEdit },
         { paths: ['donation'], component: DonationPage },
         { paths: ['clinic'], component: ClinicPage },
-        { paths: ['logistics'], component: LogisticsPage }
     ];
 
     connectedCallback() {
