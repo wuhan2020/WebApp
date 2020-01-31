@@ -9,36 +9,36 @@ export enum RouteRoot {
 
 export default [
     {
-        title: '首页',
+        title: '首 页',
         href: ''
     },
     {
-        title: '医院',
+        title: '医 院',
         href: RouteRoot.Hospital,
         icon: 'hospital'
     },
     {
-        title: '物流',
+        title: '物 流',
         href: RouteRoot.Logistics,
         icon: 'shipping-fast'
     },
     {
-        title: '酒店',
+        title: '酒 店',
         href: RouteRoot.Hotel,
         icon: 'hotel'
     },
     {
-        title: '生产',
+        title: '生 产',
         href: RouteRoot.Factory,
         icon: 'medkit'
     },
     {
-        title: '捐赠',
+        title: '捐 赠',
         href: RouteRoot.Donation,
         icon: 'heart'
     },
     {
-        title: '义诊',
+        title: '义 诊',
         href: RouteRoot.Clinic,
         icon: 'user-md'
     },
