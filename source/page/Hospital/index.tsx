@@ -13,9 +13,16 @@ import { relativeTimeTo, TimeUnitName } from '../../utility';
 import { session, SuppliesRequirement, suppliesRequirement } from '../../model';
 import { getSubDistrict } from '../../model/AMap';
 
+class AreaFilter {
+    city = '全部';
+    province = '全部';
+    district = '全部';
+}
+
 interface HospitalPageState {
     loading?: boolean;
     noMore?: boolean;
+    filter?: AreaFilter;
 }
 
 @observer
@@ -24,16 +31,76 @@ interface HospitalPageState {
     renderTarget: 'children'
 })
 export class HospitalPage extends mixin<{}, HospitalPageState>() {
-    state = { loading: true, noMore: false };
+    state = {
+        loading: true,
+        noMore: false,
+        filter: {
+            city: '全部',
+            province: '全部',
+            district: '全部'
+        }
+    };
     initPage = () => {
         this.initProvince();
     };
-    @watch
-    filter = {
-        city: '全部',
-        province: '全部',
-        district: '全部'
+
+    area = [];
+
+    getAreas = async (provinceName, city = undefined) => {
+        let province = this.area.find(item => {
+            return item.name === provinceName;
+        });
+        if (!province.cities) {
+            province.cities = await getSubDistrict(province.name);
+        }
+        if (city) {
+            if (city === '全部') {
+                return [];
+            }
+            let cityFound = province.cities.find(item => {
+                return item.name === city;
+            });
+            if (!cityFound.subs) {
+                cityFound.subs = await getSubDistrict(cityFound.name);
+            }
+            console.log(cityFound.subs);
+            return cityFound.subs;
+        }
+        return province.cities;
     };
+
+    initDistrict = async name => {
+        let initArray = [{ name: '全部' }];
+        this.districtList = await this.getAreas(
+            this.state.filter.province,
+            name
+        );
+
+        this.districtList = initArray.concat(this.districtList);
+        console.log(this.districtList);
+    };
+
+    initCity = async name => {
+        let initArray = [{ name: '全部' }];
+        this.cityList = await this.getAreas(name);
+        this.cityList = initArray.concat(this.cityList);
+    };
+
+    initProvince = async () => {
+        let initArray = [{ name: '全部' }];
+        this.provinceList = await getSubDistrict();
+        this.area = this.provinceList;
+        this.provinceList = initArray.concat(this.provinceList);
+    };
+
+    @watch
+    provinceList = [];
+    @watch
+    cityList = [];
+    @watch
+    districtList = [];
+    @watch
+    currentDist = {};
 
     loadMore = async ({ detail }: EdgeEvent) => {
         if (detail !== 'bottom' || this.state.noMore) return;
@@ -41,29 +108,8 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
         await this.setState({ loading: true });
 
         const data = await suppliesRequirement.getNextPage();
-
+        this.initProvince();
         await this.setState({ loading: false, noMore: !data });
-    };
-    @watch
-    provinceList = [];
-    @watch
-    cityList = [];
-    @watch
-    districtList = [];
-    initDistrict = async name => {
-        let initArray = [{ name: '全部' }];
-        this.districtList = await getSubDistrict(name);
-        this.districtList = initArray.concat(this.districtList);
-    };
-    initCity = async name => {
-        let initArray = [{ name: '全部' }];
-        this.cityList = await getSubDistrict(name);
-        this.cityList = initArray.concat(this.cityList);
-    };
-    initProvince = async () => {
-        let initArray = [{ name: '全部' }];
-        this.provinceList = await getSubDistrict();
-        this.provinceList = initArray.concat(this.provinceList);
     };
 
     async clip2board(raw: string) {
@@ -90,17 +136,20 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                 session.hasRole('Admin') ||
                 null;
         if (
-            this.filter.province !== '全部' &&
-            this.filter.province !== province
+            this.state.filter.province !== '全部' &&
+            this.state.filter.province !== province
         ) {
             return;
         }
-        if (this.filter.city !== '全部' && this.filter.city !== city) {
+        if (
+            this.state.filter.city !== '全部' &&
+            this.state.filter.city !== city
+        ) {
             return;
         }
         if (
-            this.filter.district !== '全部' &&
-            this.filter.district !== district
+            this.state.filter.district !== '全部' &&
+            this.state.filter.district !== district
         ) {
             return;
         }
@@ -178,9 +227,7 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
         );
     };
 
-    render(_, { loading, noMore }: HospitalPageState) {
-        this.initPage();
-
+    render(_, { loading, noMore, filter }: HospitalPageState) {
         return (
             <SpinnerBox cover={loading}>
                 <header className="d-flex justify-content-between align-item-center my-3">
@@ -193,7 +240,7 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                 </header>
                 <div className="d-flex justify-content-left">
                     <DropMenu
-                        title={'省|' + this.filter.province}
+                        title={'省|' + filter.province}
                         list={this.provinceList.map(item => {
                             let name = item.name;
                             return {
@@ -201,17 +248,16 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                                 href: '#hospital',
                                 onClick: async () => {
                                     console.log(name);
-
-                                    this.filter.province = name;
-                                    this.initCity(this.filter.province);
+                                    filter.province = name;
+                                    filter.district = '全部';
+                                    filter.city = '全部';
+                                    this.initCity(filter.province);
                                 }
                             };
                         })}
-                    >
-                        选择
-                    </DropMenu>
+                    ></DropMenu>
                     <DropMenu
-                        title={'市|' + this.filter.city}
+                        title={'市|' + filter.city}
                         list={this.cityList.map(item => {
                             let name = item.name;
                             return {
@@ -219,16 +265,15 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                                 href: '#hospital',
                                 onClick: async () => {
                                     console.log(name);
-                                    this.filter.city = name;
+                                    filter.city = name;
+                                    filter.district = '全部';
                                     this.initDistrict(name);
                                 }
                             };
                         })}
-                    >
-                        选择
-                    </DropMenu>
+                    ></DropMenu>
                     <DropMenu
-                        title={'区|' + this.filter.district}
+                        title={'区|' + filter.district}
                         list={this.districtList.map(item => {
                             let name = item.name;
                             return {
@@ -236,7 +281,8 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                                 href: '#hospital',
                                 onClick: async () => {
                                     console.log(name);
-                                    this.filter.district = name;
+                                    filter.district = name;
+                                    this.currentDist = name;
                                 }
                             };
                         })}
