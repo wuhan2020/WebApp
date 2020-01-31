@@ -11,9 +11,10 @@ import { HomePage } from './Home';
 import { HospitalPage } from './Hospital';
 import { HospitalEdit } from './Hospital/Edit';
 import { LogisticsPage } from './Logistics';
+import { HotelPage } from './Hotel';
+import { HotelEdit } from './Hotel/Edit';
 import { FactoryPage } from './Factory';
 import { FactoryEdit } from './Factory/edit';
-import { HotelPage } from './Hotel';
 import { DonationPage } from './Donation';
 import { ClinicPage } from './Clinic';
 
@@ -29,11 +30,13 @@ export class PageRouter extends HTMLRouter {
         { paths: ['hospital'], component: HospitalPage },
         { paths: ['hospital/edit'], component: HospitalEdit },
         { paths: ['logistics'], component: LogisticsPage },
+        { paths: ['hotel'], component: HotelPage },
+        { paths: ['hotel/edit'], component: HotelEdit },
         { paths: ['factory'], component: FactoryPage },
         { paths: ['factory/edit'], component: FactoryEdit },
-        { paths: ['hotel'], component: HotelPage },
         { paths: ['donation'], component: DonationPage },
-        { paths: ['clinic'], component: ClinicPage }
+        { paths: ['clinic'], component: ClinicPage },
+        { paths: ['logistics'], component: LogisticsPage }
     ];
 
     connectedCallback() {

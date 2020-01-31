@@ -1,6 +1,6 @@
 {
     "name": "wuhan2020",
-    "version": "0.5.0",
+    "version": "0.6.0",
     "license": "AGPL-3.0",
     "author": "shiy2008@gmail.com",
     "description": "针对 2020 新冠病毒疫情中的武汉援助信息网站",
@@ -14,7 +14,7 @@
     },
     "main": "source/index.html",
     "dependencies": {
-        "@octokit/rest": "^16.40.1",
+        "@octokit/rest": "^16.40.2",
         "boot-cell": "^0.24.0",
         "browser-unhandled-rejection": "^1.0.2",
         "cell-router": "^2.0.0-rc.6",
@@ -32,7 +32,7 @@
         "@types/js-base64": "^2.3.1",
         "@types/yaml": "^1.2.0",
         "husky": "^4.2.1",
-        "lint-staged": "^10.0.4",
+        "lint-staged": "^10.0.6",
         "parcel-bundler": "^1.12.4",
         "prettier": "^1.19.1",
         "typescript": "^3.7.5",

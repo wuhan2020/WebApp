@@ -5,10 +5,8 @@ import { Button } from 'boot-cell/source/Form/Button';
 import { RouteRoot } from '../menu';
 import {
     searchAddress,
-    suppliesRequirement,
     history,
     FactoryStore,
-    Factory,
     GeoCoord,
     Contact,
     Supplies
@@ -16,6 +14,7 @@ import {
 import CommonSupplies from '../Hospital/Supplies';
 import { SessionBox } from '../../component';
 import { mergeList } from '../../utility';
+import { Factory } from '../../model/types/Factory';
 
 type FactoryEditProps = Factory & { loading?: boolean };
 

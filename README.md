@@ -44,6 +44,14 @@ npm start
 
 4. 安装、启动[后端项目](https://github.com/wuhan2020/rest-api)
 
+### 注意
+
+-   Windows 用户请在 [PowerShell 5.1+][13]、[Git Bash][14] 或 [WSL][15] 中运行
+
+## 特别感谢
+
+[开源社][16] 提供国内备案域名 https://wuhan2020.kaiyuanshe.cn/ ，以解决[国内应用软件内分享时的障碍][17]。
+
 [1]: https://developers.google.cn/web/progressive-web-apps
 [2]: https://david-dm.org/wuhan2020/WebApp
 [3]: https://travis-ci.com/wuhan2020/WebApp
@@ -56,3 +64,8 @@ npm start
 [10]: https://parceljs.org
 [11]: https://travis-ci.com/
 [12]: https://pages.github.com/
+[13]: https://docs.microsoft.com/zh-cn/powershell/scripting/learn/using-familiar-command-names?view=powershell-5.1
+[14]: https://gitforwindows.org/#bash
+[15]: https://docs.microsoft.com/en-us/windows/wsl/install-win10
+[16]: https://kaiyuanshe.cn/
+[17]: https://github.com/wuhan2020/WebApp/issues/21

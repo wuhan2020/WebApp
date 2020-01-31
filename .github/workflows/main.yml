@@ -1,35 +1,31 @@
-name: webapp CI
-
-on: 
+name: PWA CI/CD
+on:
   push:
-    branches: 
+    branches:
       - dev
   pull_request:
-    branches: 
+    branches:
       - dev
-
 jobs:
   build-and-deploy:
-
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Install, build and test
+      - name: Install & build
         run: |
           npm install
-          npm run build --if-present
+          npm run build
           echo wuhan2020.kaiyuanshe.cn > dist/CNAME
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@releases/v3
+        uses: peaceiris/actions-gh-pages@v2.10.1
+        env:
+          PUBLISH_DIR: ./dist
+          PUBLISH_BRANCH: gh-pages
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-          BRANCH: gh-pages
-          FOLDER: dist  
-  
+          forceOrphan: true
