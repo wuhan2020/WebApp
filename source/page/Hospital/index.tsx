@@ -50,17 +50,13 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
 
     loadMore = async ({ detail }: EdgeEvent) => {
         if (detail !== 'bottom' || this.state.noMore) return;
-
         await this.setState({ loading: true });
-
         const data = await suppliesRequirement.getNextPage();
-
         await this.setState({ loading: false, noMore: !data });
     };
 
     async clip2board(raw: string) {
         await clipboard.writeText(raw);
-
         self.alert('已复制到剪贴板');
     }
 
