@@ -66,6 +66,14 @@ export class LogisticsEdit extends mixin<
     changeServiceArea(index: number, event: Event) {
         event.stopPropagation();
         const { name, value } = event.target as HTMLInputElement;
+        if (name === 'personal') {
+            const transToBool = {
+                true: true,
+                false: false
+            };
+            this.state.serviceArea[index]['personal'] = transToBool[value];
+            return;
+        }
         this.state.serviceArea[index][name] = value;
     }
 

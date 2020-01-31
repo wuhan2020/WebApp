@@ -27,12 +27,6 @@ const DIREACTION = {
 export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
     state = { loading: true, noMore: false, list: [] };
 
-    async connectedCallback() {
-        super.connectedCallback();
-        const data = await logistics.getNextPage();
-        await this.setState({ loading: false, list: data });
-    }
-
     loadMore = async ({ detail }: EdgeEvent) => {
         if (detail !== 'bottom' || this.state.noMore) return;
         await this.setState({ loading: true });
@@ -139,6 +133,7 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
                                                     style={{ padding: '5px 0' }}
                                                 >
                                                     <Button
+                                                        className="btn btn-primary"
                                                         href={
                                                             'tel:' + item.phone
                                                         }
@@ -155,29 +150,24 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
                                             {remark}
                                         </td>
                                         <td className="text-nowrap">
-                                            <div style={{ padding: '5px 0' }}>
-                                                <Button
-                                                    className="btn-warning"
-                                                    href={
-                                                        'logistics/edit?srid=' +
-                                                        objectId
-                                                    }
-                                                >
-                                                    编辑
-                                                </Button>
-                                            </div>
-                                            <div style={{ padding: '5px 0' }}>
-                                                <Button
-                                                    className="btn-danger"
-                                                    onClick={() =>
-                                                        logistics.delete(
-                                                            objectId
-                                                        )
-                                                    }
-                                                >
-                                                    删除
-                                                </Button>
-                                            </div>
+                                            <Button
+                                                className="btn-warning"
+                                                href={
+                                                    'logistics/edit?srid=' +
+                                                    objectId
+                                                }
+                                            >
+                                                编辑
+                                            </Button>
+                                            <Button
+                                                style={{ marginLeft: '10px' }}
+                                                className="btn-danger"
+                                                onClick={() =>
+                                                    logistics.delete(objectId)
+                                                }
+                                            >
+                                                删除
+                                            </Button>
                                         </td>
                                     </tr>
                                 )
