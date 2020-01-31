@@ -5,13 +5,13 @@ import { Button } from 'boot-cell/source/Form/Button';
 
 import { repository } from '../model';
 
-//此处需要考虑到证号可能含有字母
-//COMMIT_EN:consider identify_code as potential string because there may be chars
 interface Clinic {
     name: string;
     url: string;
     contacts: string;
-    time: string;
+    startTime: string;
+    endTime: string;
+    remark: string
 }
 
 interface ClinicPageState {
@@ -29,7 +29,7 @@ export class ClinicPage extends mixin<{}, ClinicPageState>() {
     async connectedCallback() {
         super.connectedCallback();
 
-        const list = await repository.getContents('data/Logistics.yml');
+        const list = await repository.getContents('data/Clinic.yml');
 
         await this.setState({ loading: false, list });
     }
@@ -45,7 +45,9 @@ export class ClinicPage extends mixin<{}, ClinicPageState>() {
                         <th>机构/个人名</th>
                         <th>官网网址</th>
                         <th>联系人（姓名、电话）</th>
-                        <th>每日接诊起止时刻</th>
+                        <th>每日开诊时刻</th>
+                        <th>每日闭诊时刻</th>
+                        <th>备注</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -54,9 +56,12 @@ export class ClinicPage extends mixin<{}, ClinicPageState>() {
                              name,
                              url,
                              contacts,
-                             time
+                             startTime,
+                             endTime,
+                             remark
                          }: Clinic) => (
                             <tr>
+                                {/*如不需要指向义诊机构的超链接请修改此处*/}
                                 <td className="text-nowrap">
                                     {url ? (
                                         <a target="_blank" href={url}>
@@ -68,7 +73,9 @@ export class ClinicPage extends mixin<{}, ClinicPageState>() {
                                 </td>
                                 <td className="text-nowrap">{url}</td>
                                 <td className="text-nowrap">{contacts}</td>
-                                <td className="text-nowrap">{time}</td>
+                                <td className="text-nowrap">{startTime}</td>
+                                <td className="text-nowrap">{endTime}</td>
+                                <td className="text-nowrap">{remark}</td>
                             </tr>
                         )
                     )}

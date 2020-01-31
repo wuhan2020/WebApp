@@ -5,8 +5,10 @@ import { DataItem, Contact, service, PageData } from './HTTPService';
 export interface Clinic extends DataItem {
     name?: string;
     url?: string;
-    contacts?: Contact;
-    time?: string;
+    contacts?: Contact[];
+    startTime?: string;
+    endTime?: string;
+    remark?: string;
 }
 
 export class ClinicModel {
