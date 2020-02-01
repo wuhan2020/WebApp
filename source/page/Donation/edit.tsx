@@ -133,6 +133,7 @@ export class DonationEdit extends mixin<{ srid: string }, DonationEditProps>() {
                         name="url"
                         required
                         defaultValue={url}
+                        placeholder="信息发布源链接"
                         label="信息发布源链接"
                     />
                     <FormField label="银行账户信息">
