@@ -98,7 +98,8 @@ export class HotelEdit extends mixin<
         await this.setState({ loading: true });
 
         const params = { ...this.state };
-
+        params.capacity *= 1;
+        
         try {
             await hotelCanStaying.update(params, this.srid);
 

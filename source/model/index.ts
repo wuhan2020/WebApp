@@ -6,6 +6,8 @@ import { HotelCanStayingModel } from './HotelCanStaying';
 import { ClinicModel } from './Clinic';
 import { DonationService } from './DonationService';
 import { FactoryService } from './services/FactoryService';
+import { AreaModel } from './district/Area';
+
 export const history = new History();
 export const session = new Session();
 export const suppliesRequirement = new SuppliesRequirementModel();
@@ -14,6 +16,7 @@ export const hotelCanStaying = new HotelCanStayingModel();
 export const clinic = new ClinicModel();
 export const DonationStore = new DonationService();
 export const FactoryStore = new FactoryService();
+export const area = new AreaModel();
 
 export * from './HTTPService';
 export * from './GitService';

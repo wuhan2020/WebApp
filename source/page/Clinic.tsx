@@ -37,15 +37,16 @@ export class ClinicPage extends mixin<{}, ClinicPageState>() {
     render(_, { loading, list }: ClinicPageState) {
         return (
             <SpinnerBox cover={loading}>
-                <h2>义诊服务</h2>
+                <header className="d-flex justify-content-between align-item-center my-3">
+                    <h2>义诊服务</h2>
+                </header>
 
                 <Table center striped hover>
                     <thead>
                         <tr>
-                            <th>机构/个人名</th>
-                            <th>官网网址</th>
-                            <th>联系人（姓名、电话）</th>
-                            <th>每日接诊起止时刻</th>
+                            <th>机构 / 个人</th>
+                            <th>联系方式</th>
+                            <th>接诊时间</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -60,7 +61,6 @@ export class ClinicPage extends mixin<{}, ClinicPageState>() {
                                         name
                                     )}
                                 </td>
-                                <td className="text-nowrap">{url}</td>
                                 <td className="text-nowrap">{contacts}</td>
                                 <td className="text-nowrap">{time}</td>
                             </tr>
