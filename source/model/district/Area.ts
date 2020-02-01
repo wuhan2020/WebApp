@@ -3,10 +3,13 @@ import { getSubDistrict } from '../AMap';
 
 export class AreaModel {
     area = [];
+
     @observable
     provinceList = [];
+
     @observable
     cityList = [];
+
     @observable
     districtList = [];
 

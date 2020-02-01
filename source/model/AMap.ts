@@ -5,9 +5,7 @@ async function requestAMap<T = {}>(path: string, data: any): Promise<T> {
         `//restapi.amap.com/v3/${path}?${new URLSearchParams({ ...data, key })}`
     );
     const { status, info, ...rest } = await response.json();
-
     if (status !== '1') throw new URIError(info);
-
     return rest;
 }
 
