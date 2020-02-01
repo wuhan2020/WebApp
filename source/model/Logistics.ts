@@ -25,7 +25,9 @@ export class LogisticsModel {
     list: LogisticsItem[] = [];
 
     async getNextPage() {
-        if (this.pageIndex && this.list.length === this.totalCount) return;
+        if (this.pageIndex && this.list.length === this.totalCount) {
+            return [];
+        }
         const {
             body: { count, data }
         } = await service.get<PageData<LogisticsItem>>(
@@ -35,7 +37,8 @@ export class LogisticsModel {
                     pageSize: this.pageSize + ''
                 })
         );
-        this.pageIndex++, (this.totalCount = count);
+        this.pageIndex++;
+        this.totalCount = count;
         this.list = this.list.concat(data);
         return data;
     }
