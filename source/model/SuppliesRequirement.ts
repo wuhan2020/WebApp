@@ -26,7 +26,6 @@ export interface SuppliesRequirement extends DataItem, Place {
 }
 
 export class SuppliesRequirementModel {
-    @observable
     pageIndex = 0;
 
     pageSize = 10;
@@ -36,7 +35,13 @@ export class SuppliesRequirementModel {
     @observable
     list: SuppliesRequirement[] = [];
 
-    async getNextPage() {
+    async getNextPage(
+        filter: {
+            province?: string;
+            city?: string;
+            district?: string;
+        } = {}
+    ) {
         if (this.pageIndex && this.list.length === this.totalCount) return;
 
         const {
@@ -44,6 +49,7 @@ export class SuppliesRequirementModel {
         } = await service.get<PageData<SuppliesRequirement>>(
             '/supplies/requirement?' +
                 new URLSearchParams({
+                    ...filter,
                     pageIndex: this.pageIndex + 1 + '',
                     pageSize: this.pageSize + ''
                 })

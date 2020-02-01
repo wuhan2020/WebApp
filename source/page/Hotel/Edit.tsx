@@ -75,12 +75,12 @@ export class HotelEdit extends mixin<
         this.state[name] = value;
     };
 
-    updateText = (event: Event) => {
+    updateText = ({ target }: Event) => {
+        const { name, value } = target as HTMLInputElement;
+
         event.stopPropagation();
 
-        this.setState({
-            name: (event.target as HTMLInputElement).value
-        });
+        this.setState({ [name]: value });
     };
 
     changeAddress = (event: CustomEvent) => {
@@ -99,7 +99,7 @@ export class HotelEdit extends mixin<
 
         const params = { ...this.state };
         params.capacity *= 1;
-        
+
         try {
             await hotelCanStaying.update(params, this.srid);
 
