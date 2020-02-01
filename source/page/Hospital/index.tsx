@@ -1,5 +1,5 @@
 import * as clipboard from 'clipboard-polyfill';
-import { component, createCell, Fragment, mixin, watch } from 'web-cell';
+import { component, mixin, createCell, Fragment } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
@@ -17,10 +17,10 @@ import {
     SuppliesRequirement
 } from '../../model';
 
-class AreaFilter {
-    city = '全部';
-    province = '全部';
-    district = '全部';
+interface AreaFilter {
+    province?: string;
+    city?: string;
+    district?: string;
 }
 
 interface HospitalPageState {
@@ -36,33 +36,74 @@ interface HospitalPageState {
 })
 export class HospitalPage extends mixin<{}, HospitalPageState>() {
     state = {
-        loading: true,
+        loading: false,
         noMore: false,
-        filter: {
-            city: '全部',
-            province: '全部',
-            district: '全部'
-        }
+        filter: {} as AreaFilter
     };
 
-    @watch
-    currentDist = {};
-
     loadMore = async ({ detail }: EdgeEvent) => {
-        if (detail !== 'bottom' || this.state.noMore) return;
+        const { loading, noMore, filter } = this.state;
+
+        if (detail !== 'bottom' || loading || noMore) return;
+
         await this.setState({ loading: true });
-        const data = await suppliesRequirement.getNextPage();
+
+        const data = await suppliesRequirement.getNextPage(filter);
+
         await this.setState({ loading: false, noMore: !data });
     };
 
-    async clip2board(raw: string) {
-        await clipboard.writeText(raw);
-        self.alert('已复制到剪贴板');
+    async changeProvince(province: string) {
+        const all = province === '全部';
+
+        const filter = all ? {} : { province };
+
+        await this.setState({ loading: true });
+
+        if (!all) await area.getSubs('city', province);
+        else area.cities.length = area.districts.length = 0;
+
+        suppliesRequirement.pageIndex = suppliesRequirement.list.length = 0;
+        await suppliesRequirement.getNextPage(filter);
+
+        await this.setState({ loading: false, filter });
     }
 
-    connectedCallback(): void {
-        //初始化省级行政区
-        area.loadProvince();
+    async changeCity(city: string) {
+        const all = city === '全部',
+            { province } = this.state.filter;
+
+        const filter = all ? { province } : { province, city };
+
+        await this.setState({ loading: true });
+
+        if (!all) await area.getSubs('district', city);
+        else area.districts.length = 0;
+
+        suppliesRequirement.pageIndex = suppliesRequirement.list.length = 0;
+        await suppliesRequirement.getNextPage(filter);
+
+        await this.setState({ loading: false, filter });
+    }
+
+    async changeDistrict(district: string) {
+        const all = district === '全部',
+            { province, city } = this.state.filter;
+
+        const filter = all ? { province, city } : { province, city, district };
+
+        await this.setState({ loading: true });
+
+        suppliesRequirement.pageIndex = suppliesRequirement.list.length = 0;
+        await suppliesRequirement.getNextPage(filter);
+
+        await this.setState({ loading: false, filter });
+    }
+
+    async clip2board(raw: string) {
+        await clipboard.writeText(raw);
+
+        self.alert('已复制到剪贴板');
     }
 
     renderItem = ({
@@ -82,24 +123,6 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                 session.user?.objectId === uid ||
                 session.hasRole('Admin') ||
                 null;
-        if (
-            this.state.filter.province !== '全部' &&
-            this.state.filter.province !== province
-        ) {
-            return;
-        }
-        if (
-            this.state.filter.city !== '全部' &&
-            this.state.filter.city !== city
-        ) {
-            return;
-        }
-        if (
-            this.state.filter.district !== '全部' &&
-            this.state.filter.district !== district
-        ) {
-            return;
-        }
 
         return (
             <Card
@@ -185,54 +208,39 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                         </Button>
                     </span>
                 </header>
-                <div className="d-flex justify-content-left">
+                <div className="d-flex">
                     <DropMenu
-                        title={'省|' + filter.province}
-                        list={area.provinceList.map(item => {
-                            let name = item.name;
-                            return {
+                        className="mr-3 mb-3"
+                        title={'省 | ' + (filter.province || '全部')}
+                        list={[{ name: '全部' }, ...area.provinces].map(
+                            ({ name }) => ({
                                 title: name,
                                 href: '#hospital',
-                                onClick: async () => {
-                                    console.log(name);
-                                    filter.province = name;
-                                    filter.district = '全部';
-                                    filter.city = '全部';
-                                    area.loadCities(filter.province);
-                                }
-                            };
-                        })}
+                                onClick: () => this.changeProvince(name)
+                            })
+                        )}
                     ></DropMenu>
                     <DropMenu
-                        title={'市|' + filter.city}
-                        list={area.cityList.map(item => {
-                            let name = item.name;
-                            return {
+                        className="mr-3 mb-3"
+                        title={'市 | ' + (filter.city || '全部')}
+                        list={[{ name: '全部' }, ...area.cities].map(
+                            ({ name }) => ({
                                 title: name,
                                 href: '#hospital',
-                                onClick: async () => {
-                                    console.log(name);
-                                    filter.city = name;
-                                    filter.district = '全部';
-                                    area.loadDistrict(filter.province, name);
-                                }
-                            };
-                        })}
+                                onClick: () => this.changeCity(name)
+                            })
+                        )}
                     ></DropMenu>
                     <DropMenu
-                        title={'区|' + filter.district}
-                        list={area.districtList.map(item => {
-                            let name = item.name;
-                            return {
+                        className="mr-3 mb-3"
+                        title={'区 | ' + (filter.district || '全部')}
+                        list={[{ name: '全部' }, ...area.districts].map(
+                            ({ name }) => ({
                                 title: name,
                                 href: '#hospital',
-                                onClick: async () => {
-                                    console.log(name);
-                                    filter.district = name;
-                                    this.currentDist = name;
-                                }
-                            };
-                        })}
+                                onClick: () => this.changeDistrict(name)
+                            })
+                        )}
                     >
                         选择
                     </DropMenu>

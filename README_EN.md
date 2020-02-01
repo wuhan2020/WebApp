@@ -5,7 +5,7 @@
 [Progressive Web Application][1] Project
 
 [![NPM Dependency](https://david-dm.org/wuhan2020/WebApp.svg)][2]
-[![Build Status](https://travis-ci.com/wuhan2020/WebApp.svg?branch=dev)][3]
+[![CI Status](https://github.com/wuhan2020/WebApp/workflows/PWA%20CI/CD/badge.svg)][3]
 
 ## Basics
 
@@ -15,19 +15,19 @@ Almost all the mainstream browsers like Chrome, Firefox, Opera, Edge, UC, Xiaomi
 
 ## Tech stack
 
-- Logical language :  [TypeScript v3][5]
-- Components engine :  [WebCell v2][6]
-- Components library : [BootCell v1][7]
-- State management : [MobX v5][8]
-- PWA framework     : [Workbox v4][9]
-- Parceling tool : [Parcel v1][10]
-- CI/CD: [Travis CI][11] + [GitHub Pages][12]
+-   Logical language : [TypeScript v3][5]
+-   Components engine : [WebCell v2][6]
+-   Components library : [BootCell v1][7]
+-   State management : [MobX v5][8]
+-   PWA framework : [Workbox v4][9]
+-   Parceling tool : [Parcel v1][10]
+-   CI/CD: [Travis CI][11] + [GitHub Pages][12]
 
 ## Development needs
 
-- Task dashboard ：https://github.com/orgs/wuhan2020/projects/1?fullscreen=true
+-   Task dashboard ：https://github.com/orgs/wuhan2020/projects/1?fullscreen=true
 
-- UI design ：in progress. Please refer to existing pages for design and development.
+-   UI design ：in progress. Please refer to existing pages for design and development.
 
 ## Native development
 
@@ -45,14 +45,16 @@ npm start
 4. Install and start [rest-api](https://github.com/wuhan2020/rest-api)
 
 ## Attention
+
 Windows users should run in PowerShell 5.1+, Git Bash or WSL please.
 
 ## Thanks
+
 Kaiyuansha provides the domestic registered domain name https://wuhan2020.kaiyuanshe.cn/ in order to solve the obstacles in sharing within domestic application software.
 
 [1]: https://developers.google.cn/web/progressive-web-apps
 [2]: https://david-dm.org/wuhan2020/WebApp
-[3]: https://travis-ci.com/wuhan2020/WebApp
+[3]: https://github.com/wuhan2020/WebApp/actions
 [4]: https://www.w3.org/
 [5]: https://typescriptlang.org
 [6]: https://web-cell.dev/

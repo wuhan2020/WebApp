@@ -5,7 +5,7 @@
 [渐进式 Web 应用][1]项目
 
 [![NPM Dependency](https://david-dm.org/wuhan2020/WebApp.svg)][2]
-[![CI Status](https://github.com/wuhan2020/WebApp/workflows/PWA%20CI/CD/badge.svg)](https://github.com/wuhan2020/WebApp/actions)[3]
+[![CI Status](https://github.com/wuhan2020/WebApp/workflows/PWA%20CI/CD/badge.svg)][3]
 
 ## 基本用法
 
