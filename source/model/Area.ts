@@ -1,6 +1,6 @@
 import { observable } from 'mobx';
 
-import { getSubDistricts } from '../AMap';
+import { getSubDistricts } from '../service';
 
 export class AreaModel {
     @observable

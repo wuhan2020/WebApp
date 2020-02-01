@@ -1,6 +1,6 @@
 import { observable } from 'mobx';
 
-import { DataItem, Contact, service, PageData } from './HTTPService';
+import { DataItem, Contact, service, PageData } from '../service';
 
 export interface Clinic extends DataItem {
     name?: string;

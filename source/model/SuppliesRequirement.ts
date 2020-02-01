@@ -1,13 +1,6 @@
 import { observable } from 'mobx';
 
-import {
-    DataItem,
-    Place,
-    Contact,
-    User,
-    service,
-    PageData
-} from './HTTPService';
+import { DataItem, Place, Contact, User, service, PageData } from '../service';
 
 export interface Supplies {
     name: string;

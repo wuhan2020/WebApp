@@ -1,6 +1,5 @@
 import { observable } from 'mobx';
-import { service, DataItem, User, PageData, Place } from './HTTPService';
-import { Contact } from './HTTPService';
+import { Contact, service, DataItem, User, PageData, Place } from '../service';
 
 export interface HotelCanStaying extends DataItem, Place {
     name?: string;

@@ -6,10 +6,11 @@ import {
     createCell,
     Fragment
 } from 'web-cell';
+import { WebCellProps } from 'boot-cell/source/utility/type';
 
-import { searchAddress } from '../model';
+import { searchAddress } from '../service';
 
-interface AddressFieldProps {
+interface AddressFieldProps extends WebCellProps {
     place?: string;
     province: string;
     city: string;
@@ -54,6 +55,12 @@ export class AddressField extends mixin<
 
     state = { loading: false };
 
+    emitData() {
+        const { defaultSlot, ...data } = this.props;
+
+        this.emit('change', data);
+    }
+
     search = async (place: string) => {
         await this.setState({ loading: true });
 
@@ -73,7 +80,7 @@ export class AddressField extends mixin<
                 longitude
             });
 
-            this.emit('change', this.props);
+            this.emitData();
         } finally {
             await this.setState({ loading: false });
         }
@@ -90,7 +97,7 @@ export class AddressField extends mixin<
 
         this.props[name] = value;
 
-        this.emit('change', this.props);
+        this.emitData();
     };
 
     render(

@@ -5,7 +5,8 @@ import { Card } from 'boot-cell/source/Content/Card';
 import { Button } from 'boot-cell/source/Form/Button';
 import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 
-import { logistics, Contact, LogisticsItem, ServiceArea } from '../../model';
+import { logistics, LogisticsItem, ServiceArea } from '../../model';
+import { Contact } from '../../service';
 
 interface LogisticsPageState {
     loading?: boolean;

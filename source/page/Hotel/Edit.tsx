@@ -3,13 +3,8 @@ import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
 import { RouteRoot } from '../menu';
-import {
-    HotelCanStaying,
-    hotelCanStaying,
-    history,
-    GeoCoord,
-    Contact
-} from '../../model';
+import { HotelCanStaying, hotelCanStaying, history } from '../../model';
+import { GeoCoord, Contact } from '../../service';
 import { SessionBox, AddressField, ContactField } from '../../component';
 
 type HotelCanStayingEditState = HotelCanStaying & { loading?: boolean };

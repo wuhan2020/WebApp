@@ -7,7 +7,7 @@ interface GitHubOptions {
     repo: string;
 }
 
-export class GitHubModel {
+export class GitHubClient {
     client = new Octokit();
     options: GitHubOptions;
 
