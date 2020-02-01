@@ -16,7 +16,6 @@ import { DistrictEvent, DistrictFilter } from '../../component';
 interface HospitalPageState {
     loading?: boolean;
     noMore?: boolean;
-    filter?: AreaFilter;
 }
 
 @observer
@@ -66,11 +65,6 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
         self.alert('已复制到剪贴板');
     }
 
-    connectedCallback(): void {
-        //初始化省级行政区
-        area.loadProvince();
-    }
-
     renderItem = ({
         createdAt,
         hospital,
@@ -88,24 +82,6 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                 session.user?.objectId === uid ||
                 session.hasRole('Admin') ||
                 null;
-        if (
-            this.state.filter.province !== '全部' &&
-            this.state.filter.province !== province
-        ) {
-            return;
-        }
-        if (
-            this.state.filter.city !== '全部' &&
-            this.state.filter.city !== city
-        ) {
-            return;
-        }
-        if (
-            this.state.filter.district !== '全部' &&
-            this.state.filter.district !== district
-        ) {
-            return;
-        }
 
         return (
             <Card
@@ -189,58 +165,6 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                         </Button>
                     </span>
                 </header>
-                <div className="d-flex justify-content-left">
-                    <DropMenu
-                        title={'省|' + filter.province}
-                        list={area.provinceList.map(item => {
-                            let name = item.name;
-                            return {
-                                title: name,
-                                href: '#hospital',
-                                onClick: async () => {
-                                    console.log(name);
-                                    filter.province = name;
-                                    filter.district = '全部';
-                                    filter.city = '全部';
-                                    area.loadCities(filter.province);
-                                }
-                            };
-                        })}
-                    ></DropMenu>
-                    <DropMenu
-                        title={'市|' + filter.city}
-                        list={area.cityList.map(item => {
-                            let name = item.name;
-                            return {
-                                title: name,
-                                href: '#hospital',
-                                onClick: async () => {
-                                    console.log(name);
-                                    filter.city = name;
-                                    filter.district = '全部';
-                                    area.loadDistrict(filter.province, name);
-                                }
-                            };
-                        })}
-                    ></DropMenu>
-                    <DropMenu
-                        title={'区|' + filter.district}
-                        list={area.districtList.map(item => {
-                            let name = item.name;
-                            return {
-                                title: name,
-                                href: '#hospital',
-                                onClick: async () => {
-                                    console.log(name);
-                                    filter.district = name;
-                                    this.currentDist = name;
-                                }
-                            };
-                        })}
-                    >
-                        选择
-                    </DropMenu>
-                </div>
 
                 <DistrictFilter onChange={this.changeDistrict} />
 
