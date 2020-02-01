@@ -3,23 +3,11 @@ import { observer } from 'mobx-web-cell';
 import { Button } from 'boot-cell/source/Form/Button';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { Table } from 'boot-cell/source/Content/Table';
-import { DonationStore } from '../../model';
-
-interface Contact {
-    name: string;
-    phone: string;
-}
-interface DonationItem {
-    organization: string; //机构名
-    website?: string; //官方网址
-    bankName: string; //开户行
-    accountNo: string; //银行账号
-    accountName: string; //户名
-    contacts?: Contact[]; //联系人（姓名、电话）
-    comments: string; //备注
-}
+import { DonationStore, DonationItem } from '../../model';
+import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 interface DonationPageState {
     loading?: boolean;
+    noMore?: boolean;
     list?: DonationItem[];
 }
 @observer
@@ -28,89 +16,109 @@ interface DonationPageState {
     renderTarget: 'children'
 })
 export class DonationPage extends mixin<{}, DonationPageState>() {
-    state = { loading: true, list: [] };
-
-    async connectedCallback() {
-        super.connectedCallback();
-
+    state = { loading: true, noMore: false, list: [] };
+    loadMore = async ({ detail }: EdgeEvent) => {
+        if (detail !== 'bottom' || this.state.noMore) return;
+        await this.setState({ loading: true });
         const data = await DonationStore.getResultPage();
+        await this.setState({ loading: false, noMore: !data });
+    };
 
-        await this.setState({ loading: false, list: data.result });
-    }
-
-    render(_, { loading, list }: DonationPageState) {
+    render(_, { loading, noMore }: DonationPageState) {
         return (
             <SpinnerBox cover={loading}>
-                <h2>❤️❤️爱心捐赠❤️❤️</h2>
-                <Table center striped hover>
-                    <thead>
-                        <tr>
-                            <th>机构名</th>
-                            <th>官方网址</th>
-                            <th>开户行</th>
-                            <th>银行账号</th>
-                            <th>户名</th>
-                            <th>联系人（姓名、电话）</th>
-                            <th>备注</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {list.map(
-                            ({
-                                organization,
-                                website,
-                                bankName,
-                                accountNo,
-                                accountName,
-                                contacts,
-                                comments
-                            }: DonationItem) => (
-                                <tr>
-                                    <td className="text-nowrap">
-                                        ❤️
-                                        {website ? (
-                                            <a target="_blank" href={website}>
-                                                ️️ {organization}
-                                            </a>
-                                        ) : (
-                                            organization
-                                        )}
-                                    </td>
-                                    <td className="text-nowrap">{bankName}</td>
-                                    <td className="text-nowrap">
-                                        ❤️{accountNo}
-                                    </td>
-                                    <td>
-                                        <div className="text-nowrap">
-                                            ❤️{accountName}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div className="text-nowrap">
-                                            ❤️{contacts && '--'}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            {contacts.map(item => (
-                                                <Button
-                                                    href={'tel:' + item.phone}
-                                                >
-                                                    {item.name}:{item.phone}
-                                                </Button>
-                                            ))}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div className="text-nowrap">
-                                            ❤️️{comments}
-                                        </div>
-                                    </td>
-                                </tr>
-                            )
-                        )}
-                    </tbody>
-                </Table>
+                <header className="d-flex justify-content-between align-item-center my-3">
+                    <h2>❤️爱心捐赠</h2>
+                    <span>
+                        <Button kind="success" href="donation/edit">
+                            捐赠发布
+                        </Button>
+                    </span>
+                </header>
+                <edge-detector onTouchEdge={this.loadMore}>
+                    <Table center striped hover>
+                        <thead>
+                            <tr>
+                                <th> ❤️机构名称</th>
+                                <th>官方网址</th>
+                                <th>银行账户</th>
+                                <th>联系人（姓名、电话）</th>
+                                <th>备注</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {DonationStore.list.map(
+                                ({
+                                    name, //机构名
+                                    url, //官方网址
+                                    accounts, //银行相关信息
+                                    contacts, //联系人（姓名、电话）
+                                    remark //备注
+                                }: DonationItem) => (
+                                    <tr>
+                                        <td className="text-nowrap">
+                                            {url ? (
+                                                <a target="_blank" href={url}>
+                                                    ️️ {name}
+                                                </a>
+                                            ) : (
+                                                name
+                                            )}
+                                        </td>
+                                        <td className="text-nowrap">
+                                            {url ? (
+                                                <a target="_blank" href={url}>
+                                                    ️️ website:{url}
+                                                </a>
+                                            ) : (
+                                                name
+                                            )}
+                                        </td>
+                                        <td>
+                                            <div>
+                                                {accounts.map(
+                                                    ({
+                                                        name,
+                                                        number,
+                                                        bank
+                                                    }) => (
+                                                        <div>
+                                                            <p>户名:{name}</p>
+                                                            <p>账号:{number}</p>
+                                                            <p>开户行:{bank}</p>
+                                                            <br></br>
+                                                        </div>
+                                                    )
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                {contacts.map(
+                                                    ({ name, number }) => (
+                                                        <Button
+                                                            href={'tel:' + name}
+                                                        >
+                                                            {name}:{number}
+                                                        </Button>
+                                                    )
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="text-nowrap">
+                                                {remark}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )
+                            )}
+                        </tbody>
+                    </Table>
+                    <p slot="bottom" className="text-center mt-2">
+                        {noMore ? '没有更多数据了' : '加载更多...'}
+                    </p>
+                </edge-detector>
             </SpinnerBox>
         );
     }

@@ -16,7 +16,8 @@ import { HotelPage } from './Hotel';
 import { HotelEdit } from './Hotel/Edit';
 import { FactoryPage } from './Factory';
 import { FactoryEdit } from './Factory/edit';
-import { DonationPage } from './Donation';
+import { DonationPage } from './Donation/index';
+import { DonationEdit } from './Donation/edit';
 import { ClinicPage } from './Clinic';
 
 @observer
@@ -37,6 +38,7 @@ export class PageRouter extends HTMLRouter {
         { paths: ['factory'], component: FactoryPage },
         { paths: ['factory/edit'], component: FactoryEdit },
         { paths: ['donation'], component: DonationPage },
+        { paths: ['donation/edit'], component: DonationEdit },
         { paths: ['clinic'], component: ClinicPage }
     ];
 
@@ -46,7 +48,7 @@ export class PageRouter extends HTMLRouter {
         super.connectedCallback();
     }
 
-    async signOut() {x!dwq  Zsw
+    async signOut() {
         await session.signOut();
 
         location.href = '.';
