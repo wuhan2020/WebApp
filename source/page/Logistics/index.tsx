@@ -37,8 +37,7 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
         await this.setState({ loading: true });
         const data = await logistics.getNextPage(); // 新增的 data
         const { list } = this.state;
-        const newList = data ? list.concat(data) : list;
-        await this.setState({ loading: false, noMore: !data, list: newList });
+        await this.setState({ loading: false, noMore: !data, list });
     };
 
     renderItem = ({
