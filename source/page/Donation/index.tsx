@@ -3,24 +3,32 @@ import { observer } from 'mobx-web-cell';
 import { Button } from 'boot-cell/source/Form/Button';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { Table } from 'boot-cell/source/Content/Table';
-import { DonationStore, DonationItem } from '../../model';
+import { donationRecipient, DonationItem } from '../../model';
+import 'boot-cell/source/Content/EdgeDetector';
 import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
+
 interface DonationPageState {
     loading?: boolean;
     noMore?: boolean;
-    list?: DonationItem[];
 }
+
 @observer
 @component({
     tagName: 'donation-page',
     renderTarget: 'children'
 })
 export class DonationPage extends mixin<{}, DonationPageState>() {
-    state = { loading: true, noMore: false, list: [] };
+    state = { loading: true, noMore: false };
+
     loadMore = async ({ detail }: EdgeEvent) => {
-        if (detail !== 'bottom' || this.state.noMore) return;
+        const { loading, noMore } = this.state;
+
+        if (detail !== 'bottom' || loading || noMore) return;
+
         await this.setState({ loading: true });
-        const data = await DonationStore.getResultPage();
+
+        const data = await donationRecipient.getResultPage();
+
         await this.setState({ loading: false, noMore: !data });
     };
 
@@ -35,19 +43,19 @@ export class DonationPage extends mixin<{}, DonationPageState>() {
                         </Button>
                     </span>
                 </header>
+
                 <edge-detector onTouchEdge={this.loadMore}>
                     <Table center striped hover>
                         <thead>
                             <tr>
                                 <th> ❤️机构名称</th>
-                                <th>官方网址</th>
                                 <th>银行账户</th>
-                                <th>联系人（姓名、电话）</th>
+                                <th>联系人</th>
                                 <th>备注</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {DonationStore.list.map(
+                            {donationRecipient.list.map(
                                 ({
                                     name, //机构名
                                     url, //官方网址
@@ -65,45 +73,23 @@ export class DonationPage extends mixin<{}, DonationPageState>() {
                                                 name
                                             )}
                                         </td>
-                                        <td className="text-nowrap">
-                                            {url ? (
-                                                <a target="_blank" href={url}>
-                                                    ️️ website:{url}
-                                                </a>
-                                            ) : (
-                                                name
+                                        <td className="text-left">
+                                            {accounts.map(
+                                                ({ name, number, bank }) => (
+                                                    <ul className="list-unstyled">
+                                                        <li>户名：{name}</li>
+                                                        <li>账号：{number}</li>
+                                                        <li>开户行：{bank}</li>
+                                                    </ul>
+                                                )
                                             )}
                                         </td>
                                         <td>
-                                            <div>
-                                                {accounts.map(
-                                                    ({
-                                                        name,
-                                                        number,
-                                                        bank
-                                                    }) => (
-                                                        <div>
-                                                            <p>户名:{name}</p>
-                                                            <p>账号:{number}</p>
-                                                            <p>开户行:{bank}</p>
-                                                            <br></br>
-                                                        </div>
-                                                    )
-                                                )}
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div>
-                                                {contacts.map(
-                                                    ({ name, number }) => (
-                                                        <Button
-                                                            href={'tel:' + name}
-                                                        >
-                                                            {name}:{number}
-                                                        </Button>
-                                                    )
-                                                )}
-                                            </div>
+                                            {contacts.map(({ name, phone }) => (
+                                                <Button href={'tel:' + phone}>
+                                                    {name}：{phone}
+                                                </Button>
+                                            ))}
                                         </td>
                                         <td>
                                             <div className="text-nowrap">

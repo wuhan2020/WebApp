@@ -1,5 +1,5 @@
 import { observable } from 'mobx';
-import { service, DataItem, Contact, PageData } from './HTTPService';
+import { service, DataItem, Contact, PageData } from '../service';
 
 export interface ServiceArea {
     city: string;
@@ -25,9 +25,8 @@ export class LogisticsModel {
     list: LogisticsItem[] = [];
 
     async getNextPage() {
-        if (this.pageIndex && this.list.length === this.totalCount) {
-            return [];
-        }
+        if (this.pageIndex && this.list.length === this.totalCount) return;
+
         const {
             body: { count, data }
         } = await service.get<PageData<LogisticsItem>>(

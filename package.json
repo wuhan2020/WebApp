@@ -31,7 +31,9 @@
     "devDependencies": {
         "@types/js-base64": "^2.3.1",
         "@types/yaml": "^1.2.0",
+        "@typescript-eslint/parser": "^2.18.0",
         "cross-env": "^7.0.0",
+        "eslint": "^6.8.0",
         "husky": "^4.2.1",
         "lint-staged": "^10.0.6",
         "parcel-bundler": "^1.12.4",
@@ -52,8 +54,12 @@
         ]
     },
     "lint-staged": {
-        "*.{html,md,less,js,json,yml,ts,tsx}": [
+        "*.{html,md,less,json,yml}": [
             "prettier --write"
+        ],
+        "*.{js,ts,tsx}": [
+            "prettier --write",
+            "eslint --fix"
         ]
     },
     "scripts": {

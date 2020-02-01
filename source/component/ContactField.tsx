@@ -2,7 +2,7 @@ import { component, mixin, createCell, watch } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
-import { Contact } from '../model';
+import { Contact } from '../service';
 
 interface ContactFieldProps {
     list: Contact[];

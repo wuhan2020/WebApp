@@ -1,7 +1,7 @@
 import { observable } from 'mobx';
 import { blobOf } from 'koajax';
 
-import { User, service, FileData, Role } from './HTTPService';
+import { User, service, FileData, Role } from '../service';
 
 export class Session {
     @observable

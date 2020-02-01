@@ -7,12 +7,11 @@ import { RouteRoot } from '../menu';
 import CommonSupplies from './Supplies';
 import {
     SuppliesRequirement,
-    GeoCoord,
     Supplies,
-    Contact,
     suppliesRequirement,
     history
 } from '../../model';
+import { GeoCoord, Contact } from '../../service';
 import {
     SessionBox,
     ContactField,

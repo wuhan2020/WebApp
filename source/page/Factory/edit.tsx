@@ -3,15 +3,8 @@ import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
 import { RouteRoot } from '../menu';
-import {
-    searchAddress,
-    history,
-    GeoCoord,
-    Contact,
-    Supplies,
-    factory,
-    Factory
-} from '../../model';
+import { searchAddress, GeoCoord, Contact } from '../../service';
+import { history, Supplies, factory, Factory } from '../../model';
 import CommonSupplies from '../Hospital/Supplies';
 import {
     SessionBox,

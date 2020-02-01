@@ -2,7 +2,8 @@ import { component, mixin, watch, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 import { Button } from 'boot-cell/source/Form/Button';
 
-import { User, session } from '../model';
+import { User } from '../service';
+import { session } from '../model';
 
 @observer
 @component({

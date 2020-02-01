@@ -1,4 +1,4 @@
-import { service, DataItem, Contact, Place } from './HTTPService';
+import { service, DataItem, Contact, Place } from '../service';
 import { observable } from 'mobx';
 export interface BankAccount {
     name: string;
@@ -15,7 +15,7 @@ export interface DonationItem extends DataItem, Place {
     contacts?: Contact[]; //联系人（姓名、电话）
     remark?: string; //备注
 }
-export class DonationService {
+export class DonationRecipient {
     @observable
     pageIndex = 0;
     pageSize = 10;

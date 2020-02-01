@@ -1,12 +1,5 @@
 import { observable } from 'mobx';
-import {
-    DataItem,
-    Contact,
-    User,
-    Place,
-    service,
-    PageData
-} from './HTTPService';
+import { DataItem, Contact, User, Place, service, PageData } from '../service';
 import { Supplies } from './SuppliesRequirement';
 
 export interface Factory extends DataItem, Place {
