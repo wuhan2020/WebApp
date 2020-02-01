@@ -35,7 +35,7 @@ export class DonationService {
         );
         this.pageIndex++, (this.totalCount = count);
         this.list = this.list.concat(data);
-        if (this.pageIndex == 1 && this.list.length < this.pageSize)
+        if (this.pageIndex == 1 && this.totalCount <= this.pageSize)
             return null;
         return data;
     }
