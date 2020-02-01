@@ -7,7 +7,10 @@ export const baseUri = {
 };
 
 export const service = new HTTPClient({
-    baseURI: 'https://vuqjf9paihid.leanapp.cn',
+    baseURI:
+        location.hostname === 'localhost'
+            ? baseUri[process.env.HTTP_ENV]
+            : 'https://vuqjf9paihid.leanapp.cn',
     withCredentials: true,
     responseType: 'json'
 });

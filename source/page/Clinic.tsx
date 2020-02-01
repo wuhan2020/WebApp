@@ -65,7 +65,7 @@ export class ClinicPage extends mixin<{}, ClinicPageState>() {
                                     </td>
                                     <td className="text-nowrap">{contacts}</td>
                                     <td className="text-nowrap">
-                                        {startTime}-{endTime}
+                                        {startTime} - {endTime}
                                     </td>
                                     <td className="text-nowrao">{remark}</td>
                                 </tr>
