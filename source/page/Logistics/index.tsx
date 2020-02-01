@@ -10,7 +10,6 @@ import { logistics, Contact, LogisticsItem, ServiceArea } from '../../model';
 interface LogisticsPageState {
     loading?: boolean;
     noMore?: boolean;
-    list?: LogisticsItem[];
 }
 
 const DIREACTION = {
@@ -25,13 +24,13 @@ const DIREACTION = {
     renderTarget: 'children'
 })
 export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
-    state = { loading: true, noMore: false, list: [] };
+    state = { loading: true, noMore: false };
 
     loadMore = async ({ detail }: EdgeEvent) => {
         if (detail !== 'bottom' || this.state.noMore) return;
         await this.setState({ loading: true });
         const data = await logistics.getNextPage();
-        await this.setState({ loading: false, noMore: !data, list: data });
+        await this.setState({ loading: false, noMore: !data });
     };
 
     renderItem = ({
@@ -103,7 +102,7 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
         );
     };
 
-    render(_, { loading, list, noMore }: LogisticsPageState) {
+    render(_, { loading, noMore }: LogisticsPageState) {
         return (
             <SpinnerBox cover={loading}>
                 <header className="d-flex justify-content-between align-item-center my-3">
@@ -117,7 +116,7 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
 
                 <edge-detector onTouchEdge={this.loadMore}>
                     <div class="card-deck justify-content-around">
-                        {list.map(this.renderItem)}
+                        {logistics.list.map(this.renderItem)}
                     </div>
                     <p slot="bottom" className="text-center mt-2">
                         {noMore ? '没有更多数据了' : '加载更多...'}
