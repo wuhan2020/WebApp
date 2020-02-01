@@ -10,23 +10,12 @@ import 'boot-cell/source/Content/EdgeDetector';
 import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 
 import { relativeTimeTo, TimeUnitName } from '../../utility';
-import {
-    area,
-    session,
-    suppliesRequirement,
-    SuppliesRequirement
-} from '../../model';
-
-interface AreaFilter {
-    province?: string;
-    city?: string;
-    district?: string;
-}
+import { session, suppliesRequirement, SuppliesRequirement } from '../../model';
+import { DistrictEvent, DistrictFilter } from '../../component';
 
 interface HospitalPageState {
     loading?: boolean;
     noMore?: boolean;
-    filter?: AreaFilter;
 }
 
 @observer
@@ -37,68 +26,39 @@ interface HospitalPageState {
 export class HospitalPage extends mixin<{}, HospitalPageState>() {
     state = {
         loading: false,
-        noMore: false,
-        filter: {} as AreaFilter
+        noMore: false
     };
 
+    districtFilter = {};
+
     loadMore = async ({ detail }: EdgeEvent) => {
-        const { loading, noMore, filter } = this.state;
+        const {
+            state: { loading, noMore },
+            districtFilter
+        } = this;
 
         if (detail !== 'bottom' || loading || noMore) return;
 
         await this.setState({ loading: true });
 
-        const data = await suppliesRequirement.getNextPage(filter);
+        const data = await suppliesRequirement.getNextPage(districtFilter);
 
         await this.setState({ loading: false, noMore: !data });
     };
 
-    async changeProvince(province: string) {
-        const all = province === '全部';
+    changeDistrict = async ({ detail: { level, name } }: DistrictEvent) => {
+        const { districtFilter } = this;
 
-        const filter = all ? {} : { province };
-
-        await this.setState({ loading: true });
-
-        if (!all) await area.getSubs('city', province);
-        else area.cities.length = area.districts.length = 0;
-
-        suppliesRequirement.pageIndex = suppliesRequirement.list.length = 0;
-        await suppliesRequirement.getNextPage(filter);
-
-        await this.setState({ loading: false, filter });
-    }
-
-    async changeCity(city: string) {
-        const all = city === '全部',
-            { province } = this.state.filter;
-
-        const filter = all ? { province } : { province, city };
-
-        await this.setState({ loading: true });
-
-        if (!all) await area.getSubs('district', city);
-        else area.districts.length = 0;
-
-        suppliesRequirement.pageIndex = suppliesRequirement.list.length = 0;
-        await suppliesRequirement.getNextPage(filter);
-
-        await this.setState({ loading: false, filter });
-    }
-
-    async changeDistrict(district: string) {
-        const all = district === '全部',
-            { province, city } = this.state.filter;
-
-        const filter = all ? { province, city } : { province, city, district };
+        if (name) districtFilter[level] = name;
+        else delete districtFilter[level];
 
         await this.setState({ loading: true });
 
         suppliesRequirement.pageIndex = suppliesRequirement.list.length = 0;
-        await suppliesRequirement.getNextPage(filter);
+        await suppliesRequirement.getNextPage(districtFilter);
 
-        await this.setState({ loading: false, filter });
-    }
+        await this.setState({ loading: false });
+    };
 
     async clip2board(raw: string) {
         await clipboard.writeText(raw);
@@ -197,7 +157,7 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
         );
     };
 
-    render(_, { loading, noMore, filter }: HospitalPageState) {
+    render(_, { loading, noMore }: HospitalPageState) {
         return (
             <SpinnerBox cover={loading}>
                 <header className="d-flex justify-content-between align-item-center my-3">
@@ -208,43 +168,8 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                         </Button>
                     </span>
                 </header>
-                <div className="d-flex">
-                    <DropMenu
-                        className="mr-3 mb-3"
-                        title={'省 | ' + (filter.province || '全部')}
-                        list={[{ name: '全部' }, ...area.provinces].map(
-                            ({ name }) => ({
-                                title: name,
-                                href: '#hospital',
-                                onClick: () => this.changeProvince(name)
-                            })
-                        )}
-                    ></DropMenu>
-                    <DropMenu
-                        className="mr-3 mb-3"
-                        title={'市 | ' + (filter.city || '全部')}
-                        list={[{ name: '全部' }, ...area.cities].map(
-                            ({ name }) => ({
-                                title: name,
-                                href: '#hospital',
-                                onClick: () => this.changeCity(name)
-                            })
-                        )}
-                    ></DropMenu>
-                    <DropMenu
-                        className="mr-3 mb-3"
-                        title={'区 | ' + (filter.district || '全部')}
-                        list={[{ name: '全部' }, ...area.districts].map(
-                            ({ name }) => ({
-                                title: name,
-                                href: '#hospital',
-                                onClick: () => this.changeDistrict(name)
-                            })
-                        )}
-                    >
-                        选择
-                    </DropMenu>
-                </div>
+
+                <DistrictFilter onChange={this.changeDistrict} />
 
                 <edge-detector onTouchEdge={this.loadMore}>
                     <div className="card-deck justify-content-around">
