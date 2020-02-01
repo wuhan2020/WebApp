@@ -2,7 +2,8 @@ import { component, createCell, mixin } from 'web-cell';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { Table } from 'boot-cell/source/Content/Table';
 
-import { Clinic, clinic, Contact } from '../model/index';
+import { Clinic, clinic } from '../model/index';
+import { Contact } from '../service/HTTP';
 
 //此处需要考虑到证号可能含有字母
 //COMMIT_EN:consider identify_code as potential string because there may be chars
