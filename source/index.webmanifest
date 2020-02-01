@@ -12,7 +12,7 @@
   "background_color": "transparent",
   "icons": [
     {
-      "src": "image/wuhan2020-mini.png",
+      "src": "image/wuhan2020.png",
       "type": "image/png",
       "sizes": "256x256"
     }
