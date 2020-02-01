@@ -2,7 +2,7 @@ import { component, createCell, mixin } from 'web-cell';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { Table } from 'boot-cell/source/Content/Table';
 
-import { Clinic, clinic } from '../model/index';
+import { Clinic, clinic, Contact } from '../model/index';
 
 //此处需要考虑到证号可能含有字母
 //COMMIT_EN:consider identify_code as potential string because there may be chars
@@ -63,7 +63,15 @@ export class ClinicPage extends mixin<{}, ClinicPageState>() {
                                             name
                                         )}
                                     </td>
-                                    <td className="text-nowrap">{contacts}</td>
+                                    <td className="text-nowrap">
+                                        {contacts.map(
+                                            ({ name, phone }: Contact) => (
+                                                <span>
+                                                    {name}:{phone}
+                                                </span>
+                                            )
+                                        )}
+                                    </td>
                                     <td className="text-nowrap">
                                         {startTime} - {endTime}
                                     </td>

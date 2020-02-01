@@ -26,7 +26,7 @@ export class ClinicModel {
         if (this.pageIndex && this.list.length === this.totalCount) return;
 
         const {
-            body: { count, data }
+            body: { count = 0, data }
         } = await service.get<PageData<Clinic>>(
             '/clinic?' +
                 new URLSearchParams({
