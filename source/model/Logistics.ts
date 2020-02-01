@@ -1,15 +1,10 @@
 import { observable } from 'mobx';
-import { service, DataItem, User, PageData } from './HTTPService';
+import { service, DataItem, Contact, PageData } from './HTTPService';
 
 export interface ServiceArea {
     city: string;
     direction: 'in' | 'out' | 'both';
     personal: boolean;
-}
-
-interface Contact {
-    name: string;
-    phone: string;
 }
 
 export interface LogisticsItem extends DataItem {
@@ -30,7 +25,9 @@ export class LogisticsModel {
     list: LogisticsItem[] = [];
 
     async getNextPage() {
-        if (this.pageIndex && this.list.length === this.totalCount) return;
+        if (this.pageIndex && this.list.length === this.totalCount) {
+            return [];
+        }
         const {
             body: { count, data }
         } = await service.get<PageData<LogisticsItem>>(
@@ -40,7 +37,8 @@ export class LogisticsModel {
                     pageSize: this.pageSize + ''
                 })
         );
-        this.pageIndex++, (this.totalCount = count);
+        this.pageIndex++;
+        this.totalCount = count;
         this.list = this.list.concat(data);
         return data;
     }

@@ -1,24 +1,25 @@
 import { observable } from 'mobx';
-import { service, PageData } from '../HTTPService';
-import { Factory } from '../types/Factory';
-let mock = {
-    data: [
-        {
-            name: 'test name',
-            qualification:
-                'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2330000107,3882251350&fm=15&gp=0.jpg',
-            address: 'test address',
-            category: 'test category',
-            capability: 'test capability',
-            contacts: [
-                {
-                    name: 'test contact name',
-                    number: '1234567'
-                }
-            ]
-        }
-    ]
-};
+import {
+    DataItem,
+    Contact,
+    User,
+    Place,
+    service,
+    PageData
+} from './HTTPService';
+import { Supplies } from './SuppliesRequirement';
+
+export interface Factory extends DataItem, Place {
+    name?: string;
+    qualification?: string;
+    category?: string;
+    capability?: string;
+    supplies?: Supplies[];
+    contacts?: Contact[];
+    creator?: User;
+    url?: string;
+    remark?: string;
+}
 
 export class FactoryService {
     @observable

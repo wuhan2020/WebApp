@@ -71,16 +71,14 @@ export class HotelPage extends mixin<{}, HotelPageState>() {
                             alignType="right"
                             title="联系方式"
                             list={contacts.map(({ name, number }) => ({
-                                title: `${name}：+86-${number}`,
-                                href: 'tel:+86-' + number
+                                title: `${name}：${number}`,
+                                href: 'tel:' + number
                             }))}
                         />
                     )}
                 </div>
                 <footer className="mt-3 text-center text-mute">
-                    <a href={'tel:+86-' + mobilePhoneNumber}>
-                        {mobilePhoneNumber}
-                    </a>
+                    <a href={'tel:' + mobilePhoneNumber}>{mobilePhoneNumber}</a>{' '}
                     发布于 {Math.abs(distance)} {TimeUnitName[unit]}前
                     {authorized && (
                         <Fragment>
@@ -113,10 +111,10 @@ export class HotelPage extends mixin<{}, HotelPageState>() {
         return (
             <SpinnerBox cover={loading}>
                 <header className="d-flex justify-content-between align-item-center my-3">
-                    <h2>湖北籍同胞全国住宿指南</h2>
+                    <h2>湖北同胞住宿指南</h2>
                     <span>
                         <Button kind="warning" href="hotel/edit">
-                            发布住宿信息
+                            住宿发布
                         </Button>
                     </span>
                 </header>

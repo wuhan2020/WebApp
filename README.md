@@ -5,7 +5,7 @@
 [渐进式 Web 应用][1]项目
 
 [![NPM Dependency](https://david-dm.org/wuhan2020/WebApp.svg)][2]
-[![Build Status](https://travis-ci.com/wuhan2020/WebApp.svg?branch=dev)][3]
+[![CI Status](https://github.com/wuhan2020/WebApp/workflows/PWA%20CI/CD/badge.svg)][3]
 
 ## 基本用法
 
@@ -54,7 +54,7 @@ npm start
 
 [1]: https://developers.google.cn/web/progressive-web-apps
 [2]: https://david-dm.org/wuhan2020/WebApp
-[3]: https://travis-ci.com/wuhan2020/WebApp
+[3]: https://github.com/wuhan2020/WebApp/actions
 [4]: https://www.w3.org/
 [5]: https://typescriptlang.org
 [6]: https://web-cell.dev/

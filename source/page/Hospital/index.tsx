@@ -10,18 +10,8 @@ import 'boot-cell/source/Content/EdgeDetector';
 import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 
 import { relativeTimeTo, TimeUnitName } from '../../utility';
-import {
-    area,
-    session,
-    suppliesRequirement,
-    SuppliesRequirement
-} from '../../model';
-
-class AreaFilter {
-    city = '全部';
-    province = '全部';
-    district = '全部';
-}
+import { session, suppliesRequirement, SuppliesRequirement } from '../../model';
+import { DistrictEvent, DistrictFilter } from '../../component';
 
 interface HospitalPageState {
     loading?: boolean;
@@ -36,23 +26,39 @@ interface HospitalPageState {
 })
 export class HospitalPage extends mixin<{}, HospitalPageState>() {
     state = {
-        loading: true,
-        noMore: false,
-        filter: {
-            city: '全部',
-            province: '全部',
-            district: '全部'
-        }
+        loading: false,
+        noMore: false
     };
 
-    @watch
-    currentDist = {};
+    districtFilter = {};
 
     loadMore = async ({ detail }: EdgeEvent) => {
-        if (detail !== 'bottom' || this.state.noMore) return;
+        const {
+            state: { loading, noMore },
+            districtFilter
+        } = this;
+
+        if (detail !== 'bottom' || loading || noMore) return;
+
         await this.setState({ loading: true });
-        const data = await suppliesRequirement.getNextPage();
+
+        const data = await suppliesRequirement.getNextPage(districtFilter);
+
         await this.setState({ loading: false, noMore: !data });
+    };
+
+    changeDistrict = async ({ detail: { level, name } }: DistrictEvent) => {
+        const { districtFilter } = this;
+
+        if (name) districtFilter[level] = name;
+        else delete districtFilter[level];
+
+        await this.setState({ loading: true });
+
+        suppliesRequirement.pageIndex = suppliesRequirement.list.length = 0;
+        await suppliesRequirement.getNextPage(districtFilter);
+
+        await this.setState({ loading: false });
     };
 
     async clip2board(raw: string) {
@@ -134,18 +140,16 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                             className="d-inline-block ml-3"
                             alignType="right"
                             title="联系方式"
-                            list={contacts.map(({ name, number }) => ({
-                                title: `${name}：+86-${number}`,
-                                href: 'tel:+86-' + number
+                            list={contacts.map(({ name, phone }) => ({
+                                title: `${name}：${phone}`,
+                                href: 'tel:' + phone
                             }))}
                         />
                     )}
                 </div>
 
                 <footer className="mt-3 text-center text-mute">
-                    <a href={'tel:+86-' + mobilePhoneNumber}>
-                        {mobilePhoneNumber}
-                    </a>{' '}
+                    <a href={'tel:' + mobilePhoneNumber}>{mobilePhoneNumber}</a>{' '}
                     发布于 {Math.abs(distance)} {TimeUnitName[unit]}前
                     {authorized && (
                         <Fragment>
@@ -237,6 +241,8 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                         选择
                     </DropMenu>
                 </div>
+
+                <DistrictFilter onChange={this.changeDistrict} />
 
                 <edge-detector onTouchEdge={this.loadMore}>
                     <div className="card-deck justify-content-around">

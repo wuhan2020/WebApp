@@ -2,9 +2,8 @@ import { component, mixin, createCell, Fragment } from 'web-cell';
 import * as clipboard from 'clipboard-polyfill';
 
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
-import { Table } from 'boot-cell/source/Content/Table';
 import { Button } from 'boot-cell/source/Form/Button';
-import { FactoryStore, Factory, session } from '../../model';
+import { factory, session, Factory } from '../../model';
 import { relativeTimeTo, TimeUnitName } from '../../utility';
 import { Card } from 'boot-cell/source/Content/Card';
 import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
@@ -29,7 +28,7 @@ export class FactoryPage extends mixin<{}, FactoryPageState>() {
 
         await this.setState({ loading: true });
 
-        const data = await FactoryStore.getNextPage();
+        const data = await factory.getNextPage();
 
         await this.setState({ loading: false, noMore: !data });
     };
@@ -51,7 +50,6 @@ export class FactoryPage extends mixin<{}, FactoryPageState>() {
         address,
         contacts,
         remark,
-        url,
         creator: { mobilePhoneNumber, objectId: uid },
         objectId
     }: Factory) => {
@@ -108,18 +106,16 @@ export class FactoryPage extends mixin<{}, FactoryPageState>() {
                             className="d-inline-block ml-3"
                             alignType="right"
                             title="联系方式"
-                            list={contacts.map(({ name, number }) => ({
-                                title: `${name}：+86-${number}`,
-                                href: 'tel:+86-' + number
+                            list={contacts.map(({ name, phone }) => ({
+                                title: `${name}：${phone}`,
+                                href: 'tel:' + phone
                             }))}
                         />
                     )}
                 </div>
 
                 <footer className="mt-3 text-center text-mute">
-                    <a href={'tel:+86-' + mobilePhoneNumber}>
-                        {mobilePhoneNumber}
-                    </a>{' '}
+                    <a href={'tel:' + mobilePhoneNumber}>{mobilePhoneNumber}</a>{' '}
                     发布于 {Math.abs(distance)} {TimeUnitName[unit]}前<br />
                     <a href="{url}" target="_blank">
                         消息来源
@@ -138,7 +134,7 @@ export class FactoryPage extends mixin<{}, FactoryPageState>() {
                                 kind="danger"
                                 block
                                 className="mt-3"
-                                onClick={() => FactoryStore.delete(objectId)}
+                                onClick={() => factory.delete(objectId)}
                             >
                                 删除
                             </Button>
@@ -162,7 +158,7 @@ export class FactoryPage extends mixin<{}, FactoryPageState>() {
 
                 <edge-detector onTouchEdge={this.loadMore}>
                     <div className="card-deck justify-content-around">
-                        {FactoryStore.list.map(this.renderItem)}
+                        {factory.list.map(this.renderItem)}
                     </div>
                     <p slot="bottom" className="text-center mt-2">
                         {noMore ? '没有更多数据了' : '加载更多...'}

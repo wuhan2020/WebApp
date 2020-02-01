@@ -34,7 +34,7 @@ interface District {
     districts: District[];
 }
 
-export async function getSubDistrict(keywords = '中国') {
+export async function getSubDistricts(keywords = '中国') {
     const {
         districts: [{ districts }]
     } = await requestAMap<District>('config/district', { keywords });

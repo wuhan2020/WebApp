@@ -31,6 +31,7 @@
     "devDependencies": {
         "@types/js-base64": "^2.3.1",
         "@types/yaml": "^1.2.0",
+        "cross-env": "^7.0.0",
         "husky": "^4.2.1",
         "lint-staged": "^10.0.6",
         "parcel-bundler": "^1.12.4",
@@ -57,9 +58,9 @@
     },
     "scripts": {
         "test": "lint-staged",
-        "start": "rm -rf dist/ && export HTTP_ENV='local' &&  parcel source/index.html --open",
-        "start:remote": "rm -rf dist/ && export HTTP_ENV='remote' &&  parcel source/index.html --open",
-        "start:test": "rm -rf dist/ && export HTTP_ENV='test' && parcel source/index.html --open",
+        "start": "rm -rf dist/  &&  cross-env HTTP_ENV=local  parcel source/index.html --open",
+        "start:remote": "rm -rf dist/  &&  cross-env HTTP_ENV=remote  parcel source/index.html --open",
+        "start:test": "rm -rf dist/  &&  cross-env HTTP_ENV=test  parcel source/index.html --open",
         "pack-dist": "parcel build source/index.html --public-url .",
         "pack-sw": "rm -f dist/sw.js.map  &&  workbox generateSW",
         "build": "rm -rf dist/  &&  npm run pack-dist  &&  npm run pack-sw"
