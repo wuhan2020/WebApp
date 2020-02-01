@@ -5,12 +5,7 @@ import { Card } from 'boot-cell/source/Content/Card';
 import { Button } from 'boot-cell/source/Form/Button';
 import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 
-import {
-    logistics,
-    Contact,
-    LogisticsItem,
-    ServiceArea
-} from '../../model';
+import { logistics, Contact, LogisticsItem, ServiceArea } from '../../model';
 
 interface LogisticsPageState {
     loading?: boolean;
@@ -35,9 +30,8 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
     loadMore = async ({ detail }: EdgeEvent) => {
         if (detail !== 'bottom' || this.state.noMore) return;
         await this.setState({ loading: true });
-        const data = await logistics.getNextPage(); // 新增的 data
-        const { list } = this.state;
-        await this.setState({ loading: false, noMore: !data, list });
+        const data = await logistics.getNextPage();
+        await this.setState({ loading: false, noMore: !data, list: data });
     };
 
     renderItem = ({
@@ -53,60 +47,60 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
                 style={{ minWidth: '20rem', maxWidth: '20rem' }}
                 title={name}
             >
-                <p style={{ marginBottom: '0.25rem' }}>
+                <p className="mb-1">
                     <a href={url} target="_blank">
                         消息来源 &gt;&gt;
                     </a>
                 </p>
-                {this.renderServiceArea(serviceArea)}
-                {this.renderContacts(contacts)}
+                {serviceArea.map(this.renderServiceArea)}
+                {contacts.map(this.renderContact)}
                 <p>{remark}</p>
             </Card>
         );
     };
 
-    renderServiceArea = (serviceAreas: ServiceArea[]) => {
-        // NOTE
-        // 目前看应该服务地区应该都只有一条消息 所以暂时只展示第一条
-        // 后续如果有多条地域信息 再修改这里
-        const info = serviceAreas[0];
-        const { city, direction, personal } = info;
-        const donationNote = `${personal ? '接受' : '不接受'}个人捐赠`;
+    renderServiceArea = (serviceArea: ServiceArea) => {
+        const { city, direction, personal } = serviceArea;
         return (
             <div>
-                <p style={{ marginBottom: '0.25rem' }}>
+                <p className="mb-1">
                     <strong>地区：</strong>
                     {city}
                 </p>
-                <p style={{ marginBottom: '0.25rem' }}>
+                <p className="mb-1">
                     <strong>方向：</strong>
                     {DIREACTION[direction]}
                 </p>
-                <p style={{ marginBottom: '0.25rem' }}>{donationNote}</p>
+                {personal ? null : (
+                    <p className="mb-1">
+                        <span className="badge badge-danger">
+                            不接受个人捐赠
+                        </span>
+                    </p>
+                )}
             </div>
         );
     };
 
-    renderContacts = (contacts: Contact[]) => {
-        return contacts.map(item => {
-            return (
-                <p style={{ marginBottom: '0.25rem' }}>
-                    <a
-                        className="text-center text-decoration-none"
-                        href={'tel:' + item.phone}
-                    >
-                        <i
-                            className="fa fa-phone btn btn-sm btn-primary"
-                            aria-hidden="true"
-                        />
-                        &nbsp;
-                        {item.name}
-                        &nbsp;
-                        {item.phone}
-                    </a>
-                </p>
-            );
-        });
+    renderContact = (contact: Contact) => {
+        const { name, phone } = contact;
+        return (
+            <p className="mb-1">
+                <a
+                    className="text-center text-decoration-none"
+                    href={'tel:' + phone}
+                >
+                    <i
+                        className="fa fa-phone btn btn-sm btn-primary"
+                        aria-hidden="true"
+                    />
+                    &nbsp;
+                    {name}
+                    &nbsp;
+                    {phone}
+                </a>
+            </p>
+        );
     };
 
     render(_, { loading, list, noMore }: LogisticsPageState) {

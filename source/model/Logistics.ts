@@ -24,8 +24,12 @@ export class LogisticsModel {
     @observable
     list: LogisticsItem[] = [];
 
+    /**
+     * 总是返回当前的全量数据
+     */
     async getNextPage() {
-        if (this.pageIndex && this.list.length === this.totalCount) return;
+        if (this.pageIndex && this.list.length === this.totalCount)
+            return this.list;
         const {
             body: { count, data }
         } = await service.get<PageData<LogisticsItem>>(
@@ -35,9 +39,10 @@ export class LogisticsModel {
                     pageSize: this.pageSize + ''
                 })
         );
-        this.pageIndex++, (this.totalCount = count);
+        this.pageIndex++;
+        this.totalCount = count;
         this.list = this.list.concat(data);
-        return data;
+        return this.list;
     }
 
     async update(data: LogisticsItem, id?: string) {
