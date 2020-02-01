@@ -4,7 +4,7 @@ import { Button } from 'boot-cell/source/Form/Button';
 
 import { RouteRoot } from '../menu';
 import { LogisticsItem, logistics, history, ServiceArea } from '../../model';
-import { SessionBox } from '../../component';
+import { SessionBox, ContactField } from '../../component';
 
 type LogisticsEditProps = LogisticsItem & { loading?: boolean };
 
@@ -38,6 +38,7 @@ export class LogisticsEdit extends mixin<
         super.connectedCallback();
 
         if (!this.srid) return;
+
         await this.setState({ loading: true });
 
         const {
@@ -60,21 +61,18 @@ export class LogisticsEdit extends mixin<
 
     changeText = ({ target }: Event) => {
         const { name, value } = target as HTMLInputElement;
+
         this.state[name] = value;
     };
 
     changeServiceArea(index: number, event: Event) {
         event.stopPropagation();
+
         const { name, value } = event.target as HTMLInputElement;
-        if (name === 'personal') {
-            const transToBool = {
-                true: true,
-                false: false
-            };
-            this.state.serviceArea[index]['personal'] = transToBool[value];
-            return;
-        }
-        this.state.serviceArea[index][name] = value;
+
+        if (name === 'personal')
+            this.state.serviceArea[index]['personal'] = JSON.parse(value);
+        else this.state.serviceArea[index][name] = value;
     }
 
     addServiceArea = () =>
@@ -82,36 +80,29 @@ export class LogisticsEdit extends mixin<
 
     deleteServiceArea(index: number) {
         const { serviceArea } = this.state;
+
         serviceArea.splice(index, 1);
+
         this.setState({ serviceArea });
-    }
-
-    changeContact(index: number, event: Event) {
-        event.stopPropagation();
-        const { name, value } = event.target as HTMLInputElement;
-        this.state.contacts[index][name] = value;
-    }
-
-    addContact = () =>
-        this.setState({
-            contacts: [...this.state.contacts, { name: '', phone: '' }]
-        });
-
-    deleteContact(index: number) {
-        const { contacts } = this.state;
-        contacts.splice(index, 1);
-        this.setState({ contacts });
     }
 
     handleSubmit = async (event: Event) => {
         event.preventDefault();
+
         await this.setState({ loading: true });
+
         const data = { ...this.state };
         delete data.loading;
-        await logistics.update(data, this.srid);
-        await this.setState({ loading: false });
-        self.alert('发布成功！');
-        history.push(RouteRoot.Logistics);
+
+        try {
+            await logistics.update(data, this.srid);
+
+            self.alert('发布成功！');
+
+            history.push(RouteRoot.Logistics);
+        } finally {
+            await this.setState({ loading: false });
+        }
     };
 
     render(_, { name, url, serviceArea, remark, contacts, loading }) {
@@ -133,7 +124,7 @@ export class LogisticsEdit extends mixin<
                         defaultValue={url}
                         label="来源链接"
                         placeholder="请填写物流来源的链接地址"
-                    ></FormField>
+                    />
                     <FormField label="寄送区域与其他能力">
                         {serviceArea.map(
                             (
@@ -193,51 +184,19 @@ export class LogisticsEdit extends mixin<
                             )
                         )}
                     </FormField>
-                    <FormField label="联系方式">
-                        {contacts.map(({ name, phone }, index) => (
-                            <div
-                                className="input-group my-1"
-                                onChange={(event: Event) =>
-                                    this.changeContact(index, event)
-                                }
-                            >
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    name="name"
-                                    value={name}
-                                    placeholder="姓名"
-                                />
-                                <input
-                                    type="tel"
-                                    className="form-control"
-                                    name="phone"
-                                    value={phone}
-                                    placeholder="电话号码（不含 +86 和区号的先导 0）"
-                                />
-                                <div className="input-group-append">
-                                    <Button onClick={this.addContact}>+</Button>
-                                    <Button
-                                        kind="danger"
-                                        disabled={!contacts[1]}
-                                        onClick={() =>
-                                            this.deleteContact(index)
-                                        }
-                                    >
-                                        -
-                                    </Button>
-                                </div>
-                            </div>
-                        ))}
-                    </FormField>
 
+                    <ContactField
+                        list={contacts}
+                        onChange={(event: CustomEvent) =>
+                            (this.state.contacts = event.detail)
+                        }
+                    />
                     <FormField
                         name="remark"
                         defaultValue={remark}
                         label="备注"
                         placeholder="请填写备注信息"
-                    ></FormField>
-
+                    />
                     <div className="form-group mt-3">
                         <Button type="submit" block disabled={loading}>
                             提交

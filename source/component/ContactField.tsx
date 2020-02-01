@@ -49,7 +49,7 @@ export class ContactField extends mixin<ContactFieldProps>() {
     render({ list }: ContactFieldProps) {
         return (
             <FormField label="联系方式">
-                {list.map(({ name, number }, index) => (
+                {list.map(({ name, phone }, index) => (
                     <div
                         className="input-group my-1"
                         onChange={(event: Event) =>
@@ -66,9 +66,9 @@ export class ContactField extends mixin<ContactFieldProps>() {
                         <input
                             type="tel"
                             className="form-control"
-                            name="number"
-                            value={number}
-                            placeholder="电话号码（不含 +86 和区号的先导 0）"
+                            name="phone"
+                            value={phone}
+                            placeholder="电话号码（含国家码、区号）"
                         />
                         <div className="input-group-append">
                             <Button onClick={this.addItem}>+</Button>

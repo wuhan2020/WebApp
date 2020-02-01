@@ -1,15 +1,10 @@
 import { observable } from 'mobx';
-import { service, DataItem, User, PageData } from './HTTPService';
+import { service, DataItem, Contact, PageData } from './HTTPService';
 
 export interface ServiceArea {
     city: string;
     direction: 'in' | 'out' | 'both';
     personal: boolean;
-}
-
-interface Contact {
-    name: string;
-    phone: string;
 }
 
 export interface LogisticsItem extends DataItem {

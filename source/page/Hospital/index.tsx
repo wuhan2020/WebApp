@@ -117,18 +117,16 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                             className="d-inline-block ml-3"
                             alignType="right"
                             title="联系方式"
-                            list={contacts.map(({ name, number }) => ({
-                                title: `${name}：+86-${number}`,
-                                href: 'tel:+86-' + number
+                            list={contacts.map(({ name, phone }) => ({
+                                title: `${name}：${phone}`,
+                                href: 'tel:' + phone
                             }))}
                         />
                     )}
                 </div>
 
                 <footer className="mt-3 text-center text-mute">
-                    <a href={'tel:+86-' + mobilePhoneNumber}>
-                        {mobilePhoneNumber}
-                    </a>{' '}
+                    <a href={'tel:' + mobilePhoneNumber}>{mobilePhoneNumber}</a>{' '}
                     发布于 {Math.abs(distance)} {TimeUnitName[unit]}前
                     {authorized && (
                         <Fragment>

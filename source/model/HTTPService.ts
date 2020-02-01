@@ -42,7 +42,7 @@ export interface FileData extends DataItem {
 
 export interface Contact {
     name: string;
-    number: string;
+    phone: string;
 }
 
 export interface GeoCoord {

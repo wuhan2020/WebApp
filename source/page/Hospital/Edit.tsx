@@ -89,12 +89,12 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
         this.state[name] = value;
     };
 
-    updateText = (event: Event) => {
+    updateText = ({ target }: Event) => {
+        const { name, value } = target as HTMLInputElement;
+
         event.stopPropagation();
 
-        this.setState({
-            hospital: (event.target as HTMLInputElement).value
-        });
+        this.setState({ [name]: value });
     };
 
     changeAddress = (event: CustomEvent) => {
