@@ -16,7 +16,8 @@ import { HotelPage } from './Hotel';
 import { HotelEdit } from './Hotel/Edit';
 import { FactoryPage } from './Factory';
 import { FactoryEdit } from './Factory/edit';
-import { DonationPage } from './Donation';
+import { DonationPage } from './Donation/index';
+import { DonationEdit } from './Donation/edit';
 import { ClinicPage } from './Clinic';
 
 @observer
@@ -37,7 +38,8 @@ export class PageRouter extends HTMLRouter {
         { paths: ['factory'], component: FactoryPage },
         { paths: ['factory/edit'], component: FactoryEdit },
         { paths: ['donation'], component: DonationPage },
-        { paths: ['clinic'], component: ClinicPage },
+        { paths: ['donation/edit'], component: DonationEdit },
+        { paths: ['clinic'], component: ClinicPage }
     ];
 
     connectedCallback() {

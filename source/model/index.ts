@@ -1,10 +1,10 @@
 import { History } from 'cell-router/source';
-
 import { Session } from './Session';
 import { SuppliesRequirementModel } from './SuppliesRequirement';
 import { LogisticsModel } from './Logistics';
 import { HotelCanStayingModel } from './HotelCanStaying';
 import { ClinicModel } from './Clinic';
+import { DonationService } from './DonationService';
 import { FactoryService } from './Factory';
 import { AreaModel } from './district/Area';
 
@@ -14,6 +14,7 @@ export const suppliesRequirement = new SuppliesRequirementModel();
 export const logistics = new LogisticsModel();
 export const hotelCanStaying = new HotelCanStayingModel();
 export const clinic = new ClinicModel();
+export const DonationStore = new DonationService();
 export const factory = new FactoryService();
 export const area = new AreaModel();
 
@@ -25,3 +26,4 @@ export * from './Factory';
 export * from './Logistics';
 export * from './HotelCanStaying';
 export * from './Clinic';
+export * from './DonationService';
