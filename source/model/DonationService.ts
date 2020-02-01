@@ -47,11 +47,13 @@ export class DonationService {
     }
 
     async getOne(id?: string) {
-        const { body } = await service.get('');
-        return body;
+        const {
+            body: { data }
+        } = await service.get('/donation/recipient/' + id);
+        return data;
     }
 
     async delete(id: string) {
-        await service.delete('', id);
+        return await service.delete('/donation/recipient/' + id);
     }
 }
