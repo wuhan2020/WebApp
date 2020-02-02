@@ -1,6 +1,9 @@
+// eslint-disable-next-line no-unused-vars
 import { component, createCell, mixin } from 'web-cell';
+// eslint-disable-next-line no-unused-vars
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
-import { Table } from 'boot-cell/source/Content/Table';
+// eslint-disable-next-line no-unused-vars
+import { VirusData, HierarchicalVirusMap } from 'wuhan2020-map-viz';
 
 interface Map {
     name: string;
@@ -12,11 +15,13 @@ interface MapPageState {
     list?: Map[];
 }
 
+const resolution = 3600000 * 24;
+
 @component({
     tagName: 'maps-page',
     renderTarget: 'children'
 })
-export class MapsPage extends mixin<{}, ClinicPageState>() {
+export class MapsPage extends mixin<{}, MapPageState>() {
     state = { loading: true, list: [] };
 
     async connectedCallback() {
@@ -45,38 +50,40 @@ export class MapsPage extends mixin<{}, ClinicPageState>() {
         await this.setState({ loading: false, list });
     }
 
-    render(_, { loading, list }: MapPageState) {
+    render(_, { loading }: MapPageState) {
         return (
-            <SpinnerBox cover={loading}>
-                <header className="d-flex justify-content-between align-item-center my-3">
-                    <h2>疫情地图</h2>
-                </header>
-
-                <Table center striped hover>
-                    <thead>
-                        <tr>
-                            <th>地图来源</th>
-                            <th>地图链接</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {list.map(({ name, url }: Map) => (
+            <div style={{ width: '100%', height: 'calc(100vh - 100px)' }}>
+                <SpinnerBox cover={loading}>
+                    <HierarchicalVirusMap
+                        data={VirusData}
+                        resolution={resolution}
+                    />
+                    {/* <Table center striped hover>
+                        <thead>
                             <tr>
-                                <td className="text-nowrap">
-                                    {url ? (
-                                        <a target="_blank" href={url}>
-                                            {name}
-                                        </a>
-                                    ) : (
-                                        name
-                                    )}
-                                </td>
-                                <td className="text-nowrap">{url}</td>
+                                <th>地图来源</th>
+                                <th>地图链接</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </Table>
-            </SpinnerBox>
+                        </thead>
+                        <tbody>
+                            {list.map(({ name, url }: Map) => (
+                                <tr>
+                                    <td className="text-nowrap">
+                                        {url ? (
+                                            <a target="_blank" href={url}>
+                                                {name}
+                                            </a>
+                                        ) : (
+                                            name
+                                        )}
+                                    </td>
+                                    <td className="text-nowrap">{url}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table> */}
+                </SpinnerBox>
+            </div>
         );
     }
 }
