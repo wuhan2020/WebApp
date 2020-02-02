@@ -38,11 +38,11 @@ export default [
         href: RouteRoot.Donation,
         icon: 'heart'
     },
-    {
-        title: '义诊',
-        href: RouteRoot.Clinic,
-        icon: 'user-md'
-    },
+    // {
+    //     title: '义诊',
+    //     href: RouteRoot.Clinic,
+    //     icon: 'user-md'
+    // },
     {
         title: '疫情地图',
         href: RouteRoot.Maps,

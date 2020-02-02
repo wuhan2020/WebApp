@@ -23,7 +23,7 @@ interface ClinicPageState {
     renderTarget: 'children'
 })
 export class ClinicPage extends mixin<{}, ClinicPageState>() {
-    state = { loading: true, list: [] };
+    state = { loading: false, list: [] };
 
     async connectedCallback() {
         super.connectedCallback();

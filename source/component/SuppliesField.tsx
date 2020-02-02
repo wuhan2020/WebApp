@@ -25,7 +25,7 @@ export class SuppliesField extends mixin<SuppliesFieldProps>() {
 
         const { name, value } = event.target as HTMLInputElement;
 
-        this.list[index][name] = value;
+        this.list[index][name] = isNaN(+value) ? value : +value;
 
         this.emitChange();
     }

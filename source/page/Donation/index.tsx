@@ -18,7 +18,7 @@ interface DonationPageState {
     renderTarget: 'children'
 })
 export class DonationPage extends mixin<{}, DonationPageState>() {
-    state = { loading: true, noMore: false };
+    state = { loading: false, noMore: false };
 
     loadMore = async ({ detail }: EdgeEvent) => {
         const { loading, noMore } = this.state;

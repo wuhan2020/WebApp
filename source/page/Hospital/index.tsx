@@ -11,7 +11,7 @@ import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 
 import { relativeTimeTo, TimeUnitName } from '../../utility';
 import { session, suppliesRequirement, SuppliesRequirement } from '../../model';
-import { DistrictEvent, DistrictFilter } from '../../component';
+import { DistrictEvent, DistrictFilter, District } from '../../component';
 
 interface HospitalPageState {
     loading?: boolean;
@@ -29,7 +29,7 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
         noMore: false
     };
 
-    districtFilter = {};
+    districtFilter: District;
 
     loadMore = async ({ detail }: EdgeEvent) => {
         const {
@@ -46,16 +46,13 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
         await this.setState({ loading: false, noMore: !data });
     };
 
-    changeDistrict = async ({ detail: { level, name } }: DistrictEvent) => {
-        const { districtFilter } = this;
-
-        if (name) districtFilter[level] = name;
-        else delete districtFilter[level];
+    changeDistrict = async ({ detail }: DistrictEvent) => {
+        this.districtFilter = detail;
 
         await this.setState({ loading: true });
 
         suppliesRequirement.pageIndex = suppliesRequirement.list.length = 0;
-        await suppliesRequirement.getNextPage(districtFilter);
+        await suppliesRequirement.getNextPage(detail);
 
         await this.setState({ loading: false });
     };

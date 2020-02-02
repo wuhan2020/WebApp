@@ -7,21 +7,21 @@ import {
     Fragment
 } from 'web-cell';
 import { observer } from 'mobx-web-cell';
+import { WebCellProps } from 'boot-cell/source/utility/type';
 import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
 
 import { area } from '../model';
 
-export interface DistrictFilterProps {
+export interface District {
     province?: string;
     city?: string;
     district?: string;
 }
 
+export interface DistrictFilterProps extends WebCellProps, District {}
+
 export interface DistrictEvent extends CustomEvent {
-    detail: {
-        level: keyof DistrictFilterProps;
-        name: string;
-    };
+    detail: District;
 }
 
 @observer
@@ -46,25 +46,34 @@ export class DistrictFilter extends mixin<DistrictFilterProps>() {
         this.classList.add('d-flex');
     }
 
-    async change(level: keyof DistrictFilterProps, name: string) {
+    async change(level: keyof District, name: string) {
         const all = name === '全部';
 
         this[level] = name;
 
         switch (level) {
             case 'province':
-                this.city = this.district = '全部';
+                this.city = this.district = '';
                 area.cities.length = area.districts.length = 0;
-                await area.getSubs('city', name);
+                if (!all) await area.getSubs('city', name);
                 break;
             case 'city':
-                this.district = '全部';
+                this.district = '';
                 area.districts.length = 0;
-                await area.getSubs('district', name);
+                if (!all) await area.getSubs('district', name);
                 break;
         }
 
-        this.emit('change', { level, name: all ? '' : name });
+        const { defaultSlot, ...data } = this.props;
+
+        this.emit(
+            'change',
+            Object.fromEntries(
+                Object.entries(data).filter(
+                    ([key, value]) => value && value !== '全部'
+                )
+            )
+        );
     }
 
     render({ province, city, district }: DistrictFilterProps) {

@@ -21,10 +21,7 @@ interface HotelPageState {
     renderTarget: 'children'
 })
 export class HotelPage extends mixin<{}, HotelPageState>() {
-    state = {
-        loading: true,
-        noMore: false
-    };
+    state = { loading: false, noMore: false };
 
     loadMore = async ({ detail }: EdgeEvent) => {
         if (detail !== 'bottom' || this.state.noMore) return;
