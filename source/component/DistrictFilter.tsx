@@ -55,12 +55,16 @@ export class DistrictFilter extends mixin<DistrictFilterProps>() {
             case 'province':
                 this.city = this.district = '全部';
                 area.cities.length = area.districts.length = 0;
-                await area.getSubs('city', name);
+                if (!all) {
+                    await area.getSubs('city', name);
+                }
                 break;
             case 'city':
                 this.district = '全部';
                 area.districts.length = 0;
-                await area.getSubs('district', name);
+                if (!all) {
+                    await area.getSubs('district', name);
+                }
                 break;
         }
 
