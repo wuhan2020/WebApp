@@ -1,6 +1,7 @@
 const key = '8325164e247e15eea68b59e89200988b';
 
 async function requestAMap<T = {}>(path: string, data: any): Promise<T> {
+    if(path === 'config/district' && data.keywords === '全部') data.keywords = '中国';
     const response = await fetch(
         `//restapi.amap.com/v3/${path}?${new URLSearchParams({ ...data, key })}`
     );
