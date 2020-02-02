@@ -20,11 +20,15 @@ interface ClinicPageState {
 export class ClinicPage extends mixin<{}, ClinicPageState>() {
     state = { loading: true };
 
+    @watch
+    clinicList=[];
+
     async connectedCallback() {
         super.connectedCallback();
+        this.clinicList=await clinic.getNextPage();
         await this.setState({ loading: false});
     }
-
+    
     async render(_, { loading }: ClinicPageState) {
         return (
             <SpinnerBox cover={loading}>
@@ -41,7 +45,7 @@ export class ClinicPage extends mixin<{}, ClinicPageState>() {
                         </tr>
                     </thead>
                     <tbody>
-                        {(await clinic.getNextPage()).map(
+                        {this.clinicList.map(
                             ({
                                 name,
                                 url,
