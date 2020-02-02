@@ -25,7 +25,7 @@ const DIREACTION = {
     renderTarget: 'children'
 })
 export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
-    state = { loading: true, noMore: false };
+    state = { loading: false, noMore: false };
 
     loadMore = async ({ detail }: EdgeEvent) => {
         if (detail !== 'bottom' || this.state.noMore) return;

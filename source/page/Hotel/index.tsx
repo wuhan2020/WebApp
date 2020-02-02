@@ -22,7 +22,7 @@ interface HotelPageState {
 })
 export class HotelPage extends mixin<{}, HotelPageState>() {
     state = {
-        loading: true,
+        loading: false,
         noMore: false
     };
 
