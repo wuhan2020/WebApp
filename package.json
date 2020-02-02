@@ -27,6 +27,7 @@
         "mobx": "^5.15.4",
         "mobx-web-cell": "^0.2.5",
         "web-cell": "^2.0.0-rc.15",
+        "wuhan2020-map-viz": "git+https://github.com/wuhan2020/map-viz.git",
         "yaml": "^1.7.2"
     },
     "devDependencies": {
