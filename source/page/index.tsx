@@ -19,6 +19,7 @@ import { FactoryEdit } from './Factory/edit';
 import { DonationPage } from './Donation/index';
 import { DonationEdit } from './Donation/edit';
 import { ClinicPage } from './Clinic';
+import { MapsPage } from './Maps';
 
 @observer
 @component({
@@ -39,7 +40,8 @@ export class PageRouter extends HTMLRouter {
         { paths: ['factory/edit'], component: FactoryEdit },
         { paths: ['donation'], component: DonationPage },
         { paths: ['donation/edit'], component: DonationEdit },
-        { paths: ['clinic'], component: ClinicPage }
+        { paths: ['clinic'], component: ClinicPage },
+        { paths: ['maps'], component: MapsPage }
     ];
 
     connectedCallback() {
