@@ -44,6 +44,8 @@ npm start
 
 4. 安装、启动[后端项目](https://github.com/wuhan2020/rest-api)
 
+> 注：MacOS 下运行可能直接报错，解决方案见 https://github.com/wuhan2020/rest-api/issues/1
+
 ### 注意
 
 -   Windows 用户请在 [PowerShell 5.1+][13]、[Git Bash][14] 或 [WSL][15] 中运行
