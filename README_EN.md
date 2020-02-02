@@ -9,25 +9,25 @@
 
 ## Basics
 
-Almost all the mainstream browsers like Chrome, Firefox, Opera, Edge, UC, Xiaomi, QQ are affordable to this web ( Nota Bene : for Safari’s slow and lagging support to [W3C][4], adding icon is available but some advanced features like caching and off-line start-up may not function )
+Almost all the mainstream web browsers like Chrome, Firefox, Opera, Edge, UC, Xiaomi, QQ are compatible with the website ( Nota Bene : Safari supports [W3C][4] and help with the lagging issues. Icon insertion is supported but some advanced features like caching and off-line mode may not be functioning at this moment )
 
 <img width='280' src='source/image/WuHan2020-PWA.jpg' />
 
 ## Tech stack
 
--   Logical language : [TypeScript v3][5]
--   Components engine : [WebCell v2][6]
--   Components library : [BootCell v1][7]
+-   Backend language : [TypeScript v3][5]
+-   Engine : [WebCell v2][6]
+-   Library : [BootCell v1][7]
 -   State management : [MobX v5][8]
 -   PWA framework : [Workbox v4][9]
--   Parceling tool : [Parcel v1][10]
+-   Packaging tool : [Parcel v1][10]
 -   CI/CD: [Travis CI][11] + [GitHub Pages][12]
 
 ## Development needs
 
 -   Task dashboard ：https://github.com/orgs/wuhan2020/projects/1?fullscreen=true
 
--   UI design ：in progress. Please refer to existing pages for design and development.
+-   UI design ：in progress. Developers: please refer to the current website.
 
 ## Native development
 
@@ -35,18 +35,18 @@ Almost all the mainstream browsers like Chrome, Firefox, Opera, Edge, UC, Xiaomi
 
 2. `git clone https://github.com/wuhan2020/WebApp.git`
 
-3. Run the commands in the folder of this project
+3. Run the commands in the directory of this project
 
 ```shell
 npm install
 npm start
 ```
 
-4. Install and start [rest-api](https://github.com/wuhan2020/rest-api)
+4. Install and start the backend [rest-api](https://github.com/wuhan2020/rest-api)
 
-## Attention
+## Note
 
-Windows users should run in PowerShell 5.1+, Git Bash or WSL please.
+Windows users please run in PowerShell 5.1+, Git Bash or WSL.
 
 ## Thanks
 
