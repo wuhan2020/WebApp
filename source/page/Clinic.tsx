@@ -18,18 +18,14 @@ interface ClinicPageState {
     renderTarget: 'children'
 })
 export class ClinicPage extends mixin<{}, ClinicPageState>() {
-    state = { loading: true, list: [] };
+    state = { loading: true };
 
     async connectedCallback() {
         super.connectedCallback();
-
-        const list = await clinic.getNextPage();
-        console.log(list);
-
-        await this.setState({ loading: false, list });
+        await this.setState({ loading: false});
     }
 
-    render(_, { loading, list }: ClinicPageState) {
+    async render(_, { loading }: ClinicPageState) {
         return (
             <SpinnerBox cover={loading}>
                 <header className="d-flex justify-content-between align-item-center my-3">
@@ -45,7 +41,7 @@ export class ClinicPage extends mixin<{}, ClinicPageState>() {
                         </tr>
                     </thead>
                     <tbody>
-                        {list.map(
+                        {(await clinic.getNextPage()).map(
                             ({
                                 name,
                                 url,
