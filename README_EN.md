@@ -15,7 +15,7 @@ Almost all the mainstream web browsers like Chrome, Firefox, Opera, Edge, UC, Xi
 
 ## Tech stack
 
--   Backend language : [TypeScript v3][5]
+-   Programming language : [TypeScript v3][5]
 -   Engine : [WebCell v2][6]
 -   Library : [BootCell v1][7]
 -   State management : [MobX v5][8]
