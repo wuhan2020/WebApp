@@ -20,5 +20,5 @@ export interface DonationRecipient extends DataItem, Place {
 }
 
 export class DonationRecipientModel extends BaseModel<DonationRecipient> {
-    baseURI = '/donation/recipient';
+    baseURI = '/donation/recipient/';
 }

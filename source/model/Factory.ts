@@ -15,5 +15,5 @@ export interface Factory extends DataItem, Place {
 }
 
 export class FactoryModel extends BaseModel<Factory> {
-    baseURI = '/vendor';
+    baseURI = '/vendor/';
 }

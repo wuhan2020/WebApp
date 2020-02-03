@@ -16,5 +16,5 @@ export interface Logistics extends DataItem {
 }
 
 export class LogisticsModel extends BaseModel<Logistics> {
-    baseURI = '/logistics';
+    baseURI = '/logistics/';
 }

@@ -67,7 +67,7 @@ export class SuppliesField extends mixin<SuppliesFieldProps>() {
                             type="number"
                             className="form-control"
                             name="count"
-                            defaultValue="0"
+                            min="0"
                             value={count}
                             placeholder="数量"
                         />

@@ -19,7 +19,7 @@ export interface SuppliesRequirement extends DataItem, Place {
 }
 
 export class SuppliesRequirementModel extends BaseModel<SuppliesRequirement> {
-    baseURI = '/supplies/requirement';
+    baseURI = '/supplies/requirement/';
 
     getNextPage(filter?: District) {
         return super.getNextPage<District>(filter);

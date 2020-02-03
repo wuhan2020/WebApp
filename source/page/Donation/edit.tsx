@@ -177,8 +177,8 @@ export class DonationEdit extends mixin<{ srid: string }, DonationEditProps>() {
 
                     <ContactField
                         list={contacts}
-                        onChange={(event: CustomEvent) =>
-                            (this.state.contacts = event.detail)
+                        onChange={({ detail }: CustomEvent) =>
+                            (this.state.contacts = detail)
                         }
                     />
                     <FormField

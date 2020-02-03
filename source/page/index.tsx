@@ -18,7 +18,8 @@ import { FactoryPage } from './Factory';
 import { FactoryEdit } from './Factory/edit';
 import { DonationPage } from './Donation/index';
 import { DonationEdit } from './Donation/edit';
-import { ClinicPage } from './Clinic';
+import { ClinicList } from './Clinic';
+import { ClinicEdit } from './Clinic/Edit';
 import { MapsPage } from './Maps';
 
 @observer
@@ -40,7 +41,8 @@ export class PageRouter extends HTMLRouter {
         { paths: ['factory/edit'], component: FactoryEdit },
         { paths: ['donation'], component: DonationPage },
         { paths: ['donation/edit'], component: DonationEdit },
-        { paths: ['clinic'], component: ClinicPage },
+        { paths: ['clinic'], component: ClinicList },
+        { paths: ['clinic/edit'], component: ClinicEdit },
         { paths: ['maps'], component: MapsPage }
     ];
 

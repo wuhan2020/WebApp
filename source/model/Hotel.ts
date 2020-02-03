@@ -11,5 +11,5 @@ export interface Hotel extends DataItem, Place {
 }
 
 export class HotelModel extends BaseModel<Hotel> {
-    baseURI = '/hotel';
+    baseURI = '/hotel/';
 }

@@ -75,14 +75,13 @@ export class HotelEdit extends mixin<{ srid: string }, HotelEditState>() {
         this.setState({ [name]: value });
     };
 
-    changeAddress = (event: CustomEvent) => {
-        const { latitude, longitude, ...rest } = event.detail;
-
+    changeAddress = ({
+        detail: { latitude, longitude, ...rest }
+    }: CustomEvent) =>
         Object.assign(this.state, {
             ...rest,
             coords: { latitude, longitude }
         });
-    };
 
     handleSubmit = async (event: Event) => {
         event.preventDefault();
@@ -153,8 +152,8 @@ export class HotelEdit extends mixin<{ srid: string }, HotelEditState>() {
                     />
                     <ContactField
                         list={contacts}
-                        onChange={(event: CustomEvent) =>
-                            (this.state.contacts = event.detail)
+                        onChange={({ detail }: CustomEvent) =>
+                            (this.state.contacts = detail)
                         }
                     />
                     <div className="form-group mt-3">

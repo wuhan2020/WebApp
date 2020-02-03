@@ -94,14 +94,13 @@ export class FactoryEdit extends mixin<{ srid: string }, FactoryEditProps>() {
         this.setState({ [name]: value });
     };
 
-    changeAddress = (event: CustomEvent) => {
-        const { latitude, longitude, ...rest } = event.detail;
-
+    changeAddress = ({
+        detail: { latitude, longitude, ...rest }
+    }: CustomEvent) =>
         Object.assign(this.state, {
             ...rest,
             coords: { latitude, longitude }
         });
-    };
 
     handleSubmit = async (event: Event) => {
         event.preventDefault();
@@ -174,14 +173,14 @@ export class FactoryEdit extends mixin<{ srid: string }, FactoryEditProps>() {
                     />
                     <SuppliesField
                         list={supplies}
-                        onChange={(event: CustomEvent) =>
-                            (this.state.supplies = event.detail)
+                        onChange={({ detail }: CustomEvent) =>
+                            (this.state.supplies = detail)
                         }
                     />
                     <ContactField
                         list={contacts}
-                        onChange={(event: CustomEvent) =>
-                            (this.state.contacts = event.detail)
+                        onChange={({ detail }: CustomEvent) =>
+                            (this.state.contacts = detail)
                         }
                     />
                     <FormField

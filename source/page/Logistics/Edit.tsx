@@ -187,7 +187,7 @@ export class LogisticsEdit extends mixin<
 
                     <ContactField
                         list={contacts}
-                        onChange={(event: CustomEvent) =>
+                        onChange={({ detail }: CustomEvent) =>
                             (this.state.contacts = event.detail)
                         }
                     />
