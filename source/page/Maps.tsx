@@ -35,7 +35,11 @@ export class MapsPage extends mixin<{}, ClinicPageState>() {
             {
                 name: '百度',
                 url: 'https://voice.baidu.com/act/newpneumonia/newpneumonia'
-            }
+            },
+            {
+                name: '微脉',
+                url: 'https://m.myweimai.com/topic/epidemic_info.html'
+            },
         ];
 
         await this.setState({ loading: false, list });
