@@ -1,4 +1,4 @@
-import { DataItem, Contact } from '../service';
+import { DataItem, Organization } from '../service';
 import { BaseModel } from './BaseModel';
 
 export interface ServiceArea {
@@ -7,12 +7,9 @@ export interface ServiceArea {
     personal: boolean;
 }
 
-export interface Logistics extends DataItem {
+export interface Logistics extends DataItem, Organization {
     name?: string;
-    url?: string;
-    contacts?: Contact[];
     serviceArea?: ServiceArea[];
-    remark?: string;
 }
 
 export class LogisticsModel extends BaseModel<Logistics> {

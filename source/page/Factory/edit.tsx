@@ -107,7 +107,7 @@ export class FactoryEdit extends mixin<{ srid: string }, FactoryEditProps>() {
 
         await this.setState({ loading: true });
 
-        const { loading, supplies, ...data } = { ...this.state };
+        const { loading, supplies, ...data } = this.state;
 
         try {
             await factory.update(

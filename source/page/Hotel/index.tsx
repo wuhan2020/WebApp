@@ -7,8 +7,10 @@ import { Button } from 'boot-cell/source/Form/Button';
 import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
 import 'boot-cell/source/Content/EdgeDetector';
 import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
-import { hotel, session } from '../../model';
+
 import { relativeTimeTo, TimeUnitName } from '../../utility';
+import { hotel, session, Hotel } from '../../model';
+import { District, DistrictEvent, DistrictFilter } from '../../component';
 
 interface HotelPageState {
     loading?: boolean;
@@ -23,12 +25,30 @@ interface HotelPageState {
 export class HotelPage extends mixin<{}, HotelPageState>() {
     state = { loading: false, noMore: false };
 
+    districtFilter: District;
+
     loadMore = async ({ detail }: EdgeEvent) => {
-        if (detail !== 'bottom' || this.state.noMore) return;
+        const {
+            state: { loading, noMore },
+            districtFilter
+        } = this;
+
+        if (detail !== 'bottom' || loading || noMore) return;
 
         await this.setState({ loading: true });
 
-        const data = await hotel.getNextPage();
+        const data = await hotel.getNextPage(districtFilter);
+
+        await this.setState({ loading: false, noMore: !data });
+    };
+
+    changeDistrict = async ({ detail }: DistrictEvent) => {
+        this.districtFilter = detail;
+
+        await this.setState({ loading: true });
+
+        hotel.clear();
+        const data = await hotel.getNextPage(detail);
 
         await this.setState({ loading: false, noMore: !data });
     };
@@ -47,7 +67,7 @@ export class HotelPage extends mixin<{}, HotelPageState>() {
         creator: { mobilePhoneNumber, objectId: uid },
         objectId,
         createdAt
-    }: any) => {
+    }: Hotel) => {
         const { distance, unit } = relativeTimeTo(createdAt),
             authorized =
                 session.user?.objectId === uid ||
@@ -71,9 +91,9 @@ export class HotelPage extends mixin<{}, HotelPageState>() {
                             className="d-inline-block ml-3"
                             alignType="right"
                             title="联系方式"
-                            list={contacts.map(({ name, number }) => ({
-                                title: `${name}：${number}`,
-                                href: 'tel:' + number
+                            list={contacts.map(({ name, phone }) => ({
+                                title: `${name}：${phone}`,
+                                href: 'tel:' + phone
                             }))}
                         />
                     )}
@@ -119,6 +139,9 @@ export class HotelPage extends mixin<{}, HotelPageState>() {
                         </Button>
                     </span>
                 </header>
+
+                <DistrictFilter onChange={this.changeDistrict} />
+
                 <edge-detector onTouchEdge={this.loadMore}>
                     <div className="card-deck justify-content-around">
                         {hotel.list.map(this.renderItem)}

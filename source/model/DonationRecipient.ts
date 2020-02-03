@@ -1,5 +1,4 @@
-import { observable } from 'mobx';
-import { service, DataItem, Contact, Place } from '../service';
+import { DataItem, Contact, Place } from '../service';
 import { BaseModel } from './BaseModel';
 
 export interface BankAccount {
@@ -9,14 +8,7 @@ export interface BankAccount {
 }
 
 export interface DonationRecipient extends DataItem, Place {
-    name?: string; //机构名
-    url?: string; //官方网址
-    accounts?: BankAccount[]; //银行相关信息
-    bankNo?: string;
-    bankAddress?: string;
-    bankName?: string;
-    contacts?: Contact[]; //联系人（姓名、电话）
-    remark?: string; //备注
+    name?: string;
 }
 
 export class DonationRecipientModel extends BaseModel<DonationRecipient> {

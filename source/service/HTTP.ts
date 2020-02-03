@@ -47,12 +47,19 @@ export interface Contact {
     phone: string;
 }
 
+export interface Organization {
+    url?: string;
+    contacts?: Contact[];
+    remark?: string;
+    creator?: User;
+}
+
 export interface GeoCoord {
     latitude: number;
     longitude: number;
 }
 
-export interface Place {
+export interface Place extends Organization {
     province?: string;
     city?: string;
     district?: string;

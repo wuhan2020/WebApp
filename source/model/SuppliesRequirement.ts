@@ -11,11 +11,7 @@ export interface Supplies {
 
 export interface SuppliesRequirement extends DataItem, Place {
     hospital?: string;
-    url?: string;
     supplies?: Supplies[];
-    contacts?: Contact[];
-    remark?: string;
-    creator?: User;
 }
 
 export class SuppliesRequirementModel extends BaseModel<SuppliesRequirement> {

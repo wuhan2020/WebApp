@@ -68,7 +68,7 @@ export class ClinicEdit extends mixin<ClinicEditProps, ClinicEditState>() {
 
         await this.setState({ loading: true });
 
-        const { loading, ...data } = { ...this.state };
+        const { loading, ...data } = this.state;
 
         try {
             await clinic.update(data, this.cid);

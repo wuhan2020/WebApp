@@ -109,7 +109,7 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
 
         await this.setState({ loading: true });
 
-        const { loading, supplies, ...data } = { ...this.state };
+        const { loading, supplies, ...data } = this.state;
 
         try {
             await suppliesRequirement.update(

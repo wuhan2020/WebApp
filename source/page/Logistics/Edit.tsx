@@ -91,8 +91,7 @@ export class LogisticsEdit extends mixin<
 
         await this.setState({ loading: true });
 
-        const data = { ...this.state };
-        delete data.loading;
+        const { loading, ...data } = this.state;
 
         try {
             await logistics.update(data, this.srid);

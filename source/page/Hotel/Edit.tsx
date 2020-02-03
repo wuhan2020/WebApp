@@ -18,13 +18,13 @@ export class HotelEdit extends mixin<{ srid: string }, HotelEditState>() {
     srid = '';
 
     state = {
-        name: '',
-        address: '',
-        capacity: 0,
         loading: false,
+        name: '',
+        capacity: 0,
         province: '',
         city: '',
         district: '',
+        address: '',
         coords: {} as GeoCoord,
         url: '',
         contacts: [{} as Contact],
@@ -38,26 +38,28 @@ export class HotelEdit extends mixin<{ srid: string }, HotelEditState>() {
 
         const {
             name,
-            address,
+            capacity,
             province,
             city,
             district,
-            contacts,
-            capacity,
+            address,
             coords,
-            url
+            url,
+            contacts,
+            remark
         } = await hotel.getOne(this.srid);
 
         this.setState({
             name,
-            address,
+            capacity,
             province,
             city,
             district,
-            contacts,
-            capacity,
+            address,
             coords,
-            url
+            url,
+            contacts,
+            remark
         });
     }
 
@@ -88,11 +90,11 @@ export class HotelEdit extends mixin<{ srid: string }, HotelEditState>() {
 
         await this.setState({ loading: true });
 
-        const params = { ...this.state };
-        params.capacity *= 1;
+        const { loading, ...data } = this.state;
+        data.capacity *= 1;
 
         try {
-            await hotel.update(params, this.srid);
+            await hotel.update(data, this.srid);
 
             self.alert('发布成功！');
 
@@ -106,13 +108,14 @@ export class HotelEdit extends mixin<{ srid: string }, HotelEditState>() {
         _,
         {
             name,
+            province,
+            city,
+            district,
             address,
             capacity,
             contacts,
             url,
-            province,
-            city,
-            district,
+            remark,
             loading
         }: HotelEditState
     ) {
@@ -155,6 +158,12 @@ export class HotelEdit extends mixin<{ srid: string }, HotelEditState>() {
                         onChange={({ detail }: CustomEvent) =>
                             (this.state.contacts = detail)
                         }
+                    />
+                    <FormField
+                        is="textarea"
+                        name="remark"
+                        defaultValue={remark}
+                        label="备注"
                     />
                     <div className="form-group mt-3">
                         <Button type="submit" block disabled={loading}>

@@ -1,14 +1,10 @@
-import { DataItem, Contact, User } from '../service';
+import { DataItem, Organization } from '../service';
 import { BaseModel } from './BaseModel';
 
-export interface Clinic extends DataItem {
+export interface Clinic extends DataItem, Organization {
     name?: string;
-    url?: string;
-    contacts?: Contact[];
     startTime?: string;
     endTime?: string;
-    remark?: string;
-    creator?: User;
 }
 
 export class ClinicModel extends BaseModel<Clinic> {
