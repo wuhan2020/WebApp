@@ -1,7 +1,7 @@
 import { observable } from 'mobx';
 import { blobOf } from 'koajax';
 
-import { User, service, FileData, Role } from '../service';
+import { User, service, RoleNames, FileData } from '../service';
 
 export class Session {
     @observable
@@ -47,7 +47,7 @@ export class Session {
         this.save(null);
     }
 
-    hasRole(name: keyof typeof Role) {
+    hasRole(name: RoleNames) {
         return this.user?.roles.includes(name);
     }
 

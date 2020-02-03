@@ -30,10 +30,12 @@ export enum Role {
     Admin
 }
 
+export type RoleNames = keyof typeof Role;
+
 export interface User extends DataItem {
     username: string;
     mobilePhoneNumber: string;
-    roles: (keyof typeof Role)[];
+    roles: RoleNames[];
 }
 
 export interface FileData extends DataItem {

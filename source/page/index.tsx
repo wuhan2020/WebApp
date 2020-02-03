@@ -5,6 +5,7 @@ import { NavBar } from 'boot-cell/source/Navigator/NavBar';
 import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
 
 import { history, session } from '../model';
+import { RoleNames } from '../service';
 import menu from './menu';
 
 import { HomePage } from './Home';
@@ -21,6 +22,7 @@ import { DonationEdit } from './Donation/edit';
 import { ClinicList } from './Clinic';
 import { ClinicEdit } from './Clinic/Edit';
 import { MapsPage } from './Maps';
+import { UserAdmin } from './Admin/User';
 
 @observer
 @component({
@@ -43,7 +45,21 @@ export class PageRouter extends HTMLRouter {
         { paths: ['donation/edit'], component: DonationEdit },
         { paths: ['clinic'], component: ClinicList },
         { paths: ['clinic/edit'], component: ClinicEdit },
-        { paths: ['maps'], component: MapsPage }
+        { paths: ['maps'], component: MapsPage },
+        { paths: ['admin', 'admin/user'], component: UserAdmin }
+    ];
+
+    userMenu = [
+        {
+            title: '管理',
+            href: 'admin',
+            roles: ['Admin'] as RoleNames[]
+        },
+        {
+            title: '登出',
+            href: '#',
+            onClick: this.signOut
+        }
     ];
 
     connectedCallback() {
@@ -77,13 +93,11 @@ export class PageRouter extends HTMLRouter {
                             title={session.user.username}
                             alignType="right"
                             alignSize="md"
-                            list={[
-                                {
-                                    title: '登出',
-                                    href: '#',
-                                    onClick: this.signOut
-                                }
-                            ]}
+                            list={this.userMenu.filter(
+                                ({ roles }) =>
+                                    !roles ||
+                                    roles?.find(role => session.hasRole(role))
+                            )}
                         />
                     )}
                 </NavBar>

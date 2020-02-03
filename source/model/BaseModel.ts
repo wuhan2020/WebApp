@@ -13,6 +13,10 @@ export abstract class BaseModel<T extends DataItem> {
 
     abstract baseURI: string;
 
+    clear() {
+        this.list.length = this.pageIndex = this.totalCount = 0;
+    }
+
     async getNextPage<F = {}>(filter?: F) {
         if (this.pageIndex && this.list.length === this.totalCount) return;
 

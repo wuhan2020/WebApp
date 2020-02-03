@@ -1,5 +1,6 @@
 import { History } from 'cell-router/source';
 import { Session } from './Session';
+import { UserModel } from './User';
 import { SuppliesRequirementModel } from './SuppliesRequirement';
 import { LogisticsModel } from './Logistics';
 import { HotelModel } from './Hotel';
@@ -10,6 +11,7 @@ import { AreaModel } from './Area';
 
 export const history = new History();
 export const session = new Session();
+export const user = new UserModel();
 export const suppliesRequirement = new SuppliesRequirementModel();
 export const logistics = new LogisticsModel();
 export const hotel = new HotelModel();
@@ -18,6 +20,7 @@ export const donationRecipient = new DonationRecipientModel();
 export const factory = new FactoryModel();
 export const area = new AreaModel();
 
+export * from './Session';
 export * from './SuppliesRequirement';
 export * from './Factory';
 export * from './Logistics';

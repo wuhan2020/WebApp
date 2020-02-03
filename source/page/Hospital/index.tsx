@@ -51,7 +51,7 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
 
         await this.setState({ loading: true });
 
-        suppliesRequirement.pageIndex = suppliesRequirement.list.length = 0;
+        suppliesRequirement.clear();
         const data = await suppliesRequirement.getNextPage(detail);
 
         await this.setState({ loading: false, noMore: !data });
