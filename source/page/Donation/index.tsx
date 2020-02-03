@@ -3,7 +3,7 @@ import { observer } from 'mobx-web-cell';
 import { Button } from 'boot-cell/source/Form/Button';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { Table } from 'boot-cell/source/Content/Table';
-import { donationRecipient, DonationItem } from '../../model';
+import { donationRecipient, DonationRecipient } from '../../model';
 import 'boot-cell/source/Content/EdgeDetector';
 import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 
@@ -27,7 +27,7 @@ export class DonationPage extends mixin<{}, DonationPageState>() {
 
         await this.setState({ loading: true });
 
-        const data = await donationRecipient.getResultPage();
+        const data = await donationRecipient.getNextPage();
 
         await this.setState({ loading: false, noMore: !data });
     };
@@ -62,7 +62,7 @@ export class DonationPage extends mixin<{}, DonationPageState>() {
                                     accounts, //银行相关信息
                                     contacts, //联系人（姓名、电话）
                                     remark //备注
-                                }: DonationItem) => (
+                                }: DonationRecipient) => (
                                     <tr>
                                         <td className="text-nowrap">
                                             {url ? (

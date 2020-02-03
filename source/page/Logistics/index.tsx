@@ -1,11 +1,11 @@
-import { component, mixin, createCell, templateOf } from 'web-cell';
+import { component, mixin, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { Card } from 'boot-cell/source/Content/Card';
 import { Button } from 'boot-cell/source/Form/Button';
 import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 
-import { logistics, LogisticsItem, ServiceArea } from '../../model';
+import { logistics, Logistics, ServiceArea } from '../../model';
 import { Contact } from '../../service';
 
 interface LogisticsPageState {
@@ -34,13 +34,7 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
         await this.setState({ loading: false, noMore: !data });
     };
 
-    renderItem = ({
-        url,
-        name,
-        serviceArea,
-        contacts,
-        remark
-    }: LogisticsItem) => {
+    renderItem = ({ url, name, serviceArea, contacts, remark }: Logistics) => {
         return (
             <Card
                 className="mx-auto mb-4 mx-sm-1"

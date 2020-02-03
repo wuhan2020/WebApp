@@ -1,6 +1,6 @@
 {
     "name": "wuhan2020",
-    "version": "0.6.0",
+    "version": "0.8.0",
     "license": "AGPL-3.0",
     "author": "shiy2008@gmail.com",
     "description": "针对 2020 新冠病毒疫情中的武汉援助信息网站",
@@ -14,12 +14,13 @@
     },
     "main": "source/index.html",
     "dependencies": {
-        "@octokit/rest": "^16.40.2",
+        "@octokit/rest": "^16.42.2",
         "boot-cell": "^0.24.0",
         "browser-unhandled-rejection": "^1.0.2",
         "cell-router": "^2.0.0-rc.6",
         "classnames": "^2.2.6",
         "clipboard-polyfill": "^2.8.6",
+        "core-js": "^3.6.4",
         "iterable-observer": "^1.0.0-beta.2",
         "js-base64": "^2.5.1",
         "koajax": "^0.5.3",
@@ -35,7 +36,7 @@
         "cross-env": "^7.0.0",
         "eslint": "^6.8.0",
         "husky": "^4.2.1",
-        "lint-staged": "^10.0.6",
+        "lint-staged": "^10.0.7",
         "parcel-bundler": "^1.12.4",
         "prettier": "^1.19.1",
         "typescript": "^3.7.5",
@@ -64,9 +65,9 @@
     },
     "scripts": {
         "test": "lint-staged",
-        "start": "rm -rf dist/  &&  cross-env HTTP_ENV=local  parcel source/index.html --open",
+        "start:local": "rm -rf dist/  &&  cross-env HTTP_ENV=local  parcel source/index.html --open",
         "start:remote": "rm -rf dist/  &&  cross-env HTTP_ENV=remote  parcel source/index.html --open",
-        "start:test": "rm -rf dist/  &&  cross-env HTTP_ENV=test  parcel source/index.html --open",
+        "start": "rm -rf dist/  &&  cross-env HTTP_ENV=test  parcel source/index.html --open",
         "pack-dist": "parcel build source/index.html --public-url .",
         "pack-sw": "rm -f dist/sw.js.map  &&  workbox generateSW",
         "build": "rm -rf dist/  &&  npm run pack-dist  &&  npm run pack-sw"

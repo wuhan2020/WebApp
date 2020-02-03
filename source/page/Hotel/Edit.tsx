@@ -3,20 +3,17 @@ import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
 import { RouteRoot } from '../menu';
-import { HotelCanStaying, hotelCanStaying, history } from '../../model';
+import { Hotel, hotel, history } from '../../model';
 import { GeoCoord, Contact } from '../../service';
 import { SessionBox, AddressField, ContactField } from '../../component';
 
-type HotelCanStayingEditState = HotelCanStaying & { loading?: boolean };
+type HotelEditState = Hotel & { loading?: boolean };
 
 @component({
     tagName: 'hotel-edit',
     renderTarget: 'children'
 })
-export class HotelEdit extends mixin<
-    { srid: string },
-    HotelCanStayingEditState
->() {
+export class HotelEdit extends mixin<{ srid: string }, HotelEditState>() {
     @watch
     srid = '';
 
@@ -49,7 +46,7 @@ export class HotelEdit extends mixin<
             capacity,
             coords,
             url
-        } = await hotelCanStaying.getOne(this.srid);
+        } = await hotel.getOne(this.srid);
 
         this.setState({
             name,
@@ -96,7 +93,7 @@ export class HotelEdit extends mixin<
         params.capacity *= 1;
 
         try {
-            await hotelCanStaying.update(params, this.srid);
+            await hotel.update(params, this.srid);
 
             self.alert('发布成功！');
 
@@ -118,7 +115,7 @@ export class HotelEdit extends mixin<
             city,
             district,
             loading
-        }: HotelCanStayingEditState
+        }: HotelEditState
     ) {
         return (
             <SessionBox>

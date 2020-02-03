@@ -4,14 +4,14 @@ import { Button } from 'boot-cell/source/Form/Button';
 import { RouteRoot } from '../menu';
 import {
     donationRecipient,
-    DonationItem,
+    DonationRecipient,
     history,
     BankAccount
 } from '../../model';
 import { Contact } from '../../service';
 import { SessionBox, ContactField } from '../../component';
 
-type DonationEditProps = DonationItem & { loading?: boolean };
+type DonationEditProps = DonationRecipient & { loading?: boolean };
 
 @component({
     tagName: 'donation-edit',

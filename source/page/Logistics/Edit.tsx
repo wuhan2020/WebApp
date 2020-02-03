@@ -3,10 +3,10 @@ import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
 import { RouteRoot } from '../menu';
-import { LogisticsItem, logistics, history, ServiceArea } from '../../model';
+import { Logistics, logistics, history, ServiceArea } from '../../model';
 import { SessionBox, ContactField } from '../../component';
 
-type LogisticsEditProps = LogisticsItem & { loading?: boolean };
+type LogisticsEditProps = Logistics & { loading?: boolean };
 
 const initServiceArea: ServiceArea = {
     city: '',

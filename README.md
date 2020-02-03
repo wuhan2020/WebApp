@@ -31,6 +31,8 @@
 
 ## 本地开发
 
+### 连接线上测试服务器
+
 1. [安装 Node.js](https://nodejs.org/en/download/package-manager/)
 
 2. `git clone https://github.com/wuhan2020/WebApp.git`
@@ -42,15 +44,21 @@ npm install
 npm start
 ```
 
-4. 安装、启动[后端项目](https://github.com/wuhan2020/rest-api)
+（Windows 用户请在 [PowerShell 5.1+][13]、[Git Bash][14] 或 [WSL][15] 中运行）
 
-> 注：MacOS 下运行可能直接报错，解决方案见 https://github.com/wuhan2020/rest-api/issues/1
+### 连接本地测试服务器
 
-### 注意
+1. 安装、启动[后端项目](https://github.com/wuhan2020/rest-api)
 
--   Windows 用户请在 [PowerShell 5.1+][13]、[Git Bash][14] 或 [WSL][15] 中运行
+2. `npm run start:local`
 
 ## 特别感谢
+
+### 代码贡献者
+
+https://github.com/wuhan2020/WebApp/graphs/contributors
+
+### 域名贡献者
 
 [开源社][16] 提供国内备案域名 https://wuhan2020.kaiyuanshe.cn/ ，以解决[国内应用软件内分享时的障碍][17]。
 

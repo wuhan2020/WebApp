@@ -52,9 +52,9 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
         await this.setState({ loading: true });
 
         suppliesRequirement.pageIndex = suppliesRequirement.list.length = 0;
-        await suppliesRequirement.getNextPage(detail);
+        const data = await suppliesRequirement.getNextPage(detail);
 
-        await this.setState({ loading: false });
+        await this.setState({ loading: false, noMore: !data });
     };
 
     async clip2board(raw: string) {
