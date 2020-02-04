@@ -65,9 +65,11 @@ export class AddressField extends mixin<
         await this.setState({ loading: true });
 
         try {
-            const [
-                { pname, cityname, adname, address, location }
-            ] = await searchAddress(place);
+            const list = await searchAddress(place);
+
+            if (!list[0]) return;
+
+            const { pname, cityname, adname, address, location } = list[0];
 
             const [longitude, latitude] = location.split(',').map(Number);
 

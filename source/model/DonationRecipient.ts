@@ -1,4 +1,4 @@
-import { DataItem, Contact, Place } from '../service';
+import { DataItem, Organization } from '../service';
 import { BaseModel } from './BaseModel';
 
 export interface BankAccount {
@@ -7,8 +7,9 @@ export interface BankAccount {
     bank: string;
 }
 
-export interface DonationRecipient extends DataItem, Place {
+export interface DonationRecipient extends DataItem, Organization {
     name?: string;
+    accounts?: BankAccount[];
 }
 
 export class DonationRecipientModel extends BaseModel<DonationRecipient> {

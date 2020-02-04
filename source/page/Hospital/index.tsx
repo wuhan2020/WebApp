@@ -154,7 +154,7 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
 
     render(_, { loading, noMore }: HospitalPageState) {
         return (
-            <SpinnerBox cover={loading}>
+            <Fragment>
                 <header className="d-flex justify-content-between align-item-center my-3">
                     <h2>医院急需物资</h2>
                     <span>
@@ -167,14 +167,17 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                 <DistrictFilter onChange={this.changeDistrict} />
 
                 <edge-detector onTouchEdge={this.loadMore}>
-                    <div className="card-deck justify-content-around">
+                    <SpinnerBox
+                        cover={loading}
+                        className="card-deck justify-content-around"
+                    >
                         {suppliesRequirement.list.map(this.renderItem)}
-                    </div>
+                    </SpinnerBox>
                     <p slot="bottom" className="text-center mt-2">
                         {noMore ? '没有更多数据了' : '加载更多...'}
                     </p>
                 </edge-detector>
-            </SpinnerBox>
+            </Fragment>
         );
     }
 }

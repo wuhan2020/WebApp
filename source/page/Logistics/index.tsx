@@ -1,4 +1,4 @@
-import { component, mixin, createCell } from 'web-cell';
+import { component, mixin, createCell, Fragment } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { Card } from 'boot-cell/source/Content/Card';
@@ -99,7 +99,7 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
 
     render(_, { loading, noMore }: LogisticsPageState) {
         return (
-            <SpinnerBox cover={loading}>
+            <Fragment>
                 <header className="d-flex justify-content-between align-item-center my-3">
                     <h2>物流公司</h2>
                     <span>
@@ -110,14 +110,17 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
                 </header>
 
                 <edge-detector onTouchEdge={this.loadMore}>
-                    <div class="card-deck justify-content-around">
+                    <SpinnerBox
+                        cover={loading}
+                        className="card-deck justify-content-around"
+                    >
                         {logistics.list.map(this.renderItem)}
-                    </div>
+                    </SpinnerBox>
                     <p slot="bottom" className="text-center mt-2">
                         {noMore ? '没有更多数据了' : '加载更多...'}
                     </p>
                 </edge-detector>
-            </SpinnerBox>
+            </Fragment>
         );
     }
 }

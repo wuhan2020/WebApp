@@ -70,17 +70,19 @@ export class ClinicList extends mixin<{}, ClinicListState>() {
                 <p>
                     每日接诊起止时间：{startTime} ~ {endTime}
                 </p>
-                <ol className="list-unstyled">
-                    {contacts.map(({ name, phone }) => (
-                        <li>
-                            <a href={'tel:' + phone}>
-                                <i className="fa fa-phone d-inline-block bg-primary text-white p-1 rounded" />{' '}
-                                {name}：{phone}
-                            </a>
-                        </li>
-                    ))}
-                </ol>
-                <p className="text-muted">{remark}</p>
+                {contacts[0] && (
+                    <ol className="list-unstyled">
+                        {contacts.map(({ name, phone }) => (
+                            <li>
+                                <a href={'tel:' + phone}>
+                                    <i className="fa fa-phone d-inline-block bg-primary text-white p-1 rounded" />{' '}
+                                    {name}：{phone}
+                                </a>
+                            </li>
+                        ))}
+                    </ol>
+                )}
+                {remark && <p className="text-muted">{remark}</p>}
 
                 <footer className="mt-3 text-center text-mute">
                     <a href={'tel:' + mobilePhoneNumber}>{mobilePhoneNumber}</a>{' '}

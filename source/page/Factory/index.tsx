@@ -41,6 +41,7 @@ export class FactoryPage extends mixin<{}, FactoryPageState>() {
 
     renderItem = ({
         createdAt,
+        url,
         name,
         qualification,
         supplies = [],
@@ -63,33 +64,34 @@ export class FactoryPage extends mixin<{}, FactoryPageState>() {
             <Card
                 className="mx-auto mb-4 mx-sm-1"
                 style={{ minWidth: '20rem', maxWidth: '20rem' }}
-                title={name}
+                title={
+                    url ? (
+                        <a target="_blank" href={url}>
+                            {name}
+                        </a>
+                    ) : (
+                        name
+                    )
+                }
             >
-                <ul class="list-unstyled">
-                    <li>
-                        <b>资质证明</b>: {qualification}
-                        <br />
-                    </li>
-                    <li>
-                        <b>地址</b>: {province + city + district + address}
-                        <br />
-                    </li>
-                    <li>
-                        <b>备注</b>:{remark}
-                        <br />
-                    </li>
-                    <li>
-                        <b>物资</b>:
-                        <ol>
-                            {supplies.map(({ name, count, remark }) => (
-                                <li title={remark}>
-                                    {name}{' '}
-                                    <span className="badge">{count}个</span>
-                                </li>
-                            ))}
-                        </ol>
-                    </li>
-                </ul>
+                <p>
+                    资质证明：<code>{qualification}</code>
+                </p>
+                <p>地址：{province + city + district + address}</p>
+
+                <h6>物资产能</h6>
+                <ol>
+                    {supplies.map(({ name, count, remark }) => (
+                        <li title={remark}>
+                            {name}{' '}
+                            <span className="badge badge-danger">
+                                {count}个
+                            </span>
+                        </li>
+                    ))}
+                </ol>
+
+                {remark && <p className="text-muted">{remark}</p>}
 
                 <div className="text-center">
                     <Button
@@ -116,17 +118,14 @@ export class FactoryPage extends mixin<{}, FactoryPageState>() {
 
                 <footer className="mt-3 text-center text-mute">
                     <a href={'tel:' + mobilePhoneNumber}>{mobilePhoneNumber}</a>{' '}
-                    发布于 {Math.abs(distance)} {TimeUnitName[unit]}前<br />
-                    <a href="{url}" target="_blank">
-                        消息来源
-                    </a>
+                    发布于 {Math.abs(distance)} {TimeUnitName[unit]}前
                     {authorized && (
                         <Fragment>
                             <Button
                                 kind="warning"
                                 block
                                 className="mt-3"
-                                href={'hospital/edit?srid=' + objectId}
+                                href={'factory/edit?fid=' + objectId}
                             >
                                 编辑
                             </Button>
@@ -146,7 +145,7 @@ export class FactoryPage extends mixin<{}, FactoryPageState>() {
     };
     render(_, { loading, noMore }: FactoryPageState) {
         return (
-            <SpinnerBox cover={loading}>
+            <Fragment>
                 <header className="d-flex justify-content-between align-item-center my-3">
                     <h2>生产厂商</h2>
                     <span>
@@ -157,14 +156,17 @@ export class FactoryPage extends mixin<{}, FactoryPageState>() {
                 </header>
 
                 <edge-detector onTouchEdge={this.loadMore}>
-                    <div className="card-deck justify-content-around">
+                    <SpinnerBox
+                        cover={loading}
+                        className="card-deck justify-content-around"
+                    >
                         {factory.list.map(this.renderItem)}
-                    </div>
+                    </SpinnerBox>
                     <p slot="bottom" className="text-center mt-2">
                         {noMore ? '没有更多数据了' : '加载更多...'}
                     </p>
                 </edge-detector>
-            </SpinnerBox>
+            </Fragment>
         );
     }
 }

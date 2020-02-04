@@ -2,9 +2,10 @@ import { component, mixin, watch, createCell } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
-import { RouteRoot } from '../menu';
-import { searchAddress, GeoCoord, Contact } from '../../service';
+import { mergeList } from '../../utility';
+import { GeoCoord, Contact } from '../../service';
 import { history, Supplies, factory, Factory } from '../../model';
+import { RouteRoot } from '../menu';
 import CommonSupplies from '../Hospital/Supplies';
 import {
     SessionBox,
@@ -12,7 +13,6 @@ import {
     SuppliesField,
     ContactField
 } from '../../component';
-import { mergeList } from '../../utility';
 
 type FactoryEditProps = Factory & { loading?: boolean };
 
@@ -20,9 +20,9 @@ type FactoryEditProps = Factory & { loading?: boolean };
     tagName: 'factory-edit',
     renderTarget: 'children'
 })
-export class FactoryEdit extends mixin<{ srid: string }, FactoryEditProps>() {
+export class FactoryEdit extends mixin<{ fid: string }, FactoryEditProps>() {
     @watch
-    srid = '';
+    fid = '';
 
     state = {
         loading: false,
@@ -42,7 +42,7 @@ export class FactoryEdit extends mixin<{ srid: string }, FactoryEditProps>() {
     async connectedCallback() {
         super.connectedCallback();
 
-        if (!this.srid) return;
+        if (!this.fid) return;
 
         await this.setState({ loading: true });
 
@@ -58,7 +58,7 @@ export class FactoryEdit extends mixin<{ srid: string }, FactoryEditProps>() {
             supplies,
             contacts,
             remark
-        } = await factory.getOne(this.srid);
+        } = await factory.getOne(this.fid);
 
         this.setState({
             loading: false,
@@ -112,11 +112,11 @@ export class FactoryEdit extends mixin<{ srid: string }, FactoryEditProps>() {
         try {
             await factory.update(
                 { ...data, supplies: supplies.filter(({ count }) => count) },
-                this.srid
+                this.fid
             );
             self.alert('发布成功！');
 
-            history.push(RouteRoot.Hospital);
+            history.push(RouteRoot.Factory);
         } finally {
             await this.setState({ loading: false });
         }
