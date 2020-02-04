@@ -7,7 +7,7 @@ import { RouteRoot } from '../menu';
 import { SessionBox, ContactField } from '../../component';
 
 interface ClinicEditProps {
-    cid?: string;
+    dataId?: string;
 }
 
 type ClinicEditState = Clinic & { loading?: boolean };
@@ -18,7 +18,7 @@ type ClinicEditState = Clinic & { loading?: boolean };
 })
 export class ClinicEdit extends mixin<ClinicEditProps, ClinicEditState>() {
     @watch
-    cid = '';
+    dataId = '';
 
     state = {
         loading: false,
@@ -33,7 +33,7 @@ export class ClinicEdit extends mixin<ClinicEditProps, ClinicEditState>() {
     async connectedCallback() {
         super.connectedCallback();
 
-        if (!this.cid) return;
+        if (!this.dataId) return;
 
         await this.setState({ loading: true });
 
@@ -44,7 +44,7 @@ export class ClinicEdit extends mixin<ClinicEditProps, ClinicEditState>() {
             startTime,
             endTime,
             remark
-        } = await clinic.getOne(this.cid);
+        } = await clinic.getOne(this.dataId);
 
         await this.setState({
             loading: false,
@@ -68,10 +68,16 @@ export class ClinicEdit extends mixin<ClinicEditProps, ClinicEditState>() {
 
         await this.setState({ loading: true });
 
-        const { loading, ...data } = this.state;
+        const { loading, contacts, ...rest } = this.state;
 
         try {
-            await clinic.update(data, this.cid);
+            await clinic.update(
+                {
+                    ...rest,
+                    contacts: contacts.filter(({ name }) => name.trim())
+                },
+                this.dataId
+            );
 
             self.alert('发布成功！');
 
@@ -82,7 +88,7 @@ export class ClinicEdit extends mixin<ClinicEditProps, ClinicEditState>() {
     };
 
     render(
-        { cid }: ClinicEditProps,
+        { dataId }: ClinicEditProps,
         {
             name,
             url,
@@ -95,7 +101,7 @@ export class ClinicEdit extends mixin<ClinicEditProps, ClinicEditState>() {
     ) {
         return (
             <SessionBox>
-                <h2>义诊服务{cid ? '发布' : '修改'}</h2>
+                <h2>义诊服务{dataId ? '发布' : '修改'}</h2>
 
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
                     <FormField

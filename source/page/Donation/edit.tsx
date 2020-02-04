@@ -18,9 +18,12 @@ type DonationEditProps = DonationRecipient & { loading?: boolean };
     tagName: 'donation-edit',
     renderTarget: 'children'
 })
-export class DonationEdit extends mixin<{ drid: string }, DonationEditProps>() {
+export class DonationEdit extends mixin<
+    { dataId: string },
+    DonationEditProps
+>() {
     @watch
-    drid = '';
+    dataId = '';
 
     state = {
         loading: false,
@@ -34,7 +37,7 @@ export class DonationEdit extends mixin<{ drid: string }, DonationEditProps>() {
     async connectedCallback() {
         super.connectedCallback();
 
-        if (!this.drid) return;
+        if (!this.dataId) return;
 
         await this.setState({ loading: true });
 
@@ -44,7 +47,7 @@ export class DonationEdit extends mixin<{ drid: string }, DonationEditProps>() {
             accounts, //银行相关信息
             contacts, //联系人（姓名、电话）
             remark //备注
-        } = await donationRecipient.getOne(this.drid);
+        } = await donationRecipient.getOne(this.dataId);
 
         this.setState({
             loading: false,
@@ -89,7 +92,7 @@ export class DonationEdit extends mixin<{ drid: string }, DonationEditProps>() {
         const { loading, ...data } = this.state;
 
         try {
-            await donationRecipient.update(data, this.drid);
+            await donationRecipient.update(data, this.dataId);
 
             self.alert('发布成功！');
 

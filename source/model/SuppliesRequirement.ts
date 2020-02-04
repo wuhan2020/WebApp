@@ -1,4 +1,4 @@
-import { DataItem, Place, Contact, User } from '../service';
+import { DataItem, Place } from '../service';
 import { BaseModel } from './BaseModel';
 import { District } from '../component';
 

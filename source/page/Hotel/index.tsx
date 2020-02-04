@@ -10,7 +10,12 @@ import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 
 import { relativeTimeTo, TimeUnitName } from '../../utility';
 import { hotel, session, Hotel } from '../../model';
-import { District, DistrictEvent, DistrictFilter } from '../../component';
+import {
+    District,
+    DistrictEvent,
+    DistrictFilter,
+    AuditBar
+} from '../../component';
 
 interface HotelPageState {
     loading?: boolean;
@@ -70,95 +75,60 @@ export class HotelPage extends mixin<{}, HotelPageState>() {
         remark,
         coords: { latitude, longitude },
         contacts,
-        creator: { mobilePhoneNumber, objectId: uid },
-        objectId,
-        createdAt
-    }: Hotel) => {
-        const { distance, unit } = relativeTimeTo(createdAt),
-            authorized =
-                session.user?.objectId === uid ||
-                session.hasRole('Admin') ||
-                null;
+        ...rest
+    }: Hotel) => (
+        <Card
+            className="mx-auto mb-4 mx-sm-1"
+            style={{ minWidth: '20rem', maxWidth: '20rem' }}
+            title={
+                url ? (
+                    <a target="_blank" href={url}>
+                        {name}
+                    </a>
+                ) : (
+                    name
+                )
+            }
+        >
+            <p>
+                可接待人数：
+                <span className="badge badge-danger">{capacity}</span>
+            </p>
+            <p>地址：{province + city + district + address}</p>
 
-        return (
-            <Card
-                className="mx-auto mb-4 mx-sm-1"
-                style={{ minWidth: '20rem', maxWidth: '20rem' }}
-                title={
-                    url ? (
-                        <a target="_blank" href={url}>
-                            {name}
-                        </a>
-                    ) : (
-                        name
-                    )
-                }
-            >
-                <p>
-                    可接待人数：
-                    <span className="badge badge-danger">{capacity}</span>
-                </p>
-                <p>地址：{province + city + district + address}</p>
+            {remark && <p className="text-muted">{remark}</p>}
 
-                {remark && <p className="text-muted">{remark}</p>}
+            <div className="text-center">
+                <Button
+                    target="_top"
+                    href={
+                        '//uri.amap.com/marker?' +
+                        new URLSearchParams({
+                            src: self.location.origin,
+                            position: [longitude, latitude].join(),
+                            name,
+                            callnative: '1'
+                        })
+                    }
+                >
+                    地图导航
+                </Button>
 
-                <div className="text-center">
-                    <Button
-                        target="_top"
-                        href={
-                            '//uri.amap.com/marker?' +
-                            new URLSearchParams({
-                                src: self.location.origin,
-                                position: [longitude, latitude].join(),
-                                name,
-                                callnative: '1'
-                            })
-                        }
-                    >
-                        地图导航
-                    </Button>
-
-                    {contacts && (
-                        <DropMenu
-                            className="d-inline-block ml-3"
-                            alignType="right"
-                            title="联系方式"
-                            list={contacts.map(({ name, phone }) => ({
-                                title: `${name}：${phone}`,
-                                href: 'tel:' + phone
-                            }))}
-                        />
-                    )}
-                </div>
-                <footer className="mt-3 text-center text-mute">
-                    <a href={'tel:' + mobilePhoneNumber}>{mobilePhoneNumber}</a>{' '}
-                    发布于 {Math.abs(distance)} {TimeUnitName[unit]}前
-                    {authorized && (
-                        <Fragment>
-                            <Button
-                                kind="warning"
-                                block
-                                className="mt-3"
-                                href={'hotel/edit?srid=' + objectId}
-                            >
-                                编辑
-                            </Button>
-                            <Button
-                                kind="danger"
-                                block
-                                className="mt-3"
-                                onClick={() => {
-                                    hotel.delete(objectId);
-                                }}
-                            >
-                                删除
-                            </Button>
-                        </Fragment>
-                    )}
-                </footer>
-            </Card>
-        );
-    };
+                {contacts && (
+                    <DropMenu
+                        className="d-inline-block ml-3"
+                        alignType="right"
+                        title="联系方式"
+                        list={contacts.map(({ name, phone }) => ({
+                            title: `${name}：${phone}`,
+                            href: 'tel:' + phone
+                        }))}
+                    />
+                )}
+            </div>
+            <AuditBar scope="hotel" model={hotel} {...rest} />
+        </Card>
+    );
 
     render(_, { loading, noMore }: HotelPageState) {
         return (

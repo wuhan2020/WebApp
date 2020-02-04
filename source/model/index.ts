@@ -21,6 +21,7 @@ export const factory = new FactoryModel();
 export const area = new AreaModel();
 
 export * from './Session';
+export * from './BaseModel';
 export * from './SuppliesRequirement';
 export * from './Factory';
 export * from './Logistics';

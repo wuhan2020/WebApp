@@ -1,6 +1,7 @@
 import * as clipboard from 'clipboard-polyfill';
 import { component, mixin, createCell, Fragment } from 'web-cell';
 import { observer } from 'mobx-web-cell';
+
 import { Button } from 'boot-cell/source/Form/Button';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import 'boot-cell/source/Content/EdgeDetector';
@@ -8,13 +9,8 @@ import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 import { Card } from 'boot-cell/source/Content/Card';
 import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
 
-import {
-    donationRecipient,
-    BankAccount,
-    DonationRecipient,
-    session
-} from '../../model';
-import { relativeTimeTo, TimeUnitName } from '../../utility';
+import { AuditBar } from '../../component/AuditBar';
+import { donationRecipient, BankAccount, DonationRecipient } from '../../model';
 
 interface DonationPageState {
     loading?: boolean;
@@ -82,84 +78,49 @@ export class DonationPage extends mixin<{}, DonationPageState>() {
     );
 
     renderItem = ({
-        createdAt,
-        creator: { objectId: uid, mobilePhoneNumber },
         url,
         name,
         accounts,
         remark,
         contacts,
-        objectId
-    }: DonationRecipient) => {
-        const { distance, unit } = relativeTimeTo(createdAt),
-            authorized =
-                session.user?.objectId === uid ||
-                session.hasRole('Admin') ||
-                null;
+        ...rest
+    }: DonationRecipient) => (
+        <Card
+            className="mx-auto mb-4 mx-sm-1"
+            style={{ minWidth: '20rem', maxWidth: '20rem' }}
+            title={
+                url ? (
+                    <a target="_blank" href={url}>
+                        {name}
+                    </a>
+                ) : (
+                    name
+                )
+            }
+        >
+            <ol className="list-unstyled">
+                {accounts.map(this.renderAccount)}
+            </ol>
 
-        return (
-            <Card
-                className="mx-auto mb-4 mx-sm-1"
-                style={{ minWidth: '20rem', maxWidth: '20rem' }}
-                title={
-                    url ? (
-                        <a target="_blank" href={url}>
-                            {name}
-                        </a>
-                    ) : (
-                        name
-                    )
-                }
-            >
-                <ol className="list-unstyled">
-                    {accounts.map(this.renderAccount)}
-                </ol>
+            {remark && <p className="text-muted">{remark}</p>}
 
-                {remark && <p className="text-muted">{remark}</p>}
+            <div className="text-center">
+                {contacts && (
+                    <DropMenu
+                        className="d-inline-block ml-3"
+                        alignType="right"
+                        title="联系方式"
+                        list={contacts.map(({ name, phone }) => ({
+                            title: `${name}：${phone}`,
+                            href: 'tel:' + phone
+                        }))}
+                    />
+                )}
+            </div>
 
-                <div className="text-center">
-                    {contacts && (
-                        <DropMenu
-                            className="d-inline-block ml-3"
-                            alignType="right"
-                            title="联系方式"
-                            list={contacts.map(({ name, phone }) => ({
-                                title: `${name}：${phone}`,
-                                href: 'tel:' + phone
-                            }))}
-                        />
-                    )}
-                </div>
-
-                <footer className="mt-3 text-center text-mute">
-                    <a href={'tel:' + mobilePhoneNumber}>{mobilePhoneNumber}</a>{' '}
-                    发布于 {Math.abs(distance)} {TimeUnitName[unit]}前
-                    {authorized && (
-                        <Fragment>
-                            <Button
-                                kind="warning"
-                                block
-                                className="mt-3"
-                                href={'donation/edit?drid=' + objectId}
-                            >
-                                编辑
-                            </Button>
-                            <Button
-                                kind="danger"
-                                block
-                                className="mt-3"
-                                onClick={() =>
-                                    donationRecipient.delete(objectId)
-                                }
-                            >
-                                删除
-                            </Button>
-                        </Fragment>
-                    )}
-                </footer>
-            </Card>
-        );
-    };
+            <AuditBar scope="donation" model={donationRecipient} {...rest} />
+        </Card>
+    );
 
     render(_, { loading, noMore }: DonationPageState) {
         return (

@@ -13,9 +13,9 @@ type HotelEditState = Hotel & { loading?: boolean };
     tagName: 'hotel-edit',
     renderTarget: 'children'
 })
-export class HotelEdit extends mixin<{ srid: string }, HotelEditState>() {
+export class HotelEdit extends mixin<{ dataId: string }, HotelEditState>() {
     @watch
-    srid = '';
+    dataId = '';
 
     state = {
         loading: false,
@@ -34,7 +34,7 @@ export class HotelEdit extends mixin<{ srid: string }, HotelEditState>() {
     async connectedCallback() {
         super.connectedCallback();
 
-        if (!this.srid) return;
+        if (!this.dataId) return;
 
         const {
             name,
@@ -47,7 +47,7 @@ export class HotelEdit extends mixin<{ srid: string }, HotelEditState>() {
             url,
             contacts,
             remark
-        } = await hotel.getOne(this.srid);
+        } = await hotel.getOne(this.dataId);
 
         this.setState({
             name,
@@ -94,7 +94,7 @@ export class HotelEdit extends mixin<{ srid: string }, HotelEditState>() {
         data.capacity *= 1;
 
         try {
-            await hotel.update(data, this.srid);
+            await hotel.update(data, this.dataId);
 
             self.alert('发布成功！');
 

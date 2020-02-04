@@ -1,7 +1,7 @@
 import { observable } from 'mobx';
 import { DataItem, service, PageData } from '../service';
 
-export abstract class BaseModel<T extends DataItem> {
+export abstract class BaseModel<T extends DataItem = {}> {
     pageIndex = 0;
 
     pageSize = 10;

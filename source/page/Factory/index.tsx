@@ -1,14 +1,15 @@
-import { component, mixin, createCell, Fragment } from 'web-cell';
 import * as clipboard from 'clipboard-polyfill';
+import { component, mixin, createCell, Fragment } from 'web-cell';
+import { observer } from 'mobx-web-cell';
 
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { Button } from 'boot-cell/source/Form/Button';
-import { factory, session, Factory } from '../../model';
-import { relativeTimeTo, TimeUnitName } from '../../utility';
 import { Card } from 'boot-cell/source/Content/Card';
 import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
 import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
-import { observer } from 'mobx-web-cell';
+
+import { AuditBar } from '../../component/AuditBar';
+import { factory, Factory } from '../../model';
 
 interface FactoryPageState {
     loading?: boolean;
@@ -40,7 +41,6 @@ export class FactoryPage extends mixin<{}, FactoryPageState>() {
     }
 
     renderItem = ({
-        createdAt,
         url,
         name,
         qualification,
@@ -51,98 +51,62 @@ export class FactoryPage extends mixin<{}, FactoryPageState>() {
         address,
         contacts,
         remark,
-        creator: { mobilePhoneNumber, objectId: uid },
-        objectId
-    }: Factory) => {
-        const { distance, unit } = relativeTimeTo(createdAt),
-            authorized =
-                session.user?.objectId === uid ||
-                session.hasRole('Admin') ||
-                null;
+        ...rest
+    }: Factory) => (
+        <Card
+            className="mx-auto mb-4 mx-sm-1"
+            style={{ minWidth: '20rem', maxWidth: '20rem' }}
+            title={
+                url ? (
+                    <a target="_blank" href={url}>
+                        {name}
+                    </a>
+                ) : (
+                    name
+                )
+            }
+        >
+            <p>
+                资质证明：<code>{qualification}</code>
+            </p>
+            <p>地址：{province + city + district + address}</p>
 
-        return (
-            <Card
-                className="mx-auto mb-4 mx-sm-1"
-                style={{ minWidth: '20rem', maxWidth: '20rem' }}
-                title={
-                    url ? (
-                        <a target="_blank" href={url}>
-                            {name}
-                        </a>
-                    ) : (
-                        name
-                    )
-                }
-            >
-                <p>
-                    资质证明：<code>{qualification}</code>
-                </p>
-                <p>地址：{province + city + district + address}</p>
+            <h6>物资产能</h6>
+            <ol>
+                {supplies.map(({ name, count, remark }) => (
+                    <li title={remark}>
+                        {name}{' '}
+                        <span className="badge badge-danger">{count}个</span>
+                    </li>
+                ))}
+            </ol>
 
-                <h6>物资产能</h6>
-                <ol>
-                    {supplies.map(({ name, count, remark }) => (
-                        <li title={remark}>
-                            {name}{' '}
-                            <span className="badge badge-danger">
-                                {count}个
-                            </span>
-                        </li>
-                    ))}
-                </ol>
+            {remark && <p className="text-muted">{remark}</p>}
 
-                {remark && <p className="text-muted">{remark}</p>}
+            <div className="text-center">
+                <Button
+                    onClick={() =>
+                        this.clip2board(province + city + district + address)
+                    }
+                >
+                    复制地址
+                </Button>
+                {contacts && (
+                    <DropMenu
+                        className="d-inline-block ml-3"
+                        alignType="right"
+                        title="联系方式"
+                        list={contacts.map(({ name, phone }) => ({
+                            title: `${name}：${phone}`,
+                            href: 'tel:' + phone
+                        }))}
+                    />
+                )}
+            </div>
+            <AuditBar scope="factory" model={factory} {...rest} />
+        </Card>
+    );
 
-                <div className="text-center">
-                    <Button
-                        onClick={() =>
-                            this.clip2board(
-                                province + city + district + address
-                            )
-                        }
-                    >
-                        复制地址
-                    </Button>
-                    {contacts && (
-                        <DropMenu
-                            className="d-inline-block ml-3"
-                            alignType="right"
-                            title="联系方式"
-                            list={contacts.map(({ name, phone }) => ({
-                                title: `${name}：${phone}`,
-                                href: 'tel:' + phone
-                            }))}
-                        />
-                    )}
-                </div>
-
-                <footer className="mt-3 text-center text-mute">
-                    <a href={'tel:' + mobilePhoneNumber}>{mobilePhoneNumber}</a>{' '}
-                    发布于 {Math.abs(distance)} {TimeUnitName[unit]}前
-                    {authorized && (
-                        <Fragment>
-                            <Button
-                                kind="warning"
-                                block
-                                className="mt-3"
-                                href={'factory/edit?fid=' + objectId}
-                            >
-                                编辑
-                            </Button>
-                            <Button
-                                kind="danger"
-                                block
-                                className="mt-3"
-                                onClick={() => factory.delete(objectId)}
-                            >
-                                删除
-                            </Button>
-                        </Fragment>
-                    )}
-                </footer>
-            </Card>
-        );
-    };
     render(_, { loading, noMore }: FactoryPageState) {
         return (
             <Fragment>

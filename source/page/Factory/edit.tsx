@@ -20,9 +20,9 @@ type FactoryEditProps = Factory & { loading?: boolean };
     tagName: 'factory-edit',
     renderTarget: 'children'
 })
-export class FactoryEdit extends mixin<{ fid: string }, FactoryEditProps>() {
+export class FactoryEdit extends mixin<{ dataId: string }, FactoryEditProps>() {
     @watch
-    fid = '';
+    dataId = '';
 
     state = {
         loading: false,
@@ -42,7 +42,7 @@ export class FactoryEdit extends mixin<{ fid: string }, FactoryEditProps>() {
     async connectedCallback() {
         super.connectedCallback();
 
-        if (!this.fid) return;
+        if (!this.dataId) return;
 
         await this.setState({ loading: true });
 
@@ -58,7 +58,7 @@ export class FactoryEdit extends mixin<{ fid: string }, FactoryEditProps>() {
             supplies,
             contacts,
             remark
-        } = await factory.getOne(this.fid);
+        } = await factory.getOne(this.dataId);
 
         this.setState({
             loading: false,
@@ -112,7 +112,7 @@ export class FactoryEdit extends mixin<{ fid: string }, FactoryEditProps>() {
         try {
             await factory.update(
                 { ...data, supplies: supplies.filter(({ count }) => count) },
-                this.fid
+                this.dataId
             );
             self.alert('发布成功！');
 

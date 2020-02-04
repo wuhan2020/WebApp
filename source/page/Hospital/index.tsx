@@ -9,9 +9,13 @@ import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
 import 'boot-cell/source/Content/EdgeDetector';
 import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 
-import { relativeTimeTo, TimeUnitName } from '../../utility';
-import { session, suppliesRequirement, SuppliesRequirement } from '../../model';
-import { DistrictEvent, DistrictFilter, District } from '../../component';
+import { suppliesRequirement, SuppliesRequirement } from '../../model';
+import {
+    AuditBar,
+    DistrictEvent,
+    DistrictFilter,
+    District
+} from '../../component';
 
 interface HospitalPageState {
     loading?: boolean;
@@ -64,7 +68,6 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
     }
 
     renderItem = ({
-        createdAt,
         hospital,
         supplies = [],
         province,
@@ -72,85 +75,47 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
         district,
         address,
         contacts,
-        creator: { mobilePhoneNumber, objectId: uid },
-        objectId
-    }: SuppliesRequirement) => {
-        const { distance, unit } = relativeTimeTo(createdAt),
-            authorized =
-                session.user?.objectId === uid ||
-                session.hasRole('Admin') ||
-                null;
+        ...rest
+    }: SuppliesRequirement) => (
+        <Card
+            className="mx-auto mb-4 mx-sm-1"
+            style={{ minWidth: '20rem', maxWidth: '20rem' }}
+            title={hospital}
+        >
+            <ol>
+                {supplies.map(({ name, count, remark }) => (
+                    <li title={remark}>
+                        {name}{' '}
+                        <span className="badge badge-danger">{count}个</span>
+                    </li>
+                ))}
+            </ol>
 
-        return (
-            <Card
-                className="mx-auto mb-4 mx-sm-1"
-                style={{ minWidth: '20rem', maxWidth: '20rem' }}
-                title={hospital}
-            >
-                <ol>
-                    {supplies.map(({ name, count, remark }) => (
-                        <li title={remark}>
-                            {name}{' '}
-                            <span className="badge badge-danger">
-                                {count}个
-                            </span>
-                        </li>
-                    ))}
-                </ol>
+            <div className="text-center">
+                <Button
+                    onClick={() =>
+                        this.clip2board(province + city + district + address)
+                    }
+                >
+                    邮寄地址
+                </Button>
 
-                <div className="text-center">
-                    <Button
-                        onClick={() =>
-                            this.clip2board(
-                                province + city + district + address
-                            )
-                        }
-                    >
-                        邮寄地址
-                    </Button>
+                {contacts && (
+                    <DropMenu
+                        className="d-inline-block ml-3"
+                        alignType="right"
+                        title="联系方式"
+                        list={contacts.map(({ name, phone }) => ({
+                            title: `${name}：${phone}`,
+                            href: 'tel:' + phone
+                        }))}
+                    />
+                )}
+            </div>
 
-                    {contacts && (
-                        <DropMenu
-                            className="d-inline-block ml-3"
-                            alignType="right"
-                            title="联系方式"
-                            list={contacts.map(({ name, phone }) => ({
-                                title: `${name}：${phone}`,
-                                href: 'tel:' + phone
-                            }))}
-                        />
-                    )}
-                </div>
-
-                <footer className="mt-3 text-center text-mute">
-                    <a href={'tel:' + mobilePhoneNumber}>{mobilePhoneNumber}</a>{' '}
-                    发布于 {Math.abs(distance)} {TimeUnitName[unit]}前
-                    {authorized && (
-                        <Fragment>
-                            <Button
-                                kind="warning"
-                                block
-                                className="mt-3"
-                                href={'hospital/edit?srid=' + objectId}
-                            >
-                                编辑
-                            </Button>
-                            <Button
-                                kind="danger"
-                                block
-                                className="mt-3"
-                                onClick={() =>
-                                    suppliesRequirement.delete(objectId)
-                                }
-                            >
-                                删除
-                            </Button>
-                        </Fragment>
-                    )}
-                </footer>
-            </Card>
-        );
-    };
+            <AuditBar scope="hospital" model={suppliesRequirement} {...rest} />
+        </Card>
+    );
 
     render(_, { loading, noMore }: HospitalPageState) {
         return (

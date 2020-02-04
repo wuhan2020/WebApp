@@ -25,9 +25,12 @@ type HospitalEditProps = SuppliesRequirement & { loading?: boolean };
     tagName: 'hospital-edit',
     renderTarget: 'children'
 })
-export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
+export class HospitalEdit extends mixin<
+    { dataId: string },
+    HospitalEditProps
+>() {
     @watch
-    srid = '';
+    dataId = '';
 
     state = {
         loading: false,
@@ -46,7 +49,7 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
     async connectedCallback() {
         super.connectedCallback();
 
-        if (!this.srid) return;
+        if (!this.dataId) return;
 
         await this.setState({ loading: true });
 
@@ -61,7 +64,7 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
             supplies,
             contacts,
             remark
-        } = await suppliesRequirement.getOne(this.srid);
+        } = await suppliesRequirement.getOne(this.dataId);
 
         this.setState({
             loading: false,
@@ -114,7 +117,7 @@ export class HospitalEdit extends mixin<{ srid: string }, HospitalEditProps>() {
         try {
             await suppliesRequirement.update(
                 { ...data, supplies: supplies.filter(({ count }) => count) },
-                this.srid
+                this.dataId
             );
             self.alert('发布成功！');
 

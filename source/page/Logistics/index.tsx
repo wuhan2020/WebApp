@@ -5,6 +5,7 @@ import { Card } from 'boot-cell/source/Content/Card';
 import { Button } from 'boot-cell/source/Form/Button';
 import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 
+import { AuditBar } from '../../component';
 import { logistics, Logistics, ServiceArea } from '../../model';
 import { Contact } from '../../service';
 
@@ -29,73 +30,80 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
 
     loadMore = async ({ detail }: EdgeEvent) => {
         if (detail !== 'bottom' || this.state.noMore) return;
+
         await this.setState({ loading: true });
+
         const data = await logistics.getNextPage();
+
         await this.setState({ loading: false, noMore: !data });
     };
 
-    renderItem = ({ url, name, serviceArea, contacts, remark }: Logistics) => {
-        return (
-            <Card
-                className="mx-auto mb-4 mx-sm-1"
-                style={{ minWidth: '20rem', maxWidth: '20rem' }}
-                title={name}
-            >
-                <p className="mb-1">
-                    <a href={url} target="_blank">
-                        消息来源 &gt;&gt;
+    renderItem = ({
+        url,
+        name,
+        serviceArea,
+        contacts,
+        remark,
+        ...rest
+    }: Logistics) => (
+        <Card
+            className="mx-auto mb-4 mx-sm-1"
+            style={{ minWidth: '20rem', maxWidth: '20rem' }}
+            title={
+                url ? (
+                    <a target="_blank" href={url}>
+                        {name}
                     </a>
-                </p>
-                {serviceArea.map(this.renderServiceArea)}
-                {contacts.map(this.renderContact)}
-                <p>{remark}</p>
-            </Card>
-        );
-    };
+                ) : (
+                    name
+                )
+            }
+        >
+            {serviceArea.map(this.renderServiceArea)}
 
-    renderServiceArea = (serviceArea: ServiceArea) => {
-        const { city, direction, personal } = serviceArea;
-        return (
-            <div>
-                <p className="mb-1">
-                    <strong>地区：</strong>
-                    {city}
-                </p>
-                <p className="mb-1">
-                    <strong>方向：</strong>
-                    {DIREACTION[direction]}
-                </p>
-                {personal ? null : (
-                    <p className="mb-1">
-                        <span className="badge badge-danger">
-                            不接受个人捐赠
-                        </span>
-                    </p>
-                )}
-            </div>
-        );
-    };
+            {contacts.map(this.renderContact)}
 
-    renderContact = (contact: Contact) => {
-        const { name, phone } = contact;
-        return (
+            <p className="text-muted">{remark}</p>
+
+            <AuditBar scope="logistics" model={logistics} {...rest} />
+        </Card>
+    );
+
+    renderServiceArea = ({ city, direction, personal }: ServiceArea) => (
+        <Fragment>
             <p className="mb-1">
-                <a
-                    className="text-center text-decoration-none"
-                    href={'tel:' + phone}
-                >
-                    <i
-                        className="fa fa-phone btn btn-sm btn-primary"
-                        aria-hidden="true"
-                    />
-                    &nbsp;
-                    {name}
-                    &nbsp;
-                    {phone}
-                </a>
+                <strong>地区：</strong>
+                {city}
             </p>
-        );
-    };
+            <p className="mb-1">
+                <strong>方向：</strong>
+                {DIREACTION[direction]}
+            </p>
+            {personal ? null : (
+                <p className="mb-1">
+                    <span className="badge badge-danger">不接受个人捐赠</span>
+                </p>
+            )}
+        </Fragment>
+    );
+
+    renderContact = ({ name, phone }: Contact) => (
+        <p className="mb-1">
+            <a
+                className="text-center text-decoration-none"
+                href={'tel:' + phone}
+            >
+                <i
+                    className="fa fa-phone btn btn-sm btn-primary"
+                    aria-hidden="true"
+                />
+                &nbsp;
+                {name}
+                &nbsp;
+                {phone}
+            </a>
+        </p>
+    );
 
     render(_, { loading, noMore }: LogisticsPageState) {
         return (

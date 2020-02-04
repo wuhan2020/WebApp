@@ -19,11 +19,11 @@ const initServiceArea: ServiceArea = {
     renderTarget: 'children'
 })
 export class LogisticsEdit extends mixin<
-    { srid: string },
+    { dataId: string },
     LogisticsEditProps
 >() {
     @watch
-    srid = '';
+    dataId = '';
 
     state = {
         loading: false,
@@ -37,7 +37,7 @@ export class LogisticsEdit extends mixin<
     async connectedCallback() {
         super.connectedCallback();
 
-        if (!this.srid) return;
+        if (!this.dataId) return;
 
         await this.setState({ loading: true });
 
@@ -47,7 +47,7 @@ export class LogisticsEdit extends mixin<
             serviceArea,
             remark,
             contacts
-        } = await logistics.getOne(this.srid);
+        } = await logistics.getOne(this.dataId);
 
         this.setState({
             loading: false,
@@ -94,7 +94,7 @@ export class LogisticsEdit extends mixin<
         const { loading, ...data } = this.state;
 
         try {
-            await logistics.update(data, this.srid);
+            await logistics.update(data, this.dataId);
 
             self.alert('发布成功！');
 
@@ -187,7 +187,7 @@ export class LogisticsEdit extends mixin<
                     <ContactField
                         list={contacts}
                         onChange={({ detail }: CustomEvent) =>
-                            (this.state.contacts = event.detail)
+                            (this.state.contacts = detail)
                         }
                     />
                     <FormField
