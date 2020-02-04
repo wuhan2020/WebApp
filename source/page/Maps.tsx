@@ -16,6 +16,9 @@ interface MapPageState {
 }
 
 const resolution = 3600000 * 24;
+const isMobile = navigator.userAgent.match(
+    /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
+);
 
 @component({
     tagName: 'maps-page',
@@ -28,60 +31,44 @@ export class MapsPage extends mixin<{}, MapPageState>() {
         super.connectedCallback();
 
         // Here are the data where I find form issue #56, if the api-server has the data, plz change
-        const list: Map[] = [
-            {
-                name: '丁香园',
-                url: 'https://ncov.dxy.cn/ncovh5/view/pneumonia'
-            },
-            {
-                name: '腾讯',
-                url: 'https://news.qq.com/zt2020/page/feiyan.htm'
-            },
-            {
-                name: '百度',
-                url: 'https://voice.baidu.com/act/newpneumonia/newpneumonia'
-            },
-            {
-                name: '微脉',
-                url: 'https://m.myweimai.com/topic/epidemic_info.html'
-            },
-        ];
+        // const list: Map[] = [
+        //     {
+        //         name: '丁香园',
+        //         url: 'https://ncov.dxy.cn/ncovh5/view/pneumonia'
+        //     },
+        //     {
+        //         name: '腾讯',
+        //         url: 'https://news.qq.com/zt2020/page/feiyan.htm'
+        //     },
+        //     {
+        //         name: '百度',
+        //         url: 'https://voice.baidu.com/act/newpneumonia/newpneumonia'
+        //     },
+        //     {
+        //         name: '微脉',
+        //         url: 'https://m.myweimai.com/topic/epidemic_info.html'
+        //     },
+        // ];
 
-        await this.setState({ loading: false, list });
+        await this.setState({ loading: false });
     }
 
     render(_, { loading }: MapPageState) {
+        const mapContainerStyle: any = {
+            width: '100%'
+        };
+        if (isMobile) {
+            mapContainerStyle.height = 'calc(100vh - 60px)';
+        } else {
+            mapContainerStyle.height = 'calc(100vh - 100px)';
+        }
         return (
-            <div style={{ width: '100%', height: 'calc(100vh - 100px)' }}>
+            <div style={mapContainerStyle}>
                 <SpinnerBox cover={loading}>
                     <HierarchicalVirusMap
                         data={VirusData}
                         resolution={resolution}
                     />
-                    {/* <Table center striped hover>
-                        <thead>
-                            <tr>
-                                <th>地图来源</th>
-                                <th>地图链接</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {list.map(({ name, url }: Map) => (
-                                <tr>
-                                    <td className="text-nowrap">
-                                        {url ? (
-                                            <a target="_blank" href={url}>
-                                                {name}
-                                            </a>
-                                        ) : (
-                                            name
-                                        )}
-                                    </td>
-                                    <td className="text-nowrap">{url}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table> */}
                 </SpinnerBox>
             </div>
         );
