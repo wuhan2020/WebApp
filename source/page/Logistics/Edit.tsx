@@ -6,8 +6,6 @@ import { RouteRoot } from '../menu';
 import { Logistics, logistics, history, ServiceArea } from '../../model';
 import { SessionBox, ContactField } from '../../component';
 
-type LogisticsEditProps = Logistics & { loading?: boolean };
-
 const initServiceArea: ServiceArea = {
     city: '',
     direction: 'in',
@@ -18,15 +16,11 @@ const initServiceArea: ServiceArea = {
     tagName: 'logistics-edit',
     renderTarget: 'children'
 })
-export class LogisticsEdit extends mixin<
-    { dataId: string },
-    LogisticsEditProps
->() {
+export class LogisticsEdit extends mixin<{ dataId: string }, Logistics>() {
     @watch
     dataId = '';
 
     state = {
-        loading: false,
         name: '',
         url: '',
         serviceArea: [initServiceArea],
@@ -39,8 +33,6 @@ export class LogisticsEdit extends mixin<
 
         if (!this.dataId) return;
 
-        await this.setState({ loading: true });
-
         const {
             name,
             url,
@@ -50,7 +42,6 @@ export class LogisticsEdit extends mixin<
         } = await logistics.getOne(this.dataId);
 
         this.setState({
-            loading: false,
             name,
             url,
             serviceArea,
@@ -89,22 +80,14 @@ export class LogisticsEdit extends mixin<
     handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        await this.setState({ loading: true });
+        await logistics.update(this.state, this.dataId);
 
-        const { loading, ...data } = this.state;
+        self.alert('发布成功！');
 
-        try {
-            await logistics.update(data, this.dataId);
-
-            self.alert('发布成功！');
-
-            history.push(RouteRoot.Logistics);
-        } finally {
-            await this.setState({ loading: false });
-        }
+        history.push(RouteRoot.Logistics);
     };
 
-    render(_, { name, url, serviceArea, remark, contacts, loading }) {
+    render(_, { name, url, serviceArea, remark, contacts }) {
         return (
             <SessionBox>
                 <h2>物流信息发布</h2>
@@ -191,13 +174,17 @@ export class LogisticsEdit extends mixin<
                         }
                     />
                     <FormField
+                        is="textarea"
                         name="remark"
                         defaultValue={remark}
                         label="备注"
-                        placeholder="请填写备注信息"
                     />
                     <div className="form-group mt-3">
-                        <Button type="submit" block disabled={loading}>
+                        <Button
+                            type="submit"
+                            block
+                            disabled={logistics.loading}
+                        >
                             提交
                         </Button>
                         <Button

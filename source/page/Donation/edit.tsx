@@ -12,21 +12,18 @@ import {
 import { Contact } from '../../service';
 import { SessionBox, ContactField } from '../../component';
 
-type DonationEditProps = DonationRecipient & { loading?: boolean };
-
 @component({
     tagName: 'donation-edit',
     renderTarget: 'children'
 })
 export class DonationEdit extends mixin<
     { dataId: string },
-    DonationEditProps
+    DonationRecipient
 >() {
     @watch
     dataId = '';
 
     state = {
-        loading: false,
         name: '', //机构名
         contacts: [{} as Contact],
         accounts: [{} as BankAccount],
@@ -39,8 +36,6 @@ export class DonationEdit extends mixin<
 
         if (!this.dataId) return;
 
-        await this.setState({ loading: true });
-
         const {
             name, //机构名
             url, //官方网址
@@ -50,7 +45,6 @@ export class DonationEdit extends mixin<
         } = await donationRecipient.getOne(this.dataId);
 
         this.setState({
-            loading: false,
             name, //机构名
             url, //官方网址
             accounts, //银行相关信息
@@ -87,19 +81,11 @@ export class DonationEdit extends mixin<
     handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        await this.setState({ loading: true });
+        await donationRecipient.update(this.state, this.dataId);
 
-        const { loading, ...data } = this.state;
+        self.alert('发布成功！');
 
-        try {
-            await donationRecipient.update(data, this.dataId);
-
-            self.alert('发布成功！');
-
-            history.push(RouteRoot.Donation);
-        } finally {
-            await this.setState({ loading: false });
-        }
+        history.push(RouteRoot.Donation);
     };
 
     render(
@@ -109,9 +95,8 @@ export class DonationEdit extends mixin<
             url, //官方网址
             accounts, //银行相关信息
             contacts, //联系人（姓名、电话）
-            remark, //备注
-            loading
-        }: DonationEditProps
+            remark //备注
+        }: DonationRecipient
     ) {
         return (
             <SessionBox>
@@ -192,7 +177,11 @@ export class DonationEdit extends mixin<
                         defaultValue={remark}
                     />
                     <div className="form-group mt-3">
-                        <Button type="submit" block disabled={loading}>
+                        <Button
+                            type="submit"
+                            block
+                            disabled={donationRecipient.loading}
+                        >
                             提交
                         </Button>
                         <Button

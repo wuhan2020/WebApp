@@ -7,18 +7,15 @@ import { Hotel, hotel, history } from '../../model';
 import { GeoCoord, Contact } from '../../service';
 import { SessionBox, AddressField, ContactField } from '../../component';
 
-type HotelEditState = Hotel & { loading?: boolean };
-
 @component({
     tagName: 'hotel-edit',
     renderTarget: 'children'
 })
-export class HotelEdit extends mixin<{ dataId: string }, HotelEditState>() {
+export class HotelEdit extends mixin<{ dataId: string }, Hotel>() {
     @watch
     dataId = '';
 
     state = {
-        loading: false,
         name: '',
         capacity: 0,
         province: '',
@@ -88,20 +85,14 @@ export class HotelEdit extends mixin<{ dataId: string }, HotelEditState>() {
     handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        await this.setState({ loading: true });
-
-        const { loading, ...data } = this.state;
+        const data = this.state;
         data.capacity *= 1;
 
-        try {
-            await hotel.update(data, this.dataId);
+        await hotel.update(data, this.dataId);
 
-            self.alert('发布成功！');
+        self.alert('发布成功！');
 
-            history.push(RouteRoot.Hotel);
-        } finally {
-            await this.setState({ loading: false });
-        }
+        history.push(RouteRoot.Hotel);
     };
 
     render(
@@ -115,9 +106,8 @@ export class HotelEdit extends mixin<{ dataId: string }, HotelEditState>() {
             capacity,
             contacts,
             url,
-            remark,
-            loading
-        }: HotelEditState
+            remark
+        }: Hotel
     ) {
         return (
             <SessionBox>
@@ -166,7 +156,7 @@ export class HotelEdit extends mixin<{ dataId: string }, HotelEditState>() {
                         label="备注"
                     />
                     <div className="form-group mt-3">
-                        <Button type="submit" block disabled={loading}>
+                        <Button type="submit" block disabled={hotel.loading}>
                             提交
                         </Button>
                         <Button

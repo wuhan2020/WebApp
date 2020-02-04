@@ -9,11 +9,6 @@ import { AuditBar } from '../../component';
 import { logistics, Logistics, ServiceArea } from '../../model';
 import { Contact } from '../../service';
 
-interface LogisticsPageState {
-    loading?: boolean;
-    noMore?: boolean;
-}
-
 const DIREACTION = {
     in: '寄入',
     out: '寄出',
@@ -25,17 +20,9 @@ const DIREACTION = {
     tagName: 'logistics-page',
     renderTarget: 'children'
 })
-export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
-    state = { loading: false, noMore: false };
-
-    loadMore = async ({ detail }: EdgeEvent) => {
-        if (detail !== 'bottom' || this.state.noMore) return;
-
-        await this.setState({ loading: true });
-
-        const data = await logistics.getNextPage();
-
-        await this.setState({ loading: false, noMore: !data });
+export class LogisticsPage extends mixin() {
+    loadMore = ({ detail }: EdgeEvent) => {
+        if (detail === 'bottom') return logistics.getNextPage({});
     };
 
     renderItem = ({
@@ -105,10 +92,12 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
         </p>
     );
 
-    render(_, { loading, noMore }: LogisticsPageState) {
+    render() {
+        const { loading, list, noMore } = logistics;
+
         return (
             <Fragment>
-                <header className="d-flex justify-content-between align-item-center my-3">
+                <header className="d-flex justify-content-between align-items-center my-3">
                     <h2>物流公司</h2>
                     <span>
                         <Button kind="success" href="logistics/edit">
@@ -122,7 +111,7 @@ export class LogisticsPage extends mixin<{}, LogisticsPageState>() {
                         cover={loading}
                         className="card-deck justify-content-around"
                     >
-                        {logistics.list.map(this.renderItem)}
+                        {list.map(this.renderItem)}
                     </SpinnerBox>
                     <p slot="bottom" className="text-center mt-2">
                         {noMore ? '没有更多数据了' : '加载更多...'}

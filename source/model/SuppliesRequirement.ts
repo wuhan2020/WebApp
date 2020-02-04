@@ -14,10 +14,9 @@ export interface SuppliesRequirement extends DataItem, Place {
     supplies?: Supplies[];
 }
 
-export class SuppliesRequirementModel extends BaseModel<SuppliesRequirement> {
+export class SuppliesRequirementModel extends BaseModel<
+    SuppliesRequirement,
+    District
+> {
     baseURI = '/supplies/requirement/';
-
-    getNextPage(filter?: District) {
-        return super.getNextPage<District>(filter);
-    }
 }

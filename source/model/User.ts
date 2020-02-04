@@ -6,7 +6,7 @@ export interface Role extends DataItem {
     name: RoleNames;
 }
 
-export class UserModel extends BaseModel<User> {
+export class UserModel extends BaseModel<User, { phone?: string }> {
     baseURI = '/user/';
 
     @observable

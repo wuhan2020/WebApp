@@ -11,27 +11,14 @@ import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 import { AuditBar } from '../../component/AuditBar';
 import { factory, Factory } from '../../model';
 
-interface FactoryPageState {
-    loading?: boolean;
-    noMore?: boolean;
-}
-
 @observer
 @component({
     tagName: 'factory-page',
     renderTarget: 'children'
 })
-export class FactoryPage extends mixin<{}, FactoryPageState>() {
-    state = { loading: false, noMore: false };
-
-    loadMore = async ({ detail }: EdgeEvent) => {
-        if (detail !== 'bottom' || this.state.noMore) return;
-
-        await this.setState({ loading: true });
-
-        const data = await factory.getNextPage();
-
-        await this.setState({ loading: false, noMore: !data });
+export class FactoryPage extends mixin() {
+    loadMore = ({ detail }: EdgeEvent) => {
+        if (detail === 'bottom') return factory.getNextPage({});
     };
 
     async clip2board(raw: string) {
@@ -107,10 +94,12 @@ export class FactoryPage extends mixin<{}, FactoryPageState>() {
         </Card>
     );
 
-    render(_, { loading, noMore }: FactoryPageState) {
+    render() {
+        const { loading, list, noMore } = factory;
+
         return (
             <Fragment>
-                <header className="d-flex justify-content-between align-item-center my-3">
+                <header className="d-flex justify-content-between align-items-center my-3">
                     <h2>生产厂商</h2>
                     <span>
                         <Button kind="warning" href="factory/edit">
@@ -124,7 +113,7 @@ export class FactoryPage extends mixin<{}, FactoryPageState>() {
                         cover={loading}
                         className="card-deck justify-content-around"
                     >
-                        {factory.list.map(this.renderItem)}
+                        {list.map(this.renderItem)}
                     </SpinnerBox>
                     <p slot="bottom" className="text-center mt-2">
                         {noMore ? '没有更多数据了' : '加载更多...'}

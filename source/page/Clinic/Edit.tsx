@@ -10,18 +10,15 @@ interface ClinicEditProps {
     dataId?: string;
 }
 
-type ClinicEditState = Clinic & { loading?: boolean };
-
 @component({
     tagName: 'clinic-edit',
     renderTarget: 'children'
 })
-export class ClinicEdit extends mixin<ClinicEditProps, ClinicEditState>() {
+export class ClinicEdit extends mixin<ClinicEditProps, Clinic>() {
     @watch
     dataId = '';
 
     state = {
-        loading: false,
         name: '',
         url: '',
         startTime: '09:00',
@@ -35,8 +32,6 @@ export class ClinicEdit extends mixin<ClinicEditProps, ClinicEditState>() {
 
         if (!this.dataId) return;
 
-        await this.setState({ loading: true });
-
         const {
             name,
             url,
@@ -47,7 +42,6 @@ export class ClinicEdit extends mixin<ClinicEditProps, ClinicEditState>() {
         } = await clinic.getOne(this.dataId);
 
         await this.setState({
-            loading: false,
             name,
             url,
             contacts,
@@ -66,38 +60,24 @@ export class ClinicEdit extends mixin<ClinicEditProps, ClinicEditState>() {
     handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        await this.setState({ loading: true });
+        const { contacts, ...rest } = this.state;
 
-        const { loading, contacts, ...rest } = this.state;
+        await clinic.update(
+            {
+                ...rest,
+                contacts: contacts.filter(({ name }) => name.trim())
+            },
+            this.dataId
+        );
 
-        try {
-            await clinic.update(
-                {
-                    ...rest,
-                    contacts: contacts.filter(({ name }) => name.trim())
-                },
-                this.dataId
-            );
+        self.alert('发布成功！');
 
-            self.alert('发布成功！');
-
-            history.push(RouteRoot.Clinic);
-        } finally {
-            await this.setState({ loading: false });
-        }
+        history.push(RouteRoot.Clinic);
     };
 
     render(
         { dataId }: ClinicEditProps,
-        {
-            name,
-            url,
-            startTime,
-            endTime,
-            contacts,
-            remark,
-            loading
-        }: ClinicEditState
+        { name, url, startTime, endTime, contacts, remark }: Clinic
     ) {
         return (
             <SessionBox>
@@ -153,7 +133,7 @@ export class ClinicEdit extends mixin<ClinicEditProps, ClinicEditState>() {
                         label="备注"
                     />
                     <div className="form-group mt-3">
-                        <Button type="submit" block disabled={loading}>
+                        <Button type="submit" block disabled={clinic.loading}>
                             提交
                         </Button>
                         <Button

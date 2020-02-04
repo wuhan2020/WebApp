@@ -12,29 +12,14 @@ import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
 import { AuditBar } from '../../component/AuditBar';
 import { donationRecipient, BankAccount, DonationRecipient } from '../../model';
 
-interface DonationPageState {
-    loading?: boolean;
-    noMore?: boolean;
-}
-
 @observer
 @component({
     tagName: 'donation-page',
     renderTarget: 'children'
 })
-export class DonationPage extends mixin<{}, DonationPageState>() {
-    state = { loading: false, noMore: false };
-
-    loadMore = async ({ detail }: EdgeEvent) => {
-        const { loading, noMore } = this.state;
-
-        if (detail !== 'bottom' || loading || noMore) return;
-
-        await this.setState({ loading: true });
-
-        const data = await donationRecipient.getNextPage();
-
-        await this.setState({ loading: false, noMore: !data });
+export class DonationPage extends mixin() {
+    loadMore = ({ detail }: EdgeEvent) => {
+        if (detail === 'bottom') return donationRecipient.getNextPage({});
     };
 
     async clip2board(raw: string) {
@@ -122,10 +107,12 @@ export class DonationPage extends mixin<{}, DonationPageState>() {
         </Card>
     );
 
-    render(_, { loading, noMore }: DonationPageState) {
+    render() {
+        const { loading, list, noMore } = donationRecipient;
+
         return (
             <Fragment>
-                <header className="d-flex justify-content-between align-item-center my-3">
+                <header className="d-flex justify-content-between align-items-center my-3">
                     <h2>❤️爱心捐赠</h2>
                     <span>
                         <Button kind="success" href="donation/edit">
@@ -139,7 +126,7 @@ export class DonationPage extends mixin<{}, DonationPageState>() {
                         cover={loading}
                         className="card-deck justify-content-around"
                     >
-                        {donationRecipient.list.map(this.renderItem)}
+                        {list.map(this.renderItem)}
                     </SpinnerBox>
                     <p slot="bottom" className="text-center mt-2">
                         {noMore ? '没有更多数据了' : '加载更多...'}

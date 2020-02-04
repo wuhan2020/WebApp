@@ -10,31 +10,14 @@ import { Button } from 'boot-cell/source/Form/Button';
 import { AuditBar } from '../../component/AuditBar';
 import { clinic, Clinic } from '../../model';
 
-interface ClinicListState {
-    loading?: boolean;
-    noMore?: boolean;
-}
-
 @observer
 @component({
     tagName: 'clinic-list',
     renderTarget: 'children'
 })
-export class ClinicList extends mixin<{}, ClinicListState>() {
-    state = { loading: false, noMore: false };
-
-    loadMore = async ({ detail }: EdgeEvent) => {
-        const {
-            state: { loading, noMore }
-        } = this;
-
-        if (detail !== 'bottom' || loading || noMore) return;
-
-        await this.setState({ loading: true });
-
-        const data = await clinic.getNextPage();
-
-        await this.setState({ loading: false, noMore: !data });
+export class ClinicList extends mixin() {
+    loadMore = ({ detail }: EdgeEvent) => {
+        if (detail === 'bottom') return clinic.getNextPage({});
     };
 
     renderItem = ({
@@ -80,7 +63,9 @@ export class ClinicList extends mixin<{}, ClinicListState>() {
         </Card>
     );
 
-    render(_, { loading, noMore }: ClinicListState) {
+    render() {
+        const { loading, list, noMore } = clinic;
+
         return (
             <Fragment>
                 <header className="d-flex justify-content-between">
@@ -97,7 +82,7 @@ export class ClinicList extends mixin<{}, ClinicListState>() {
                         cover={loading}
                         className="card-deck justify-content-around"
                     >
-                        {clinic.list.map(this.renderItem)}
+                        {list.map(this.renderItem)}
                     </SpinnerBox>
                     <p slot="bottom" className="text-center mt-2">
                         {noMore ? '没有更多数据了' : '加载更多...'}

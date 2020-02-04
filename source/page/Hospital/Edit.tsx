@@ -19,21 +19,18 @@ import {
     SuppliesField
 } from '../../component';
 
-type HospitalEditProps = SuppliesRequirement & { loading?: boolean };
-
 @component({
     tagName: 'hospital-edit',
     renderTarget: 'children'
 })
 export class HospitalEdit extends mixin<
     { dataId: string },
-    HospitalEditProps
+    SuppliesRequirement
 >() {
     @watch
     dataId = '';
 
     state = {
-        loading: false,
         hospital: '',
         province: '',
         city: '',
@@ -51,8 +48,6 @@ export class HospitalEdit extends mixin<
 
         if (!this.dataId) return;
 
-        await this.setState({ loading: true });
-
         const {
             hospital,
             province,
@@ -67,7 +62,6 @@ export class HospitalEdit extends mixin<
         } = await suppliesRequirement.getOne(this.dataId);
 
         this.setState({
-            loading: false,
             hospital,
             province,
             city,
@@ -110,21 +104,15 @@ export class HospitalEdit extends mixin<
     handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        await this.setState({ loading: true });
+        const { supplies, ...data } = this.state;
 
-        const { loading, supplies, ...data } = this.state;
+        await suppliesRequirement.update(
+            { ...data, supplies: supplies.filter(({ count }) => count) },
+            this.dataId
+        );
+        self.alert('发布成功！');
 
-        try {
-            await suppliesRequirement.update(
-                { ...data, supplies: supplies.filter(({ count }) => count) },
-                this.dataId
-            );
-            self.alert('发布成功！');
-
-            history.push(RouteRoot.Hospital);
-        } finally {
-            await this.setState({ loading: false });
-        }
+        history.push(RouteRoot.Hospital);
     };
 
     render(
@@ -138,9 +126,8 @@ export class HospitalEdit extends mixin<
             url,
             supplies,
             contacts,
-            remark,
-            loading
-        }: HospitalEditProps
+            remark
+        }: SuppliesRequirement
     ) {
         return (
             <SessionBox>
@@ -189,7 +176,11 @@ export class HospitalEdit extends mixin<
                         defaultValue={remark}
                     />
                     <div className="form-group mt-3">
-                        <Button type="submit" block disabled={loading}>
+                        <Button
+                            type="submit"
+                            block
+                            disabled={suppliesRequirement.loading}
+                        >
                             提交
                         </Button>
                         <Button

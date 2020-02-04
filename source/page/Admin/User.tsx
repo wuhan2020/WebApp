@@ -10,38 +10,20 @@ import { User } from '../../service';
 import { user } from '../../model';
 import { Button } from 'boot-cell/source/Form/Button';
 
-interface UserAdminState {
-    loading?: boolean;
-    noMore?: boolean;
-}
-
 @observer
 @component({
     tagName: 'user-admin',
     renderTarget: 'children'
 })
-export class UserAdmin extends mixin<{}, UserAdminState>() {
-    state = {
-        loading: false,
-        noMore: false
-    };
-
-    filter: any;
+export class UserAdmin extends mixin() {
+    filter: { phone?: string } = {};
 
     connectedCallback() {
         user.getRoles();
     }
 
-    loadMore = async ({ detail }: EdgeEvent) => {
-        const { loading, noMore } = this.state;
-
-        if (detail !== 'bottom' || loading || noMore) return;
-
-        await this.setState({ loading: true });
-
-        const data = await user.getNextPage(this.filter);
-
-        await this.setState({ loading: false, noMore: !data });
+    loadMore = ({ detail }: EdgeEvent) => {
+        if (detail === 'bottom') return user.getNextPage(this.filter);
     };
 
     search = async (event: Event) => {
@@ -50,13 +32,9 @@ export class UserAdmin extends mixin<{}, UserAdminState>() {
         const { elements } = event.target as HTMLFormElement;
         const { value } = elements.item(0) as HTMLInputElement;
 
-        await this.setState({ loading: true });
-
-        user.clear();
-        const data = await user.getNextPage(
+        return user.getNextPage(
             (this.filter = value ? { phone: value } : undefined)
         );
-        await this.setState({ loading: false, noMore: !data });
     };
 
     toggleRole(uid: string, rid: string, { target }: MouseEvent) {
@@ -90,7 +68,9 @@ export class UserAdmin extends mixin<{}, UserAdminState>() {
         </tr>
     );
 
-    render(_, { loading, noMore }: UserAdminState) {
+    render() {
+        const { loading, list, noMore } = user;
+
         return (
             <SpinnerBox cover={loading}>
                 <header className="d-flex justify-content-between">
@@ -114,7 +94,7 @@ export class UserAdmin extends mixin<{}, UserAdminState>() {
                                 <th>角色</th>
                             </tr>
                         </thead>
-                        <tbody>{user.list.map(this.renderItem)}</tbody>
+                        <tbody>{list.map(this.renderItem)}</tbody>
                     </Table>
 
                     <p slot="bottom" className="text-center mt-2">

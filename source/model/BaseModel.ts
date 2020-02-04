@@ -1,7 +1,13 @@
 import { observable } from 'mobx';
 import { DataItem, service, PageData } from '../service';
 
-export abstract class BaseModel<T extends DataItem = {}> {
+export abstract class BaseModel<T extends DataItem = {}, F = {}> {
+    @observable
+    loading = false;
+
+    @observable
+    noMore = false;
+
     pageIndex = 0;
 
     pageSize = 10;
@@ -13,12 +19,23 @@ export abstract class BaseModel<T extends DataItem = {}> {
 
     abstract baseURI: string;
 
-    clear() {
+    reset() {
+        this.loading = this.noMore = false;
+
         this.list.length = this.pageIndex = this.totalCount = 0;
     }
 
-    async getNextPage<F = {}>(filter?: F) {
-        if (this.pageIndex && this.list.length === this.totalCount) return;
+    async getNextPage(filter: F, reset?: boolean) {
+        if (reset) this.reset();
+
+        if (this.loading || this.noMore) return;
+
+        if (this.pageIndex && this.list.length === this.totalCount) {
+            this.noMore = true;
+            return;
+        }
+
+        this.loading = true;
 
         const {
             body: { count, data }
@@ -33,10 +50,16 @@ export abstract class BaseModel<T extends DataItem = {}> {
 
         this.list = this.list.concat(data);
 
+        this.loading = false;
+
         if (data[0]) return data;
+
+        this.noMore = true;
     }
 
     async update(data: T, id?: string) {
+        this.loading = true;
+
         if (!id) {
             const { body } = await service.post<T>(this.baseURI, data);
 
@@ -47,17 +70,27 @@ export abstract class BaseModel<T extends DataItem = {}> {
 
             this.list[index] = body;
         }
+
+        this.loading = false;
     }
 
     async getOne(id: string) {
+        this.loading = true;
+
         const { body } = await service.get<T>(this.baseURI + id);
+
+        this.loading = false;
 
         return body;
     }
 
     async delete(id: string) {
+        this.loading = true;
+
         await service.delete(this.baseURI + id);
 
         this.list = this.list.filter(({ objectId }) => objectId !== id);
+
+        this.loading = false;
     }
 }
