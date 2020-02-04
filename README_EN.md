@@ -44,6 +44,10 @@ npm start
 
 4. Install and start the backend [rest-api](https://github.com/wuhan2020/rest-api)
 
+## slack channel
+
+[![Github](https://img.shields.io/badge/Slack%20Channel-%23team--frontend-green.svg?style=flat-square&colorB=blue)](https://app.slack.com/client/TT5U1VCPQ/CT93L48H5)
+
 ## Note
 
 Windows users please run in PowerShell 5.1+, Git Bash or WSL.

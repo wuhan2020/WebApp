@@ -52,6 +52,10 @@ npm start
 
 2. `npm run start:local`
 
+## 交流频道
+
+[![Github](https://img.shields.io/badge/Slack%20Channel-%23team--frontend-green.svg?style=flat-square&colorB=blue)](https://app.slack.com/client/TT5U1VCPQ/CT93L48H5)
+
 ## 特别感谢
 
 ### 代码贡献者
