@@ -88,14 +88,23 @@ export class HospitalPage extends mixin<{}, HospitalPageState>() {
                 title={hospital}
             >
                 <ol>
-                    {supplies.map(({ name, count, remark }) => (
-                        <li title={remark}>
-                            {name}{' '}
-                            <span className="badge badge-danger">
-                                {count}个
-                            </span>
-                        </li>
-                    ))}
+                    {supplies.map(({ name, count, remark }) => {
+                        let n = +count;
+                        let showCount = '';
+                        if (n === 1) {
+                            showCount = '数量不限';
+                        } else {
+                            showCount = count + '个';
+                        }
+                        return (
+                            <li title={remark}>
+                                {name}{' '}
+                                <span className="badge badge-danger">
+                                    {showCount}
+                                </span>
+                            </li>
+                        );
+                    })}
                 </ol>
 
                 <div className="text-center">
