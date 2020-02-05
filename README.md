@@ -58,6 +58,13 @@ npm start
 
 ## 特别感谢
 
+### 疫情数据提供方
+
+特别感谢以下同学提供了来自丁香园的疫情数据：
+
+-   [@hack-fang](https://github.com/hack-fang/nCov/blob/master/API.md)
+-   [@BlankerL](https://github.com/BlankerL/DXY-2019-nCoV-Crawler)
+
 ### 代码贡献者
 
 https://github.com/wuhan2020/WebApp/graphs/contributors
