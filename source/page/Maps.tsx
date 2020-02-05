@@ -76,10 +76,12 @@ export class MapsPage extends mixin<{}, MapPageState>() {
         return (
             <div style={mapContainerStyle}>
                 <SpinnerBox cover={loading}>
-                    <HierarchicalVirusMap
-                        data={virusData}
-                        resolution={resolution}
-                    />
+                    {virusData ? (
+                        <HierarchicalVirusMap
+                            data={virusData}
+                            resolution={resolution}
+                        />
+                    ) : null}
                 </SpinnerBox>
             </div>
         );
