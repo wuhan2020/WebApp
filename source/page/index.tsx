@@ -21,7 +21,7 @@ import { DonationPage } from './Donation/index';
 import { DonationEdit } from './Donation/edit';
 import { ClinicList } from './Clinic';
 import { ClinicEdit } from './Clinic/Edit';
-import { MapsPage } from './Maps';
+import { MapsPage } from './Map';
 import { UserAdmin } from './Admin/User';
 
 @observer

@@ -2,21 +2,19 @@
 import { component, createCell, mixin } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
-import { HierarchicalVirusMap } from 'wuhan2020-map-viz';
+
+import { HierarchicalVirusMap } from './component';
 import {
     Series,
     ProvinceData,
     CountryOverviewData,
-    CountryData
-} from 'wuhan2020-map-viz/source/adapters/patientStatInterface';
-
-import {
+    CountryData,
     convertCountry,
     convertProvincesSeries,
     convertCountrySeries
-} from 'wuhan2020-map-viz/source/adapters/isaaclin';
-
-import { getVirusMapData } from '../service/mapData';
+} from './adapter';
+import { getVirusMapData } from '../../service/mapData';
+import { isLandscape } from '../../utility';
 
 interface MapPageState {
     loading?: boolean;
@@ -28,7 +26,6 @@ interface MapPageState {
 }
 
 const resolution = 3600000 * 24;
-const isMobile = document.body.clientWidth < 720;
 
 @observer
 @component({
@@ -44,9 +41,11 @@ export class MapsPage extends mixin<{}, MapPageState>() {
     }
 
     loadMapData = async () => {
-        const rawData = await getVirusMapData('history');
-        const rawCurrentData = await getVirusMapData('current');
-        const overviewData = await getVirusMapData('overall');
+        const [rawData, rawCurrentData, overviewData] = await Promise.all([
+            getVirusMapData('history'),
+            getVirusMapData('current'),
+            getVirusMapData('overall')
+        ]);
 
         const virusData = {
             provincesSeries: convertProvincesSeries(
@@ -66,13 +65,10 @@ export class MapsPage extends mixin<{}, MapPageState>() {
 
     render(_, { loading, virusData }: MapPageState) {
         const mapContainerStyle: any = {
-            width: '100%'
+            width: '100%',
+            height: isLandscape() ? 'calc(100vh - 100px)' : 'calc(100vh - 60px)'
         };
-        if (isMobile) {
-            mapContainerStyle.height = 'calc(100vh - 60px)';
-        } else {
-            mapContainerStyle.height = 'calc(100vh - 100px)';
-        }
+
         return (
             <div style={mapContainerStyle}>
                 <SpinnerBox cover={loading}>

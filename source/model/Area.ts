@@ -1,16 +1,16 @@
 import { observable } from 'mobx';
 
-import { getSubDistricts } from '../service';
+import { District, getSubDistricts } from '../service';
 
 export class AreaModel {
     @observable
-    provinces = [];
+    provinces: District[] = [];
 
     @observable
-    cities = [];
+    cities: District[] = [];
 
     @observable
-    districts = [];
+    districts: District[] = [];
 
     constructor() {
         getSubDistricts().then(list => (this.provinces = list));

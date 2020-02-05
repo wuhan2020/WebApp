@@ -49,6 +49,11 @@ export default [
         icon: 'map'
     },
     {
+        title: '红会监工',
+        href: 'https://weileizeng.github.io/red-cross/',
+        icon: 'plus-square'
+    },
+    {
         title: '开放源代码',
         href: 'https://github.com/wuhan2020/WebApp'
     }

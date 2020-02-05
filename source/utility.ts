@@ -88,3 +88,13 @@ export function transform<T>(
 
     return data;
 }
+
+// 宽屏模式（通常是 PC）
+export function isLandscape() {
+    const { documentElement: html, body } = document;
+
+    return (
+        (self.innerWidth || html.clientWidth || body.clientWidth) >
+        (self.innerHeight || html.clientHeight || body.clientHeight) * 0.8
+    );
+}

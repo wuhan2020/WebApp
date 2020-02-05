@@ -28,7 +28,7 @@ export async function searchAddress(keywords: string) {
     return pois.sort(({ name }) => (name === keywords ? -1 : 1));
 }
 
-interface District {
+export interface District {
     adcode: string;
     name: string;
     level: string;
