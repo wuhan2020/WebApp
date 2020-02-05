@@ -21,7 +21,6 @@ import { DonationPage } from './Donation/index';
 import { DonationEdit } from './Donation/edit';
 import { ClinicList } from './Clinic';
 import { ClinicEdit } from './Clinic/Edit';
-import { MapsPage } from './Map';
 import { UserAdmin } from './Admin/User';
 
 @observer
@@ -45,7 +44,10 @@ export class PageRouter extends HTMLRouter {
         { paths: ['donation/edit'], component: DonationEdit },
         { paths: ['clinic'], component: ClinicList },
         { paths: ['clinic/edit'], component: ClinicEdit },
-        { paths: ['maps'], component: MapsPage },
+        {
+            paths: ['maps'],
+            component: async () => (await import('./Map')).MapsPage
+        },
         { paths: ['admin', 'admin/user'], component: UserAdmin }
     ];
 

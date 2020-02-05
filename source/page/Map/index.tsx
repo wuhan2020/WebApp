@@ -14,7 +14,7 @@ import {
     convertCountrySeries
 } from './adapter';
 import { getVirusMapData } from '../../service/mapData';
-import { isLandscape } from '../../utility';
+import style from './index.module.css';
 
 interface MapPageState {
     loading?: boolean;
@@ -36,7 +36,10 @@ export class MapsPage extends mixin<{}, MapPageState>() {
     state = { loading: true, virusData: null };
 
     async connectedCallback() {
+        this.classList.add(style.box);
+
         super.connectedCallback();
+
         this.loadMapData();
     }
 
@@ -64,22 +67,15 @@ export class MapsPage extends mixin<{}, MapPageState>() {
     };
 
     render(_, { loading, virusData }: MapPageState) {
-        const mapContainerStyle: any = {
-            width: '100%',
-            height: isLandscape() ? 'calc(100vh - 100px)' : 'calc(100vh - 60px)'
-        };
-
         return (
-            <div style={mapContainerStyle}>
-                <SpinnerBox cover={loading}>
-                    {virusData ? (
-                        <HierarchicalVirusMap
-                            data={virusData}
-                            resolution={resolution}
-                        />
-                    ) : null}
-                </SpinnerBox>
-            </div>
+            <SpinnerBox cover={loading}>
+                {virusData ? (
+                    <HierarchicalVirusMap
+                        data={virusData}
+                        resolution={resolution}
+                    />
+                ) : null}
+            </SpinnerBox>
         );
     }
 }

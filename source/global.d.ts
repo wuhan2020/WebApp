@@ -1,5 +1,5 @@
-declare module '*.yml' {
-    const data: { [key: string]: any };
+declare module '*.css' {
+    const map: { [key: string]: string };
 
-    export default data;
+    export default map;
 }

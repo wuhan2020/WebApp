@@ -58,11 +58,13 @@ const nations = [
 ];
 
 export function long2short(name: string) {
-    nations.forEach(n => (name = name.replace(n, '')));
-    name = name.replace('自治', '');
+    const nation = nations.find(nation => name.includes(nation));
+
+    name = name.replace(nation, '').replace('自治', '');
+
     if (name.endsWith('林区')) return name;
-    if (name.endsWith('区') || name.endsWith('市'))
-        return name.slice(0, name.length - 1);
+
+    if (name.endsWith('区') || name.endsWith('市')) return name.slice(0, -1);
 
     return name;
 }

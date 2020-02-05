@@ -1,0 +1,9 @@
+.box {
+    width: 100%;
+    height: calc(100vh - 60px);
+}
+@media (orientation: landscape) {
+    .box {
+        height: calc(100vh - 100px);
+    }
+}

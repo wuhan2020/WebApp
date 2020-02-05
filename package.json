@@ -14,7 +14,7 @@
     },
     "main": "source/index.html",
     "dependencies": {
-        "@octokit/rest": "^16.43.0",
+        "@octokit/rest": "^16.43.1",
         "boot-cell": "^0.24.0",
         "browser-unhandled-rejection": "^1.0.2",
         "cell-router": "^2.0.0-rc.6",
@@ -31,18 +31,29 @@
         "yaml": "^1.7.2"
     },
     "devDependencies": {
+        "@types/classnames": "^2.2.9",
         "@types/echarts": "^4.4.2",
         "@types/js-base64": "^2.3.1",
         "@types/yaml": "^1.2.0",
-        "@typescript-eslint/parser": "^2.18.0",
+        "@typescript-eslint/parser": "^2.19.0",
+        "autoprefixer": "^9.7.4",
         "cross-env": "^7.0.0",
         "eslint": "^6.8.0",
         "husky": "^4.2.1",
         "lint-staged": "^10.0.7",
         "parcel-bundler": "^1.12.4",
+        "postcss-modules": "^1.5.0",
         "prettier": "^1.19.1",
         "typescript": "^3.7.5",
         "workbox-cli": "^4.3.1"
+    },
+    "postcss": {
+        "modules": true,
+        "plugins": {
+            "autoprefixer": {
+                "grid": true
+            }
+        }
     },
     "prettier": {
         "singleQuote": true,
@@ -72,7 +83,7 @@
         "start": "rm -rf dist/  &&  cross-env HTTP_ENV=test  parcel source/index.html --open",
         "pack-dist": "parcel build source/index.html --public-url .",
         "pack-sw": "rm -f dist/sw.js.map  &&  workbox generateSW",
-        "build": "rm -rf dist/ && npm run pack-dist && npm run pack-sw"
+        "build": "rm -rf dist/  &&  npm run pack-dist  &&  npm run pack-sw"
     },
     "husky": {
         "hooks": {
