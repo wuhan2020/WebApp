@@ -27,7 +27,7 @@
         "mobx": "^5.15.4",
         "mobx-web-cell": "^0.2.5",
         "web-cell": "^2.0.0-rc.15",
-        "wuhan2020-map-viz": "git+https://github.com/wuhan2020/map-viz.git",
+        "wuhan2020-map-viz": "git+https://github.com/wuhan2020/map-viz.git#web-cell",
         "yaml": "^1.7.2"
     },
     "devDependencies": {
@@ -71,7 +71,7 @@
         "start": "rm -rf dist/  &&  cross-env HTTP_ENV=test  parcel source/index.html --open",
         "pack-dist": "parcel build source/index.html --public-url .",
         "pack-sw": "rm -f dist/sw.js.map  &&  workbox generateSW",
-        "build": "rm -rf dist/  &&  npm run pack-dist  &&  npm run pack-sw"
+        "build": "rm -rf dist/ && npm run pack-dist && npm run pack-sw"
     },
     "husky": {
         "hooks": {
