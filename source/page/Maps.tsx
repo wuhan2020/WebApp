@@ -1,10 +1,8 @@
-// eslint-disable-next-line no-unused-vars
+/* eslint-disable no-unused-vars */
 import { component, createCell, mixin } from 'web-cell';
-// eslint-disable-next-line no-unused-vars
+import { observer } from 'mobx-web-cell';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
-// eslint-disable-next-line no-unused-vars
 import { HierarchicalVirusMap } from 'wuhan2020-map-viz';
-// eslint-disable-next-line no-unused-vars
 import {
     Series,
     ProvinceData,
@@ -20,11 +18,6 @@ import {
 
 import { getVirusMapData } from '../service/mapData';
 
-interface Map {
-    name: string;
-    url: string;
-}
-
 interface MapPageState {
     loading?: boolean;
     virusData?: {
@@ -37,6 +30,7 @@ interface MapPageState {
 const resolution = 3600000 * 24;
 const isMobile = document.body.clientWidth < 720;
 
+@observer
 @component({
     tagName: 'maps-page',
     renderTarget: 'children'
@@ -46,7 +40,10 @@ export class MapsPage extends mixin<{}, MapPageState>() {
 
     async connectedCallback() {
         super.connectedCallback();
+        this.loadMapData();
+    }
 
+    loadMapData = async () => {
         const rawData = await getVirusMapData('history');
         const rawCurrentData = await getVirusMapData('current');
         const overviewData = await getVirusMapData('overall');
@@ -65,7 +62,7 @@ export class MapsPage extends mixin<{}, MapPageState>() {
         };
 
         await this.setState({ loading: false, virusData });
-    }
+    };
 
     render(_, { loading, virusData }: MapPageState) {
         const mapContainerStyle: any = {
@@ -76,19 +73,15 @@ export class MapsPage extends mixin<{}, MapPageState>() {
         } else {
             mapContainerStyle.height = 'calc(100vh - 100px)';
         }
-        if (virusData) {
-            return (
-                <div style={mapContainerStyle}>
-                    <SpinnerBox cover={loading}>
-                        <HierarchicalVirusMap
-                            data={virusData}
-                            resolution={resolution}
-                        />
-                    </SpinnerBox>
-                </div>
-            );
-        } else {
-            return null;
-        }
+        return (
+            <div style={mapContainerStyle}>
+                <SpinnerBox cover={loading}>
+                    <HierarchicalVirusMap
+                        data={virusData}
+                        resolution={resolution}
+                    />
+                </SpinnerBox>
+            </div>
+        );
     }
 }
