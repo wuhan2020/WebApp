@@ -1,8 +1,8 @@
-import { DataItem, Place } from '../service';
+import { VerifiableData, VerifiableModel } from './BaseModel';
+import { Place } from '../service';
 import { Supplies } from './SuppliesRequirement';
-import { BaseModel } from './BaseModel';
 
-export interface Factory extends DataItem, Place {
+export interface Factory extends VerifiableData, Place {
     name?: string;
     qualification?: string;
     category?: string;
@@ -10,6 +10,6 @@ export interface Factory extends DataItem, Place {
     supplies?: Supplies[];
 }
 
-export class FactoryModel extends BaseModel<Factory> {
+export class FactoryModel extends VerifiableModel<Factory> {
     baseURI = '/vendor/';
 }

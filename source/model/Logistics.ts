@@ -1,5 +1,5 @@
-import { DataItem, Organization } from '../service';
-import { BaseModel } from './BaseModel';
+import { VerifiableData, VerifiableModel } from './BaseModel';
+import { Organization } from '../service';
 
 export interface ServiceArea {
     city: string;
@@ -7,11 +7,11 @@ export interface ServiceArea {
     personal: boolean;
 }
 
-export interface Logistics extends DataItem, Organization {
+export interface Logistics extends VerifiableData, Organization {
     name?: string;
     serviceArea?: ServiceArea[];
 }
 
-export class LogisticsModel extends BaseModel<Logistics> {
+export class LogisticsModel extends VerifiableModel<Logistics> {
     baseURI = '/logistics/';
 }

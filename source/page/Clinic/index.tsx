@@ -1,13 +1,9 @@
-import { component, mixin, createCell, Fragment } from 'web-cell';
+import { component, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
-import 'boot-cell/source/Content/EdgeDetector';
-import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
-import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { Card } from 'boot-cell/source/Content/Card';
-import { Button } from 'boot-cell/source/Form/Button';
 
-import { AuditBar } from '../../component/AuditBar';
+import { CardsPage, AuditBar } from '../../component';
 import { clinic, Clinic } from '../../model';
 
 @observer
@@ -15,10 +11,10 @@ import { clinic, Clinic } from '../../model';
     tagName: 'clinic-list',
     renderTarget: 'children'
 })
-export class ClinicList extends mixin() {
-    loadMore = ({ detail }: EdgeEvent) => {
-        if (detail === 'bottom') return clinic.getNextPage({});
-    };
+export class ClinicList extends CardsPage<Clinic> {
+    scope = 'clinic';
+    model = clinic;
+    name = '义诊服务';
 
     renderItem = ({
         url,
@@ -62,33 +58,4 @@ export class ClinicList extends mixin() {
             <AuditBar scope="clinic" model={clinic} {...rest} />
         </Card>
     );
-
-    render() {
-        const { loading, list, noMore } = clinic;
-
-        return (
-            <Fragment>
-                <header className="d-flex justify-content-between">
-                    <h2>义诊服务</h2>
-                    <span>
-                        <Button kind="warning" href="clinic/edit">
-                            发布
-                        </Button>
-                    </span>
-                </header>
-
-                <edge-detector onTouchEdge={this.loadMore}>
-                    <SpinnerBox
-                        cover={loading}
-                        className="card-deck justify-content-around"
-                    >
-                        {list.map(this.renderItem)}
-                    </SpinnerBox>
-                    <p slot="bottom" className="text-center mt-2">
-                        {noMore ? '没有更多数据了' : '加载更多...'}
-                    </p>
-                </edge-detector>
-            </Fragment>
-        );
-    }
 }

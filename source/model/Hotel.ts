@@ -1,11 +1,11 @@
-import { DataItem, Place } from '../service';
-import { BaseModel } from './BaseModel';
+import { VerifiableData, VerifiableModel } from './BaseModel';
+import { Place } from '../service';
 
-export interface Hotel extends DataItem, Place {
+export interface Hotel extends VerifiableData, Place {
     name?: string;
     capacity?: number;
 }
 
-export class HotelModel extends BaseModel<Hotel> {
+export class HotelModel extends VerifiableModel<Hotel> {
     baseURI = '/hotel/';
 }

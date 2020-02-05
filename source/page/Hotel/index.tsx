@@ -1,68 +1,23 @@
-import * as clipboard from 'clipboard-polyfill';
-import { component, mixin, createCell, Fragment } from 'web-cell';
+import { component, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
-import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
+
 import { Card } from 'boot-cell/source/Content/Card';
 import { Button } from 'boot-cell/source/Form/Button';
 import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
-import 'boot-cell/source/Content/EdgeDetector';
-import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 
-import { relativeTimeTo, TimeUnitName } from '../../utility';
-import { hotel, session, Hotel } from '../../model';
-import {
-    District,
-    DistrictEvent,
-    DistrictFilter,
-    AuditBar
-} from '../../component';
-
-interface HotelPageState {
-    loading?: boolean;
-    noMore?: boolean;
-}
+import { hotel, Hotel } from '../../model';
+import { AuditBar, CardsPage } from '../../component';
 
 @observer
 @component({
     tagName: 'hotel-page',
     renderTarget: 'children'
 })
-export class HotelPage extends mixin<{}, HotelPageState>() {
-    state = { loading: false, noMore: false };
-
-    districtFilter: District;
-
-    loadMore = async ({ detail }: EdgeEvent) => {
-        const {
-            state: { loading, noMore },
-            districtFilter
-        } = this;
-
-        if (detail !== 'bottom' || loading || noMore) return;
-
-        await this.setState({ loading: true });
-
-        const data = await hotel.getNextPage(districtFilter);
-
-        await this.setState({ loading: false, noMore: !data });
-    };
-
-    changeDistrict = async ({ detail }: DistrictEvent) => {
-        this.districtFilter = detail;
-
-        await this.setState({ loading: true });
-
-        hotel.clear();
-        const data = await hotel.getNextPage(detail);
-
-        await this.setState({ loading: false, noMore: !data });
-    };
-
-    async clip2board(raw: string) {
-        await clipboard.writeText(raw);
-
-        self.alert('已复制到剪贴板');
-    }
+export class HotelPage extends CardsPage<Hotel> {
+    scope = 'hotel';
+    model = hotel;
+    name = '湖北同胞住宿指南';
+    districtFilter = true;
 
     renderItem = ({
         url,
@@ -129,33 +84,4 @@ export class HotelPage extends mixin<{}, HotelPageState>() {
             <AuditBar scope="hotel" model={hotel} {...rest} />
         </Card>
     );
-
-    render(_, { loading, noMore }: HotelPageState) {
-        return (
-            <Fragment>
-                <header className="d-flex justify-content-between align-item-center my-3">
-                    <h2>湖北同胞住宿指南</h2>
-                    <span>
-                        <Button kind="warning" href="hotel/edit">
-                            住宿发布
-                        </Button>
-                    </span>
-                </header>
-
-                <DistrictFilter onChange={this.changeDistrict} />
-
-                <edge-detector onTouchEdge={this.loadMore}>
-                    <SpinnerBox
-                        cover={loading}
-                        className="card-deck justify-content-around"
-                    >
-                        {hotel.list.map(this.renderItem)}
-                    </SpinnerBox>
-                    <p slot="bottom" className="text-center mt-2">
-                        {noMore ? '没有更多数据了' : '加载更多...'}
-                    </p>
-                </edge-detector>
-            </Fragment>
-        );
-    }
 }

@@ -10,7 +10,7 @@ export const service = new HTTPClient({
     baseURI:
         location.hostname === 'localhost'
             ? baseUri[process.env.HTTP_ENV]
-            : 'https://vuqjf9paihid.leanapp.cn',
+            : baseUri.remote,
     withCredentials: true,
     responseType: 'json'
 });
@@ -52,6 +52,8 @@ export interface Organization {
     contacts?: Contact[];
     remark?: string;
     creator?: User;
+    verified?: boolean;
+    verifier?: User;
 }
 
 export interface GeoCoord {

@@ -1,5 +1,5 @@
-import { DataItem, Organization } from '../service';
-import { BaseModel } from './BaseModel';
+import { VerifiableData, VerifiableModel } from './BaseModel';
+import { Organization } from '../service';
 
 export interface BankAccount {
     name: string;
@@ -7,11 +7,11 @@ export interface BankAccount {
     bank: string;
 }
 
-export interface DonationRecipient extends DataItem, Organization {
+export interface DonationRecipient extends VerifiableData, Organization {
     name?: string;
     accounts?: BankAccount[];
 }
 
-export class DonationRecipientModel extends BaseModel<DonationRecipient> {
+export class DonationRecipientModel extends VerifiableModel<DonationRecipient> {
     baseURI = '/donation/recipient/';
 }

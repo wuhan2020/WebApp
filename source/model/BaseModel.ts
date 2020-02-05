@@ -1,5 +1,6 @@
 import { observable } from 'mobx';
-import { DataItem, service, PageData } from '../service';
+import { DataItem, service, PageData, User } from '../service';
+import { session } from '.';
 
 export abstract class BaseModel<T extends DataItem = {}, F = {}> {
     @observable
@@ -90,6 +91,28 @@ export abstract class BaseModel<T extends DataItem = {}, F = {}> {
         await service.delete(this.baseURI + id);
 
         this.list = this.list.filter(({ objectId }) => objectId !== id);
+
+        this.loading = false;
+    }
+}
+
+export interface VerifiableData extends DataItem {
+    verified?: boolean;
+    verifier?: User;
+}
+
+export abstract class VerifiableModel<
+    T extends VerifiableData = {},
+    F = {}
+> extends BaseModel<T, F & { verified?: boolean }> {
+    async verify(id: string) {
+        this.loading = true;
+
+        await service.patch(this.baseURI + id, { verified: true });
+
+        const item = this.list.find(({ objectId }) => objectId === id);
+
+        (item.verified = true), (item.verifier = session.user);
 
         this.loading = false;
     }

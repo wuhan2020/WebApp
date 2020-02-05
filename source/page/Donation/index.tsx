@@ -1,15 +1,10 @@
-import * as clipboard from 'clipboard-polyfill';
-import { component, mixin, createCell, Fragment } from 'web-cell';
+import { component, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
-import { Button } from 'boot-cell/source/Form/Button';
-import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
-import 'boot-cell/source/Content/EdgeDetector';
-import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 import { Card } from 'boot-cell/source/Content/Card';
 import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
 
-import { AuditBar } from '../../component/AuditBar';
+import { CardsPage, AuditBar } from '../../component';
 import { donationRecipient, BankAccount, DonationRecipient } from '../../model';
 
 @observer
@@ -17,16 +12,10 @@ import { donationRecipient, BankAccount, DonationRecipient } from '../../model';
     tagName: 'donation-page',
     renderTarget: 'children'
 })
-export class DonationPage extends mixin() {
-    loadMore = ({ detail }: EdgeEvent) => {
-        if (detail === 'bottom') return donationRecipient.getNextPage({});
-    };
-
-    async clip2board(raw: string) {
-        await clipboard.writeText(raw);
-
-        self.alert('已复制到剪贴板');
-    }
+export class DonationPage extends CardsPage<DonationRecipient> {
+    scope = 'donation';
+    model = donationRecipient;
+    name = '❤️爱心捐赠';
 
     renderAccount = ({ name, number, bank }: BankAccount) => (
         <li>
@@ -106,33 +95,4 @@ export class DonationPage extends mixin() {
             <AuditBar scope="donation" model={donationRecipient} {...rest} />
         </Card>
     );
-
-    render() {
-        const { loading, list, noMore } = donationRecipient;
-
-        return (
-            <Fragment>
-                <header className="d-flex justify-content-between align-items-center my-3">
-                    <h2>❤️爱心捐赠</h2>
-                    <span>
-                        <Button kind="success" href="donation/edit">
-                            捐赠发布
-                        </Button>
-                    </span>
-                </header>
-
-                <edge-detector onTouchEdge={this.loadMore}>
-                    <SpinnerBox
-                        cover={loading}
-                        className="card-deck justify-content-around"
-                    >
-                        {list.map(this.renderItem)}
-                    </SpinnerBox>
-                    <p slot="bottom" className="text-center mt-2">
-                        {noMore ? '没有更多数据了' : '加载更多...'}
-                    </p>
-                </edge-detector>
-            </Fragment>
-        );
-    }
 }

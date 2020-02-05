@@ -1,5 +1,5 @@
-import { DataItem, Place } from '../service';
-import { BaseModel } from './BaseModel';
+import { VerifiableData, VerifiableModel } from './BaseModel';
+import { Place } from '../service';
 import { District } from '../component';
 
 export interface Supplies {
@@ -9,12 +9,12 @@ export interface Supplies {
     count: number;
 }
 
-export interface SuppliesRequirement extends DataItem, Place {
+export interface SuppliesRequirement extends VerifiableData, Place {
     hospital?: string;
     supplies?: Supplies[];
 }
 
-export class SuppliesRequirementModel extends BaseModel<
+export class SuppliesRequirementModel extends VerifiableModel<
     SuppliesRequirement,
     District
 > {

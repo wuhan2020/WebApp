@@ -1,11 +1,8 @@
-import { component, mixin, createCell, Fragment } from 'web-cell';
+import { component, createCell, Fragment } from 'web-cell';
 import { observer } from 'mobx-web-cell';
-import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { Card } from 'boot-cell/source/Content/Card';
-import { Button } from 'boot-cell/source/Form/Button';
-import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
 
-import { AuditBar } from '../../component';
+import { AuditBar, CardsPage } from '../../component';
 import { logistics, Logistics, ServiceArea } from '../../model';
 import { Contact } from '../../service';
 
@@ -20,10 +17,10 @@ const DIREACTION = {
     tagName: 'logistics-page',
     renderTarget: 'children'
 })
-export class LogisticsPage extends mixin() {
-    loadMore = ({ detail }: EdgeEvent) => {
-        if (detail === 'bottom') return logistics.getNextPage({});
-    };
+export class LogisticsPage extends CardsPage<Logistics> {
+    scope = 'logistics';
+    model = logistics;
+    name = '物流公司';
 
     renderItem = ({
         url,
@@ -91,33 +88,4 @@ export class LogisticsPage extends mixin() {
             </a>
         </p>
     );
-
-    render() {
-        const { loading, list, noMore } = logistics;
-
-        return (
-            <Fragment>
-                <header className="d-flex justify-content-between align-items-center my-3">
-                    <h2>物流公司</h2>
-                    <span>
-                        <Button kind="success" href="logistics/edit">
-                            物流发布
-                        </Button>
-                    </span>
-                </header>
-
-                <edge-detector onTouchEdge={this.loadMore}>
-                    <SpinnerBox
-                        cover={loading}
-                        className="card-deck justify-content-around"
-                    >
-                        {list.map(this.renderItem)}
-                    </SpinnerBox>
-                    <p slot="bottom" className="text-center mt-2">
-                        {noMore ? '没有更多数据了' : '加载更多...'}
-                    </p>
-                </edge-detector>
-            </Fragment>
-        );
-    }
 }
