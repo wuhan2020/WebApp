@@ -6,6 +6,7 @@ import { Card } from 'boot-cell/source/Content/Card';
 import { CardsPage, AuditBar } from '../../component';
 import { clinic, Clinic } from '../../model';
 import { getIsLive } from './time';
+import './index.css'
 
 @observer
 @component({
@@ -40,8 +41,9 @@ export class ClinicList extends CardsPage<Clinic> {
                     )
                 }
             >
+                {isLive?<div className="clinic-card__live-label">正在接诊</div>:null}
                 <p>
-                    每日接诊起止时间：{startTime} ~ {endTime}{isLive?<span>正在接诊</span>:null}
+                    每日接诊起止时间：{startTime} ~ {endTime}
                 </p>
                 {contacts[0] && (
                     <ol className="list-unstyled">
