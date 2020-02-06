@@ -1,4 +1,4 @@
-import Octokit from '@octokit/rest';
+import { Octokit } from '@octokit/rest';
 import { Base64 } from 'js-base64';
 import { parse } from 'yaml';
 

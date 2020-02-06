@@ -3,8 +3,8 @@ import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
 import { mergeList } from '../../utility';
-import { RouteRoot } from '../menu';
-import CommonSupplies from './Supplies';
+import { RouteRoot } from '../data/menu';
+import CommonSupplies from '../data/Supplies';
 import {
     SuppliesRequirement,
     Supplies,

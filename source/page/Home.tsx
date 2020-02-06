@@ -1,7 +1,7 @@
 import { createCell } from 'web-cell';
 import { Jumbotron } from 'boot-cell/source/Content/Jumbotron';
 
-import menu from './menu';
+import menu from './data/menu';
 
 export function HomePage() {
     return (

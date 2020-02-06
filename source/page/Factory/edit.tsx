@@ -5,8 +5,8 @@ import { Button } from 'boot-cell/source/Form/Button';
 import { mergeList } from '../../utility';
 import { GeoCoord, Contact } from '../../service';
 import { history, Supplies, factory, Factory } from '../../model';
-import { RouteRoot } from '../menu';
-import CommonSupplies from '../Hospital/Supplies';
+import { RouteRoot } from '../data/menu';
+import CommonSupplies from '../data/Supplies';
 import {
     SessionBox,
     AddressField,

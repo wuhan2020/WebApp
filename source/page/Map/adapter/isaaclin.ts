@@ -7,6 +7,7 @@ import {
     Series
 } from './patientStatInterface';
 import { long2short } from './long2short'; // some city names are NOT short names so we also convert them here
+import { City, Province } from '../../../service/Epidemic';
 
 function convertStat(source): PatientStatData {
     return {
@@ -15,16 +16,6 @@ function convertStat(source): PatientStatData {
         cured: source.curedCount,
         dead: source.deadCount
     };
-}
-
-interface City {
-    cityName: string;
-}
-
-interface Province {
-    provinceShortName: string;
-    cities?: City[];
-    updateTime: number;
 }
 
 export function convertCountry(source: Province[]): CountryData {

@@ -86,7 +86,6 @@ export class DistrictFilter extends mixin<DistrictFilterProps>() {
                     title={`省 | ${province || '全部'}`}
                     list={[allItem, ...area.provinces].map(({ name }) => ({
                         title: name,
-                        href: '#hospital',
                         onClick: () => this.change('province', name)
                     }))}
                 />
@@ -95,7 +94,6 @@ export class DistrictFilter extends mixin<DistrictFilterProps>() {
                     title={`市 | ${city || '全部'}`}
                     list={[allItem, ...area.cities].map(({ name }) => ({
                         title: name,
-                        href: '#hospital',
                         onClick: () => this.change('city', name)
                     }))}
                 />
@@ -104,7 +102,6 @@ export class DistrictFilter extends mixin<DistrictFilterProps>() {
                     title={`区 | ${district || '全部'}`}
                     list={[allItem, ...area.districts].map(({ name }) => ({
                         title: name,
-                        href: '#hospital',
                         onClick: () => this.change('district', name)
                     }))}
                 />

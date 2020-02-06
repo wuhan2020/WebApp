@@ -6,7 +6,7 @@ import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
 
 import { history, session } from '../model';
 import { RoleNames } from '../service';
-import menu from './menu';
+import menu from './data/menu';
 
 import { HomePage } from './Home';
 import { HospitalPage } from './Hospital';
@@ -59,7 +59,6 @@ export class PageRouter extends HTMLRouter {
         },
         {
             title: '登出',
-            href: '#',
             onClick: this.signOut
         }
     ];

@@ -2,7 +2,7 @@ import { component, mixin, watch, createCell } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
-import { RouteRoot } from '../menu';
+import { RouteRoot } from '../data/menu';
 import {
     donationRecipient,
     DonationRecipient,

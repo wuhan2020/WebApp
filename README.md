@@ -6,22 +6,23 @@
 
 [![NPM Dependency](https://david-dm.org/wuhan2020/WebApp.svg)][2]
 [![CI Status](https://github.com/wuhan2020/WebApp/workflows/PWA%20CI/CD/badge.svg)][3]
+[![Github](https://img.shields.io/badge/Slack%20Channel-%23proj--front--pages-blue.svg)][4]
 
 ## 基本用法
 
-谷歌 Chrome、谋智 Firefox、欧朋、微软 Edge、UC 浏览器、小米浏览器、QQ 浏览器等均可**安装本网站到桌面**（Safari 对 [W3C 国际标准][4]支持迟缓，只能添加图标，**网络缓存**、**离线启动**等高级功能可能无法使用）
+谷歌 Chrome、谋智 Firefox、欧朋、微软 Edge、UC 浏览器、小米浏览器、QQ 浏览器等均可**安装本网站到桌面**（Safari 对 [W3C 国际标准][5]支持迟缓，只能添加图标，**网络缓存**、**离线启动**等高级功能可能无法使用）
 
 <img width='280' src='source/image/WuHan2020-PWA.jpg' />
 
 ## 技术栈
 
--   逻辑语言: [TypeScript v3][5]
--   组件引擎: [WebCell v2][6]
--   组件库: [BootCell v1][7]
--   状态管理: [MobX v5][8]
--   PWA 框架: [Workbox v4][9]
--   打包工具: [Parcel v1][10]
--   CI / CD: [Travis CI][11] + [GitHub Pages][12]
+-   逻辑语言: [TypeScript v3][6]
+-   组件引擎: [WebCell v2][7]
+-   组件库: [BootCell v1][8]
+-   状态管理: [MobX v5][9]
+-   PWA 框架: [Workbox v4][10]
+-   打包工具: [Parcel v1][11]
+-   CI / CD: [Travis CI][12] + [GitHub Pages][13]
 
 ## 开发需求
 
@@ -44,7 +45,7 @@ npm install
 npm start
 ```
 
-（Windows 用户请在 [PowerShell 5.1+][13]、[Git Bash][14] 或 [WSL][15] 中运行）
+（Windows 用户请在 [PowerShell 5.1+][14]、[Git Bash][15] 或 [WSL][16] 中运行）
 
 ### 连接本地测试服务器
 
@@ -52,18 +53,7 @@ npm start
 
 2. `npm run start:local`
 
-## 交流频道
-
-[![Github](https://img.shields.io/badge/Slack%20Channel-%23team--frontend-green.svg?style=flat-square&colorB=blue)](https://app.slack.com/client/TT5U1VCPQ/CT93L48H5)
-
 ## 特别感谢
-
-### 疫情数据提供方
-
-特别感谢以下同学提供了来自丁香园的疫情数据：
-
--   [@hack-fang](https://github.com/hack-fang/nCov/blob/master/API.md)
--   [@BlankerL](https://github.com/BlankerL/DXY-2019-nCoV-Crawler)
 
 ### 代码贡献者
 
@@ -71,22 +61,31 @@ https://github.com/wuhan2020/WebApp/graphs/contributors
 
 ### 域名贡献者
 
-[开源社][16] 提供国内备案域名 https://wuhan2020.kaiyuanshe.cn/ ，以解决[国内应用软件内分享时的障碍][17]。
+[开源社][17] 提供国内备案域名 https://wuhan2020.kaiyuanshe.cn/ ，以解决[国内应用软件内分享时的障碍][18]。
+
+### 疫情数据提供方
+
+特别感谢以下同学提供了来自丁香园的疫情数据：
+
+-   [@hack-fang](https://github.com/hack-fang/nCov/blob/master/API.md)
+
+-   [@BlankerL](https://github.com/BlankerL/DXY-2019-nCoV-Crawler)
 
 [1]: https://developers.google.cn/web/progressive-web-apps
 [2]: https://david-dm.org/wuhan2020/WebApp
 [3]: https://github.com/wuhan2020/WebApp/actions
-[4]: https://www.w3.org/
-[5]: https://typescriptlang.org
-[6]: https://web-cell.dev/
-[7]: https://web-cell.dev/BootCell/
-[8]: https://mobx.js.org
-[9]: https://developers.google.com/web/tools/workbox
-[10]: https://parceljs.org
-[11]: https://travis-ci.com/
-[12]: https://pages.github.com/
-[13]: https://docs.microsoft.com/zh-cn/powershell/scripting/learn/using-familiar-command-names?view=powershell-5.1
-[14]: https://gitforwindows.org/#bash
-[15]: https://docs.microsoft.com/en-us/windows/wsl/install-win10
-[16]: https://kaiyuanshe.cn/
-[17]: https://github.com/wuhan2020/WebApp/issues/21
+[4]: https://app.slack.com/client/TT5U1VCPQ/CSTPXN533
+[5]: https://www.w3.org/
+[6]: https://typescriptlang.org
+[7]: https://web-cell.dev/
+[8]: https://web-cell.dev/BootCell/
+[9]: https://mobx.js.org
+[10]: https://developers.google.com/web/tools/workbox
+[11]: https://parceljs.org
+[12]: https://travis-ci.com/
+[13]: https://pages.github.com/
+[14]: https://docs.microsoft.com/zh-cn/powershell/scripting/learn/using-familiar-command-names?view=powershell-5.1
+[15]: https://gitforwindows.org/#bash
+[16]: https://docs.microsoft.com/en-us/windows/wsl/install-win10
+[17]: https://kaiyuanshe.cn/
+[18]: https://github.com/wuhan2020/WebApp/issues/21

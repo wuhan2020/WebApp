@@ -3,7 +3,7 @@ import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
 import { Clinic, history, clinic } from '../../model';
-import { RouteRoot } from '../menu';
+import { RouteRoot } from '../data/menu';
 import { SessionBox, ContactField } from '../../component';
 
 interface ClinicEditProps {

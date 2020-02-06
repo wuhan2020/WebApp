@@ -33,7 +33,8 @@ export class UserAdmin extends mixin() {
         const { value } = elements.item(0) as HTMLInputElement;
 
         return user.getNextPage(
-            (this.filter = value ? { phone: value } : undefined)
+            (this.filter = value ? { phone: value } : {}),
+            true
         );
     };
 

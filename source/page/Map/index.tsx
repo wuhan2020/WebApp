@@ -13,7 +13,7 @@ import {
     convertProvincesSeries,
     convertCountrySeries
 } from './adapter';
-import { getVirusMapData } from '../../service/mapData';
+import { getHistory, getCurrent, getOverall, Province } from '../../service';
 import style from './index.module.css';
 
 interface MapPageState {
@@ -44,23 +44,16 @@ export class MapsPage extends mixin<{}, MapPageState>() {
     }
 
     loadMapData = async () => {
-        const [rawData, rawCurrentData, overviewData] = await Promise.all([
-            getVirusMapData('history'),
-            getVirusMapData('current'),
-            getVirusMapData('overall')
-        ]);
+        const [rawData, rawCurrentData, overviewData] = await Promise.all<
+            Province[],
+            Province[],
+            {}[]
+        >([getHistory(), getCurrent(), getOverall()]);
 
         const virusData = {
-            provincesSeries: convertProvincesSeries(
-                rawData['results'],
-                resolution,
-                true
-            ),
-            countrySeries: convertCountrySeries(
-                overviewData['results'],
-                resolution
-            ),
-            countryData: convertCountry(rawCurrentData['results'])
+            provincesSeries: convertProvincesSeries(rawData, resolution, true),
+            countrySeries: convertCountrySeries(overviewData, resolution),
+            countryData: convertCountry(rawCurrentData)
         };
 
         await this.setState({ loading: false, virusData });

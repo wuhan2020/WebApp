@@ -15,7 +15,7 @@
     "main": "source/index.html",
     "dependencies": {
         "@octokit/rest": "^16.43.1",
-        "boot-cell": "^0.24.0",
+        "boot-cell": "^0.25.0",
         "browser-unhandled-rejection": "^1.0.2",
         "cell-router": "^2.0.0-rc.6",
         "classnames": "^2.2.6",
