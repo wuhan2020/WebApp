@@ -104,13 +104,19 @@ export class HospitalEdit extends mixin<
     handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        const { supplies, ...data } = this.state;
+        const { supplies, contacts, ...data } = this.state;
 
         await suppliesRequirement.update(
-            { ...data, supplies: supplies.filter(({ count }) => count) },
+            {
+                ...data,
+                supplies: supplies.filter(({ count }) => count),
+                contacts: contacts.filter(
+                    ({ name, phone }) => name?.trim() && phone?.trim()
+                )
+            },
             this.dataId
         );
-        self.alert('发布成功！');
+        self.alert('提交成功，工作人员审核后即可查看');
 
         history.push(RouteRoot.Hospital);
     };

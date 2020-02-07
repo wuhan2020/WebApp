@@ -81,9 +81,23 @@ export class DonationEdit extends mixin<
     handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        await donationRecipient.update(this.state, this.dataId);
+        const { accounts, contacts, ...data } = this.state;
 
-        self.alert('发布成功！');
+        await donationRecipient.update(
+            {
+                ...data,
+                accounts: accounts.filter(
+                    ({ name, number, bank }) =>
+                        name?.trim() && number?.trim() && bank?.trim()
+                ),
+                contacts: contacts.filter(
+                    ({ name, phone }) => name?.trim() && phone?.trim()
+                )
+            },
+            this.dataId
+        );
+
+        self.alert('提交成功，工作人员审核后即可查看');
 
         history.push(RouteRoot.Donation);
     };

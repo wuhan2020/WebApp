@@ -7,6 +7,7 @@ import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
 import { history, session } from '../model';
 import { RoleNames } from '../service';
 import menu from './data/menu';
+import logo from '../image/wuhan2020.png';
 
 import { HomePage } from './Home';
 import { HospitalPage } from './Hospital';
@@ -79,7 +80,16 @@ export class PageRouter extends HTMLRouter {
         return (
             <Fragment>
                 <NavBar
-                    title="2020 援助武汉"
+                    theme="light"
+                    background="light"
+                    narrow
+                    brand={
+                        <img
+                            alt="2020 援助武汉"
+                            src={logo}
+                            style={{ height: '2rem' }}
+                        />
+                    }
                     menu={menu.map(({ title, href }) => ({
                         title,
                         href,
@@ -87,7 +97,6 @@ export class PageRouter extends HTMLRouter {
                             history.path === href ||
                             (!!href && history.path.startsWith(href))
                     }))}
-                    narrow
                 >
                     {session.user && (
                         <DropMenu

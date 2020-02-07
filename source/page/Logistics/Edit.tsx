@@ -62,7 +62,7 @@ export class LogisticsEdit extends mixin<{ dataId: string }, Logistics>() {
         const { name, value } = event.target as HTMLInputElement;
 
         if (name === 'personal')
-            this.state.serviceArea[index]['personal'] = JSON.parse(value);
+            this.state.serviceArea[index].personal = JSON.parse(value);
         else this.state.serviceArea[index][name] = value;
     }
 
@@ -80,14 +80,25 @@ export class LogisticsEdit extends mixin<{ dataId: string }, Logistics>() {
     handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        await logistics.update(this.state, this.dataId);
+        const { serviceArea, contacts, ...data } = this.state;
 
-        self.alert('发布成功！');
+        await logistics.update(
+            {
+                ...data,
+                serviceArea: serviceArea.filter(({ city }) => city?.trim()),
+                contacts: contacts.filter(
+                    ({ name, phone }) => name?.trim() && phone?.trim()
+                )
+            },
+            this.dataId
+        );
+
+        self.alert('提交成功，工作人员审核后即可查看');
 
         history.push(RouteRoot.Logistics);
     };
 
-    render(_, { name, url, serviceArea, remark, contacts }) {
+    render(_, { name, url, serviceArea, remark, contacts }: Logistics) {
         return (
             <SessionBox>
                 <h2>物流信息发布</h2>

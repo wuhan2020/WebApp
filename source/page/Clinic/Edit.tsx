@@ -60,17 +60,19 @@ export class ClinicEdit extends mixin<ClinicEditProps, Clinic>() {
     handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        const { contacts, ...rest } = this.state;
+        const { contacts, ...data } = this.state;
 
         await clinic.update(
             {
-                ...rest,
-                contacts: contacts.filter(({ name }) => name.trim())
+                ...data,
+                contacts: contacts.filter(
+                    ({ name, phone }) => name?.trim() && phone?.trim()
+                )
             },
             this.dataId
         );
 
-        self.alert('发布成功！');
+        self.alert('提交成功，工作人员审核后即可查看');
 
         history.push(RouteRoot.Clinic);
     };
