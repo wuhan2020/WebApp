@@ -79,7 +79,7 @@ export class DonationPage extends CardsPage<DonationRecipient> {
             {remark && <p className="text-muted">{remark}</p>}
 
             <div className="text-center">
-                {contacts && (
+                {contacts[0] && (
                     <DropMenu
                         className="d-inline-block ml-3"
                         alignType="right"

@@ -34,4 +34,13 @@ export class GitHubClient {
                 return raw;
         }
     }
+
+    async getContributors() {
+        const { data } = await this.client.repos.listContributors({
+            ...this.options,
+            per_page: 100
+        });
+
+        return data;
+    }
 }

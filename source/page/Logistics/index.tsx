@@ -45,7 +45,7 @@ export class LogisticsPage extends CardsPage<Logistics> {
         >
             {serviceArea.map(this.renderServiceArea)}
 
-            {contacts.map(this.renderContact)}
+            {contacts[0] && contacts.map(this.renderContact)}
 
             <p className="text-muted">{remark}</p>
 

@@ -5,7 +5,9 @@ export enum RouteRoot {
     Factory = 'factory',
     Donation = 'donation',
     Clinic = 'clinic',
-    Maps = 'maps'
+    Maps = 'maps',
+    Admin = 'admin',
+    Community = 'community'
 }
 
 export default [
@@ -54,7 +56,7 @@ export default [
         icon: 'plus-square'
     },
     {
-        title: '开放源代码',
-        href: 'https://github.com/wuhan2020/WebApp'
+        title: '开放社区',
+        href: RouteRoot.Community
     }
 ];

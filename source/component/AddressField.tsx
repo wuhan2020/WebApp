@@ -8,7 +8,7 @@ import {
 } from 'web-cell';
 import { WebCellProps } from 'boot-cell/source/utility/type';
 
-import { searchAddress } from '../service';
+import { searchAddress, coordsOf } from '../service';
 
 interface AddressFieldProps extends WebCellProps {
     place?: string;
@@ -92,12 +92,21 @@ export class AddressField extends mixin<
         this.classList.add('input-group');
     }
 
-    emitChange = (event: Event) => {
+    emitChange = async (event: Event) => {
         event.stopPropagation();
 
-        const { name, value } = event.target as HTMLInputElement;
+        const { name, value } = event.target as HTMLInputElement,
+            { props } = this;
 
-        this.props[name] = value;
+        props[name] = value;
+
+        const { province, city, district, address } = this;
+
+        const [{ latitude, longitude }] = await coordsOf(
+            province + city + district + address
+        );
+
+        (props.latitude = latitude), (props.longitude = longitude);
 
         this.emitData();
     };

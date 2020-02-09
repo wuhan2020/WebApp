@@ -6,7 +6,7 @@ import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
 
 import { history, session } from '../model';
 import { RoleNames } from '../service';
-import menu from './data/menu';
+import menu, { RouteRoot } from './data/menu';
 import logo from '../image/wuhan2020.png';
 
 import { HomePage } from './Home';
@@ -23,6 +23,7 @@ import { DonationEdit } from './Donation/edit';
 import { ClinicList } from './Clinic';
 import { ClinicEdit } from './Clinic/Edit';
 import { UserAdmin } from './Admin/User';
+import { CommunityPage } from './Community';
 
 @observer
 @component({
@@ -33,23 +34,27 @@ export class PageRouter extends HTMLRouter {
     protected history = history;
     protected routes = [
         { paths: [''], component: HomePage },
-        { paths: ['hospital'], component: HospitalPage },
-        { paths: ['hospital/edit'], component: HospitalEdit },
-        { paths: ['logistics'], component: LogisticsPage },
-        { paths: ['logistics/edit'], component: LogisticsEdit },
-        { paths: ['hotel'], component: HotelPage },
-        { paths: ['hotel/edit'], component: HotelEdit },
-        { paths: ['factory'], component: FactoryPage },
-        { paths: ['factory/edit'], component: FactoryEdit },
-        { paths: ['donation'], component: DonationPage },
-        { paths: ['donation/edit'], component: DonationEdit },
-        { paths: ['clinic'], component: ClinicList },
-        { paths: ['clinic/edit'], component: ClinicEdit },
+        { paths: [RouteRoot.Hospital], component: HospitalPage },
+        { paths: [RouteRoot.Hospital + '/edit'], component: HospitalEdit },
+        { paths: [RouteRoot.Logistics], component: LogisticsPage },
+        { paths: [RouteRoot.Logistics + '/edit'], component: LogisticsEdit },
+        { paths: [RouteRoot.Hotel], component: HotelPage },
+        { paths: [RouteRoot.Hotel + '/edit'], component: HotelEdit },
+        { paths: [RouteRoot.Factory], component: FactoryPage },
+        { paths: [RouteRoot.Factory + '/edit'], component: FactoryEdit },
+        { paths: [RouteRoot.Donation], component: DonationPage },
+        { paths: [RouteRoot.Donation + '/edit'], component: DonationEdit },
+        { paths: [RouteRoot.Clinic], component: ClinicList },
+        { paths: [RouteRoot.Clinic + '/edit'], component: ClinicEdit },
         {
-            paths: ['maps'],
+            paths: [RouteRoot.Maps],
             component: async () => (await import('./Map')).MapsPage
         },
-        { paths: ['admin', 'admin/user'], component: UserAdmin }
+        {
+            paths: [RouteRoot.Admin, RouteRoot.Admin + '/user'],
+            component: UserAdmin
+        },
+        { paths: [RouteRoot.Community], component: CommunityPage }
     ];
 
     userMenu = [

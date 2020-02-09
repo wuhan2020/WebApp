@@ -52,7 +52,7 @@ export class HospitalPage extends CardsPage<SuppliesRequirement> {
                     邮寄地址
                 </Button>
 
-                {contacts && (
+                {contacts[0] && (
                     <DropMenu
                         className="d-inline-block ml-3"
                         alignType="right"

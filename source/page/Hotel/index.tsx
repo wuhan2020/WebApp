@@ -69,7 +69,7 @@ export class HotelPage extends CardsPage<Hotel> {
                     地图导航
                 </Button>
 
-                {contacts && (
+                {contacts[0] && (
                     <DropMenu
                         className="d-inline-block ml-3"
                         alignType="right"

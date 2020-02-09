@@ -70,7 +70,7 @@ export class FactoryPage extends CardsPage<Factory> {
                 >
                     复制地址
                 </Button>
-                {contacts && (
+                {contacts[0] && (
                     <DropMenu
                         className="d-inline-block ml-3"
                         alignType="right"
