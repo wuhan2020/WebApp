@@ -9,3 +9,9 @@ declare module '*.png' {
 
     export default path;
 }
+
+declare module '*.md' {
+    const content: string;
+
+    export default content;
+}

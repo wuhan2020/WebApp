@@ -1,8 +1,8 @@
 {
-  "name": "2020 援助武汉",
-  "short_name": "援助武汉",
+  "name": "新冠战疫信息平台",
+  "short_name": "新冠战疫",
   "start_url": "https://wuhan2020.kaiyuanshe.cn/",
-  "description": "新冠病毒疫情中的武汉援助信息网站",
+  "description": "武汉新型冠状病毒防疫信息平台",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",

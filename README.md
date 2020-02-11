@@ -1,8 +1,8 @@
-# 武汉新型冠状病毒防疫信息收集平台
+# 新冠战疫信息平台
+
+武汉新型冠状病毒防疫信息平台（[渐进式 Web 应用][1]项目）
 
 简体中文 | [English](./README_EN.md)
-
-[渐进式 Web 应用][1]项目
 
 [![NPM Dependency](https://david-dm.org/wuhan2020/WebApp.svg)][2]
 [![CI Status](https://github.com/wuhan2020/WebApp/workflows/PWA%20CI/CD/badge.svg)][3]

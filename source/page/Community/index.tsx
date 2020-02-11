@@ -1,4 +1,4 @@
-import { component, mixin, Fragment, createCell } from 'web-cell';
+import { component, mixin, createCell } from 'web-cell';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { GithubRepository } from 'github-web-widget/source/Repository';
 import { Octokit } from '@octokit/rest';
@@ -31,7 +31,7 @@ export class CommunityPage extends mixin<{}, CommunityPageState>() {
 
     render(_, { loading, list }: CommunityPageState) {
         return (
-            <Fragment>
+            <SpinnerBox cover={loading}>
                 <h2>开放社区</h2>
 
                 <h3 className="text-center m-3">开源代码</h3>
@@ -44,30 +44,28 @@ export class CommunityPage extends mixin<{}, CommunityPageState>() {
                 />
                 <h3 className="text-center m-3">开发志愿者</h3>
 
-                <SpinnerBox cover={loading}>
-                    <ol className="list-inline text-center">
-                        {list.map(({ html_url, avatar_url, login }) => (
-                            <li className="list-inline-item m-3">
-                                <a
-                                    className="d-flex flex-column align-items-center"
-                                    target="_blank"
-                                    href={html_url}
-                                >
-                                    <img
-                                        className="img-thumbnail"
-                                        style={{
-                                            width: '100px',
-                                            height: '100px'
-                                        }}
-                                        src={avatar_url}
-                                    />
-                                    {login}
-                                </a>
-                            </li>
-                        ))}
-                    </ol>
-                </SpinnerBox>
-            </Fragment>
+                <ol className="list-inline text-center">
+                    {list.map(({ html_url, avatar_url, login }) => (
+                        <li className="list-inline-item m-3">
+                            <a
+                                className="d-flex flex-column align-items-center"
+                                target="_blank"
+                                href={html_url}
+                            >
+                                <img
+                                    className="img-thumbnail"
+                                    style={{
+                                        width: '100px',
+                                        height: '100px'
+                                    }}
+                                    src={avatar_url}
+                                />
+                                {login}
+                            </a>
+                        </li>
+                    ))}
+                </ol>
+            </SpinnerBox>
         );
     }
 }

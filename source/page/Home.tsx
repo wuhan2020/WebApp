@@ -7,7 +7,7 @@ export function HomePage() {
     return (
         <section className="container">
             <Jumbotron
-                title="2020 援助武汉"
+                title="新冠战疫信息平台"
                 description="新冠病毒疫情中的武汉援助信息网站"
             />
             <ul className="row list-unstyled">

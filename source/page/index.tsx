@@ -3,6 +3,7 @@ import { observer } from 'mobx-web-cell';
 import { HTMLRouter } from 'cell-router/source';
 import { NavBar } from 'boot-cell/source/Navigator/NavBar';
 import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
+import marked from 'marked';
 
 import { history, session } from '../model';
 import { RoleNames } from '../service';
@@ -24,6 +25,7 @@ import { ClinicList } from './Clinic';
 import { ClinicEdit } from './Clinic/Edit';
 import { UserAdmin } from './Admin/User';
 import { CommunityPage } from './Community';
+import Disclaimer from '../../Disclaimer.md';
 
 @observer
 @component({
@@ -54,7 +56,11 @@ export class PageRouter extends HTMLRouter {
             paths: [RouteRoot.Admin, RouteRoot.Admin + '/user'],
             component: UserAdmin
         },
-        { paths: [RouteRoot.Community], component: CommunityPage }
+        { paths: [RouteRoot.Community], component: CommunityPage },
+        {
+            paths: ['disclaimer'],
+            component: () => <div innerHTML={marked(Disclaimer)} />
+        }
     ];
 
     userMenu = [
@@ -90,7 +96,7 @@ export class PageRouter extends HTMLRouter {
                     narrow
                     brand={
                         <img
-                            alt="2020 援助武汉"
+                            alt="新冠战疫信息平台"
                             src={logo}
                             style={{ height: '2rem' }}
                         />
@@ -121,23 +127,26 @@ export class PageRouter extends HTMLRouter {
                     {super.render()}
                 </main>
 
-                <footer className="text-center bg-light py-5">
-                    Proudly developed with
-                    <a
-                        className="mx-1"
-                        target="_blank"
-                        href="https://web-cell.dev/"
-                    >
-                        WebCell v2
-                    </a>
-                    &amp;
-                    <a
-                        className="mx-1"
-                        target="_blank"
-                        href="https://web-cell.dev/BootCell/"
-                    >
-                        BootCell v1
-                    </a>
+                <footer className="d-md-flex justify-content-around text-center bg-light py-5">
+                    <p>
+                        Proudly developed with
+                        <a
+                            className="mx-1"
+                            target="_blank"
+                            href="https://web-cell.dev/"
+                        >
+                            WebCell v2
+                        </a>
+                        &amp;
+                        <a
+                            className="mx-1"
+                            target="_blank"
+                            href="https://web-cell.dev/BootCell/"
+                        >
+                            BootCell v1
+                        </a>
+                    </p>
+                    <a href="disclaimer">免责声明</a>
                 </footer>
             </Fragment>
         );
