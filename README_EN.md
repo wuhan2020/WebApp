@@ -1,6 +1,6 @@
-# Information Collection Platform for Wuhan 2019-nCoV Epidemic Prevention
+# New crown war epidemic information platform
 
-[Progressive Web Application][1] Project
+Wuhan new coronavirus epidemic prevention information platform [Progressive Web Application][1] Project
 
 [简体中文](./README.md) | English
 
