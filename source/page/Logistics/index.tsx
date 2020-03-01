@@ -1,6 +1,7 @@
 import { component, createCell, Fragment } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 import { Card } from 'boot-cell/source/Content/Card';
+import { BGIcon } from 'boot-cell/source/Reminder/Icon';
 
 import { AuditBar, CardsPage } from '../../component';
 import { logistics, Logistics, ServiceArea } from '../../model';
@@ -42,14 +43,13 @@ export class LogisticsPage extends CardsPage<Logistics> {
                     name
                 )
             }
+            footer={<AuditBar scope="logistics" model={logistics} {...rest} />}
         >
             {serviceArea.map(this.renderServiceArea)}
 
             {contacts[0] && contacts.map(this.renderContact)}
 
             <p className="text-muted">{remark}</p>
-
-            <AuditBar scope="logistics" model={logistics} {...rest} />
         </Card>
     );
 
@@ -77,14 +77,8 @@ export class LogisticsPage extends CardsPage<Logistics> {
                 className="text-center text-decoration-none"
                 href={'tel:' + phone}
             >
-                <i
-                    className="fa fa-phone btn btn-sm btn-primary"
-                    aria-hidden="true"
-                />
-                &nbsp;
-                {name}
-                &nbsp;
-                {phone}
+                <BGIcon type="square" name="phone" color="primary" />
+                {` ${name} ${phone}`}
             </a>
         </p>
     );

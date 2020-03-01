@@ -44,6 +44,7 @@ export class FactoryPage extends CardsPage<Factory> {
                     name
                 )
             }
+            footer={<AuditBar scope="factory" model={factory} {...rest} />}
         >
             <p>
                 资质证明：<code>{qualification}</code>
@@ -82,7 +83,6 @@ export class FactoryPage extends CardsPage<Factory> {
                     />
                 )}
             </div>
-            <AuditBar scope="factory" model={factory} {...rest} />
         </Card>
     );
 }

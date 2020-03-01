@@ -2,14 +2,11 @@ import { createCell, Fragment } from 'web-cell';
 import { Button } from 'boot-cell/source/Form/Button';
 
 import { relativeTimeTo, TimeUnitName } from '../utility';
-import { DataItem, User } from '../service';
+import { DataItem, Organization } from '../service';
 import { session, BaseModel, VerifiableModel } from '../model';
 
-interface AuditBarProps extends DataItem {
+interface AuditBarProps extends DataItem, Organization {
     scope: string;
-    creator?: User;
-    verified?: boolean;
-    verifier?: User;
     model: BaseModel;
 }
 
@@ -25,10 +22,10 @@ function TimeStamp({
     const { distance, unit } = relativeTimeTo(date);
 
     return (
-        <p className="text-muted">
+        <small className="d-block text-center text-muted">
             <a href={'tel:' + phone}>{phone}</a> {label}于 {Math.abs(distance)}{' '}
             {TimeUnitName[unit]}前
-        </p>
+        </small>
     );
 }
 
@@ -47,7 +44,7 @@ export function AuditBar({
         session.user?.objectId === creator.objectId || isAdmin || null;
 
     return (
-        <footer className="mt-3 text-center text-mute">
+        <Fragment>
             <TimeStamp
                 label="发布"
                 date={createdAt}
@@ -61,11 +58,10 @@ export function AuditBar({
                 />
             )}
             {authorized && (
-                <Fragment>
+                <div className="btn-group d-flex mt-2">
                     <Button
                         kind="warning"
-                        block
-                        className="mt-3"
+                        size="sm"
                         href={scope + '/edit?dataId=' + objectId}
                     >
                         编辑
@@ -73,8 +69,7 @@ export function AuditBar({
                     {!isAdmin || verified ? null : (
                         <Button
                             kind="success"
-                            block
-                            className="mt-3"
+                            size="sm"
                             onClick={() =>
                                 (model as VerifiableModel).verify(objectId)
                             }
@@ -84,14 +79,13 @@ export function AuditBar({
                     )}
                     <Button
                         kind="danger"
-                        block
-                        className="mt-3"
+                        size="sm"
                         onClick={() => model.delete(objectId)}
                     >
                         删除
                     </Button>
-                </Fragment>
+                </div>
             )}
-        </footer>
+        </Fragment>
     );
 }

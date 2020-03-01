@@ -43,7 +43,9 @@ export class DistrictFilter extends mixin<DistrictFilterProps>() {
     district = '';
 
     connectedCallback() {
-        this.classList.add('d-flex');
+        this.classList.add('d-flex', 'flex-wrap');
+
+        super.connectedCallback();
     }
 
     async change(level: keyof District, name: string) {

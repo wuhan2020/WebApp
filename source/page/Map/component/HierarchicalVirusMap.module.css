@@ -1,8 +1,5 @@
 .button {
     position: absolute;
-    width: 30px;
-    height: 30px;
-    padding: 5px;
     top: 10px;
     right: 10px;
 }

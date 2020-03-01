@@ -71,6 +71,13 @@ export class DonationPage extends CardsPage<DonationRecipient> {
                     name
                 )
             }
+            footer={
+                <AuditBar
+                    scope="donation"
+                    model={donationRecipient}
+                    {...rest}
+                />
+            }
         >
             <ol className="list-unstyled">
                 {accounts.map(this.renderAccount)}
@@ -91,8 +98,6 @@ export class DonationPage extends CardsPage<DonationRecipient> {
                     />
                 )}
             </div>
-
-            <AuditBar scope="donation" model={donationRecipient} {...rest} />
         </Card>
     );
 }

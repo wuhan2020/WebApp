@@ -44,6 +44,7 @@ export class HotelPage extends CardsPage<Hotel> {
                     name
                 )
             }
+            footer={<AuditBar scope="hotel" model={hotel} {...rest} />}
         >
             <p>
                 可接待人数：
@@ -81,7 +82,6 @@ export class HotelPage extends CardsPage<Hotel> {
                     />
                 )}
             </div>
-            <AuditBar scope="hotel" model={hotel} {...rest} />
         </Card>
     );
 }

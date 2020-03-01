@@ -33,6 +33,13 @@ export class HospitalPage extends CardsPage<SuppliesRequirement> {
             className="mx-auto mb-4 mx-sm-1"
             style={{ minWidth: '20rem', maxWidth: '20rem' }}
             title={hospital}
+            footer={
+                <AuditBar
+                    scope="hospital"
+                    model={suppliesRequirement}
+                    {...rest}
+                />
+            }
         >
             <ol>
                 {supplies.map(({ name, count, remark }) => (
@@ -64,8 +71,6 @@ export class HospitalPage extends CardsPage<SuppliesRequirement> {
                     />
                 )}
             </div>
-
-            <AuditBar scope="hospital" model={suppliesRequirement} {...rest} />
         </Card>
     );
 }

@@ -16,8 +16,7 @@ import {
     Fragment
 } from 'web-cell';
 import { observer } from 'mobx-web-cell';
-// eslint-disable-next-line no-unused-vars
-import { Button } from 'boot-cell/source/Form/Button';
+import { BGIcon } from 'boot-cell/source/Reminder/Icon';
 import classNames from 'classnames';
 
 // eslint-disable-next-line no-unused-vars
@@ -154,16 +153,15 @@ export class HierarchicalVirusMap extends mixin<Props, State>() {
                     onDblClick={this.navigateUp}
                 />
 
-                <Button
-                    kind="dark"
+                <BGIcon
+                    type="square"
+                    name="undo"
                     className={classNames(
                         style.button,
                         path.length ? 'd-block' : 'd-none'
                     )}
                     onClick={this.navigateUp}
-                >
-                    <i className="fa fa-undo" />
-                </Button>
+                />
             </Fragment>
         );
     }
