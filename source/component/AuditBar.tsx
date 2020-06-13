@@ -1,7 +1,8 @@
 import { createCell, Fragment } from 'web-cell';
+import { diffTime } from 'web-utility';
 import { Button } from 'boot-cell/source/Form/Button';
 
-import { relativeTimeTo, TimeUnitName } from '../utility';
+import { TimeUnitName } from '../utility';
 import { DataItem, Organization } from '../service';
 import { session, BaseModel, VerifiableModel } from '../model';
 
@@ -19,7 +20,7 @@ function TimeStamp({
     phone: string;
     label: string;
 }) {
-    const { distance, unit } = relativeTimeTo(date);
+    const { distance, unit } = diffTime(date);
 
     return (
         <small className="d-block text-center text-muted">

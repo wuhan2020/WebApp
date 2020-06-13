@@ -6,18 +6,20 @@
  * 传入props说明:
  * chartOptions: ECharts 中的所有 options。
  */
-import { component, mixin, watch } from 'web-cell';
+import { WebCellProps, component, mixin, watch } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 import { init } from 'echarts';
+
+interface CellChartsProp extends WebCellProps {
+    chartOptions?: Record<string, any>;
+}
 
 @observer
 @component({
     tagName: 'cell-charts',
     renderTarget: 'children'
 })
-export class CellCharts extends mixin<{
-    chartOptions?: any;
-}>() {
+export class CellCharts extends mixin<CellChartsProp>() {
     @watch
     chartOptions = {};
 

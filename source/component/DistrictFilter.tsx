@@ -1,4 +1,5 @@
 import {
+    WebCellProps,
     component,
     mixin,
     watch,
@@ -7,7 +8,7 @@ import {
     Fragment
 } from 'web-cell';
 import { observer } from 'mobx-web-cell';
-import { WebCellProps } from 'boot-cell/source/utility/type';
+import { FieldProps } from 'boot-cell/source/Form/Field';
 import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
 
 import { area } from '../model';
@@ -18,7 +19,7 @@ export interface District {
     district?: string;
 }
 
-export interface DistrictFilterProps extends WebCellProps, District {}
+export type DistrictFilterProps = FieldProps & WebCellProps & District;
 
 export interface DistrictEvent extends CustomEvent {
     detail: District;

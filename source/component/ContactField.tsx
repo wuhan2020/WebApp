@@ -1,10 +1,11 @@
-import { component, mixin, createCell, watch } from 'web-cell';
+import { WebCellProps, component, mixin, createCell, watch } from 'web-cell';
+import { FieldProps } from 'boot-cell/source/Form/Field';
 import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
 import { Contact } from '../service';
 
-interface ContactFieldProps {
+interface ContactFieldProps extends FieldProps, WebCellProps {
     list: Contact[];
 }
 

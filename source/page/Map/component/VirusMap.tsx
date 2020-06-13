@@ -10,6 +10,7 @@
  * chartOnClickCallBack: 点击地图后的回调函数。
  */
 import {
+    WebCellProps,
     component,
     mixin,
     createCell,
@@ -19,7 +20,7 @@ import {
 } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
-import { EChartsMap } from './EChartsMap';
+import { EChartsMapProps, EChartsMap } from './EChartsMap';
 import { VirusChart } from './VirusChart';
 import { PatientStatData, OverallCountryData } from '../adapter';
 
@@ -34,14 +35,14 @@ export type STMapDataType = {
     data: { [timestamp: number]: MapDataType };
 }; // spatio-temporal data
 
-interface Props {
+interface Props extends WebCellProps {
     name: string;
     data?: MapDataType | STMapDataType;
     breaks?: number[];
     chartData?: OverallCountryData;
     chartPath?: string[];
     currentChartArea: string;
-    chartOnClickCallBack?: Function;
+    chartOnClickCallBack?: EChartsMapProps['chartOnClickCallBack'];
 }
 
 function mapName(name: string) {
@@ -273,8 +274,8 @@ export class VirusMap extends mixin<Props, {}>() {
                     align: 'right',
                     baseline: 'middle'
                 },
-                formatter: function(s) {
-                    return new Date(parseInt(s, 10))
+                formatter(time: string) {
+                    return new Date(parseInt(time, 10))
                         .toLocaleDateString('zh-CN')
                         .slice(5); // year is not necessary, standardize to ISO
                 }

@@ -1,13 +1,13 @@
 import { component, mixin, createCell } from 'web-cell';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { GithubRepository } from 'github-web-widget/source/Repository';
-import { Octokit } from '@octokit/rest';
+import { ReposListContributorsResponseData } from '@octokit/types';
 
 import { repository } from '../../service';
 
 interface CommunityPageState {
     loading?: boolean;
-    list?: Octokit.ReposListContributorsResponse;
+    list?: ReposListContributorsResponseData;
 }
 
 @component({

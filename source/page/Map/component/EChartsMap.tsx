@@ -10,13 +10,13 @@
  * chartGeoRoamCallBack: 地图缩放事件回调函数。
  */
 // eslint-disable-next-line no-unused-vars
-import { component, mixin, attribute, watch } from 'web-cell';
+import { WebCellProps, component, mixin, attribute, watch } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 import { init, registerMap } from 'echarts';
 
 import { long2short } from '../adapter';
 
-interface MapProps {
+export interface EChartsMapProps extends WebCellProps {
     mapUrl?: string;
     chartOptions?: any;
     mapName?: string;
@@ -30,7 +30,7 @@ interface MapProps {
     tagName: 'echarts-map',
     renderTarget: 'children'
 })
-export class EChartsMap extends mixin<MapProps, {}>() {
+export class EChartsMap extends mixin<EChartsMapProps>() {
     @attribute
     @watch
     public mapUrl: string = '';

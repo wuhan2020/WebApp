@@ -19,8 +19,8 @@ import style from './index.module.css';
 interface MapPageState {
     loading?: boolean;
     virusData?: {
-        provincesSeries?: Series<ProvinceData>;
-        countrySeries?: Series<CountryOverviewData>;
+        provincesSeries: Series<ProvinceData>;
+        countrySeries: Series<CountryOverviewData>;
         countryData?: CountryData;
     };
 }

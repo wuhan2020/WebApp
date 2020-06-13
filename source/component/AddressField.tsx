@@ -1,4 +1,5 @@
 import {
+    WebCellProps,
     component,
     mixin,
     attribute,
@@ -6,7 +7,6 @@ import {
     createCell,
     Fragment
 } from 'web-cell';
-import { WebCellProps } from 'boot-cell/source/utility/type';
 
 import { searchAddress, coordsOf } from '../service';
 
