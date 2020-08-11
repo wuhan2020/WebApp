@@ -17,11 +17,10 @@ export class GitHubClient {
 
     async getContents(path: string) {
         const type = path.split('.').slice(-1)[0],
-            { data } = await this.client.repos.getContents({
+            { data } = await this.client.repos.getContent({
                 ...this.options,
                 path
             });
-        // @ts-ignore
         const raw = Base64.decode(data.content);
 
         switch (type) {

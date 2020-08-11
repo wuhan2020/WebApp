@@ -67,7 +67,9 @@ export class LogisticsEdit extends mixin<{ dataId: string }, Logistics>() {
     }
 
     addServiceArea = () =>
-        this.setState({ serviceArea: [...this.state.serviceArea, {}] });
+        this.setState({
+            serviceArea: [...this.state.serviceArea, {} as ServiceArea]
+        });
 
     deleteServiceArea(index: number) {
         const { serviceArea } = this.state;

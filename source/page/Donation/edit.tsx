@@ -68,7 +68,9 @@ export class DonationEdit extends mixin<
     }
 
     addAccount = () =>
-        this.setState({ accounts: [...this.state.accounts, {}] });
+        this.setState({
+            accounts: [...this.state.accounts, {} as BankAccount]
+        });
 
     deleteAccount(index: number) {
         const { accounts } = this.state;
