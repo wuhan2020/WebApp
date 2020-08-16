@@ -9,7 +9,7 @@ import {
 } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 import { FieldProps } from 'boot-cell/source/Form/Field';
-import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
+import { DropMenu, DropMenuItem } from 'boot-cell/source/Navigator/DropMenu';
 
 import { area } from '../model';
 
@@ -86,28 +86,38 @@ export class DistrictFilter extends mixin<DistrictFilterProps>() {
             <Fragment>
                 <DropMenu
                     className="mr-3 mb-3"
-                    title={`省 | ${province || '全部'}`}
-                    list={[allItem, ...area.provinces].map(({ name }) => ({
-                        title: name,
-                        onClick: () => this.change('province', name)
-                    }))}
-                />
+                    caption={`省 | ${province || '全部'}`}
+                >
+                    {[allItem, ...area.provinces].map(({ name }) => (
+                        <DropMenuItem
+                            onClick={() => this.change('province', name)}
+                        >
+                            {name}
+                        </DropMenuItem>
+                    ))}
+                </DropMenu>
                 <DropMenu
                     className="mr-3 mb-3"
-                    title={`市 | ${city || '全部'}`}
-                    list={[allItem, ...area.cities].map(({ name }) => ({
-                        title: name,
-                        onClick: () => this.change('city', name)
-                    }))}
-                />
+                    caption={`市 | ${city || '全部'}`}
+                >
+                    {[allItem, ...area.cities].map(({ name }) => (
+                        <DropMenuItem onClick={() => this.change('city', name)}>
+                            {name}
+                        </DropMenuItem>
+                    ))}
+                </DropMenu>
                 <DropMenu
                     className="mr-3 mb-3"
-                    title={`区 | ${district || '全部'}`}
-                    list={[allItem, ...area.districts].map(({ name }) => ({
-                        title: name,
-                        onClick: () => this.change('district', name)
-                    }))}
-                />
+                    caption={`区 | ${district || '全部'}`}
+                >
+                    {[allItem, ...area.districts].map(({ name }) => (
+                        <DropMenuItem
+                            onClick={() => this.change('district', name)}
+                        >
+                            {name}
+                        </DropMenuItem>
+                    ))}
+                </DropMenu>
             </Fragment>
         );
     }

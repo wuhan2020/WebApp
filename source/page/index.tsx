@@ -2,7 +2,7 @@ import { component, createCell, Fragment } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 import { HTMLRouter } from 'cell-router/source';
 import { NavBar } from 'boot-cell/source/Navigator/NavBar';
-import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
+import { DropMenu, DropMenuItem } from 'boot-cell/source/Navigator/DropMenu';
 import marked from 'marked';
 
 import { history, session } from '../model';
@@ -111,15 +111,19 @@ export class PageRouter extends HTMLRouter {
                 >
                     {session.user && (
                         <DropMenu
-                            title={session.user.username}
+                            caption={session.user.username}
                             alignType="right"
                             alignSize="md"
-                            list={this.userMenu.filter(
-                                ({ roles }) =>
-                                    !roles ||
-                                    roles?.find(role => session.hasRole(role))
+                        >
+                            {this.userMenu.map(({ roles, title, ...rest }) =>
+                                !roles ||
+                                roles?.find(role => session.hasRole(role)) ? (
+                                    <DropMenuItem {...rest}>
+                                        {title}
+                                    </DropMenuItem>
+                                ) : null
                             )}
-                        />
+                        </DropMenu>
                     )}
                 </NavBar>
 

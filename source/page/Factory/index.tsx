@@ -3,7 +3,7 @@ import { observer } from 'mobx-web-cell';
 
 import { Button } from 'boot-cell/source/Form/Button';
 import { Card } from 'boot-cell/source/Content/Card';
-import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
+import { DropMenu, DropMenuItem } from 'boot-cell/source/Navigator/DropMenu';
 
 import { factory, Factory } from '../../model';
 import { AuditBar, CardsPage } from '../../component';
@@ -75,12 +75,14 @@ export class FactoryPage extends CardsPage<Factory> {
                     <DropMenu
                         className="d-inline-block ml-3"
                         alignType="right"
-                        title="联系方式"
-                        list={contacts.map(({ name, phone }) => ({
-                            title: `${name}：${phone}`,
-                            href: 'tel:' + phone
-                        }))}
-                    />
+                        caption="联系方式"
+                    >
+                        {contacts.map(({ name, phone }) => (
+                            <DropMenuItem href={'tel:' + phone}>
+                                {name}：{phone}
+                            </DropMenuItem>
+                        ))}
+                    </DropMenu>
                 )}
             </div>
         </Card>

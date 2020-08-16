@@ -1,6 +1,6 @@
 import { createCell } from 'web-cell';
 import { Jumbotron } from 'boot-cell/source/Content/Jumbotron';
-import { Icon } from 'boot-cell/source/Reminder/Icon';
+import { FAIcon } from 'boot-cell/source/Reminder/FAIcon';
 
 import menu from './data/menu';
 
@@ -18,7 +18,11 @@ export function HomePage() {
                             className="card text-center text-decoration-none mb-3"
                             href={href}
                         >
-                            <Icon name={icon} size={5} className="mt-4 mb-2" />
+                            <FAIcon
+                                name={icon}
+                                size={5}
+                                className="mt-4 mb-2"
+                            />
                             <p>{title}</p>
                         </a>
                     </li>

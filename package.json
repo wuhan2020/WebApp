@@ -15,7 +15,8 @@
     "main": "source/index.html",
     "dependencies": {
         "@octokit/rest": "^18.0.3",
-        "boot-cell": "^1.0.0-rc.36",
+        "boot-cell": "^1.0.0-rc.39",
+        "bootstrap-icons": "^1.0.0-alpha5",
         "browser-unhandled-rejection": "^1.0.2",
         "cell-router": "^2.0.0-rc.8",
         "classnames": "^2.2.6",
@@ -44,7 +45,7 @@
         "@typescript-eslint/parser": "^3.9.0",
         "autoprefixer": "^9.8.6",
         "cross-env": "^7.0.2",
-        "eslint": "^7.6.0",
+        "eslint": "^7.7.0",
         "husky": "^4.2.5",
         "less": "^3.12.2",
         "lint-staged": "^10.2.11",

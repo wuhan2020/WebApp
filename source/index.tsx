@@ -22,7 +22,7 @@ self.addEventListener('unhandledrejection', event => {
 const { serviceWorker } = window.navigator;
 
 serviceWorker
-    ?.register('/sw.js')
+    ?.register('sw.js')
     .then(serviceWorkerUpdate)
     .then(worker => {
         if (window.confirm('检测到新版本，是否立即启用？'))
