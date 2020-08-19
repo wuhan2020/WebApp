@@ -15,7 +15,8 @@
     "main": "source/index.html",
     "dependencies": {
         "@octokit/rest": "^18.0.3",
-        "boot-cell": "^1.0.0-rc.39",
+        "@tech_query/snabbdom-looks-like": "^2.0.0",
+        "boot-cell": "^1.0.0-rc.42",
         "bootstrap-icons": "^1.0.0-alpha5",
         "browser-unhandled-rejection": "^1.0.2",
         "cell-router": "^2.0.0-rc.8",

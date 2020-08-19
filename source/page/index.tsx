@@ -2,6 +2,7 @@ import { component, createCell, Fragment } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 import { HTMLRouter } from 'cell-router/source';
 import { NavBar } from 'boot-cell/source/Navigator/NavBar';
+import { NavLink } from 'boot-cell/source/Navigator/Nav';
 import { DropMenu, DropMenuItem } from 'boot-cell/source/Navigator/DropMenu';
 import marked from 'marked';
 
@@ -101,14 +102,18 @@ export class PageRouter extends HTMLRouter {
                             style={{ height: '2rem' }}
                         />
                     }
-                    menu={menu.map(({ title, href }) => ({
-                        title,
-                        href,
-                        active:
-                            history.path === href ||
-                            (!!href && history.path.startsWith(href))
-                    }))}
                 >
+                    {menu.map(({ href, title }) => (
+                        <NavLink
+                            href={href}
+                            active={
+                                history.path === href ||
+                                (!!href && history.path.startsWith(href))
+                            }
+                        >
+                            {title}
+                        </NavLink>
+                    ))}
                     {session.user && (
                         <DropMenu
                             caption={session.user.username}
