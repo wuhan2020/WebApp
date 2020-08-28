@@ -188,7 +188,7 @@ export class FactoryEdit extends mixin<{ dataId: string }, Factory>() {
                         </Button>
                         <Button
                             type="reset"
-                            kind="danger"
+                            color="danger"
                             block
                             onClick={() => history.push(RouteRoot.Factory)}
                         >

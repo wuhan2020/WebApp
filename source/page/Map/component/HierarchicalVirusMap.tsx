@@ -16,7 +16,7 @@ import {
     Fragment
 } from 'web-cell';
 import { observer } from 'mobx-web-cell';
-import { BGIcon } from 'boot-cell/source/Reminder/Icon';
+import { BGIcon } from 'boot-cell/source/Reminder/FAIcon';
 import classNames from 'classnames';
 
 // eslint-disable-next-line no-unused-vars
@@ -139,7 +139,7 @@ export class HierarchicalVirusMap extends mixin<Props, State>() {
                 ];
 
         return (
-            <Fragment>
+            <>
                 <VirusMap
                     name={config.name}
                     data={config.data}
@@ -162,7 +162,7 @@ export class HierarchicalVirusMap extends mixin<Props, State>() {
                     )}
                     onClick={this.navigateUp}
                 />
-            </Fragment>
+            </>
         );
     }
 }

@@ -323,7 +323,7 @@ export class VirusChart extends mixin<Props, State>() {
             orderedCountryData = this.getOrderedTimeData(data.countrySeries);
 
         return (
-            <Fragment>
+            <>
                 <CellCharts
                     className="w-100 h-50"
                     chartOptions={this.getConfirmedSuspectChartOptions(
@@ -342,7 +342,7 @@ export class VirusChart extends mixin<Props, State>() {
                         path
                     )}
                 />
-            </Fragment>
+            </>
         );
     }
 }

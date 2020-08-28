@@ -169,7 +169,7 @@ export class HotelEdit extends mixin<{ dataId: string }, Hotel>() {
                         </Button>
                         <Button
                             type="reset"
-                            kind="danger"
+                            color="danger"
                             block
                             onClick={() => history.push(RouteRoot.Hotel)}
                         >

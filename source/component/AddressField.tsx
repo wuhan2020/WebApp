@@ -7,6 +7,7 @@ import {
     createCell,
     Fragment
 } from 'web-cell';
+import { Field } from 'boot-cell/source/Form/Field';
 
 import { searchAddress, coordsOf } from '../service';
 
@@ -116,10 +117,8 @@ export class AddressField extends mixin<
         { loading }: AddressFieldState
     ) {
         return (
-            <Fragment>
-                <input
-                    type="text"
-                    className="form-control"
+            <>
+                <Field
                     name="province"
                     required
                     defaultValue={province}
@@ -127,9 +126,7 @@ export class AddressField extends mixin<
                     disabled={loading}
                     onChange={this.emitChange}
                 />
-                <input
-                    type="text"
-                    className="form-control"
+                <Field
                     name="city"
                     required
                     defaultValue={city}
@@ -137,9 +134,7 @@ export class AddressField extends mixin<
                     disabled={loading}
                     onChange={this.emitChange}
                 />
-                <input
-                    type="text"
-                    className="form-control"
+                <Field
                     name="district"
                     required
                     defaultValue={district}
@@ -147,9 +142,7 @@ export class AddressField extends mixin<
                     disabled={loading}
                     onChange={this.emitChange}
                 />
-                <input
-                    type="text"
-                    className="form-control"
+                <Field
                     name="address"
                     required
                     defaultValue={address}
@@ -157,7 +150,7 @@ export class AddressField extends mixin<
                     disabled={loading}
                     onChange={this.emitChange}
                 />
-            </Fragment>
+            </>
         );
     }
 }

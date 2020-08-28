@@ -83,7 +83,7 @@ export class DistrictFilter extends mixin<DistrictFilterProps>() {
         const allItem = { name: '全部' };
 
         return (
-            <Fragment>
+            <>
                 <DropMenu
                     className="mr-3 mb-3"
                     caption={`省 | ${province || '全部'}`}
@@ -118,7 +118,7 @@ export class DistrictFilter extends mixin<DistrictFilterProps>() {
                         </DropMenuItem>
                     ))}
                 </DropMenu>
-            </Fragment>
+            </>
         );
     }
 }

@@ -191,7 +191,7 @@ export class HospitalEdit extends mixin<
                         </Button>
                         <Button
                             type="reset"
-                            kind="danger"
+                            color="danger"
                             block
                             onClick={() => history.push(RouteRoot.Hospital)}
                         >

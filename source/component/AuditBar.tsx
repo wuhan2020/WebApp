@@ -45,7 +45,7 @@ export function AuditBar({
         session.user?.objectId === creator.objectId || isAdmin || null;
 
     return (
-        <Fragment>
+        <>
             <TimeStamp
                 label="发布"
                 date={createdAt}
@@ -61,7 +61,7 @@ export function AuditBar({
             {authorized && (
                 <div className="btn-group d-flex mt-2">
                     <Button
-                        kind="warning"
+                        color="warning"
                         size="sm"
                         href={scope + '/edit?dataId=' + objectId}
                     >
@@ -69,7 +69,7 @@ export function AuditBar({
                     </Button>
                     {!isAdmin || verified ? null : (
                         <Button
-                            kind="success"
+                            color="success"
                             size="sm"
                             onClick={() =>
                                 (model as VerifiableModel).verify(objectId)
@@ -79,7 +79,7 @@ export function AuditBar({
                         </Button>
                     )}
                     <Button
-                        kind="danger"
+                        color="danger"
                         size="sm"
                         onClick={() => model.delete(objectId)}
                     >
@@ -87,6 +87,6 @@ export function AuditBar({
                     </Button>
                 </div>
             )}
-        </Fragment>
+        </>
     );
 }

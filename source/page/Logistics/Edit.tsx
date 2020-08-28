@@ -166,7 +166,7 @@ export class LogisticsEdit extends mixin<{ dataId: string }, Logistics>() {
                                             +
                                         </Button>
                                         <Button
-                                            kind="danger"
+                                            color="danger"
                                             disabled={!serviceArea[1]}
                                             onClick={() =>
                                                 this.deleteServiceArea(index)
@@ -202,7 +202,7 @@ export class LogisticsEdit extends mixin<{ dataId: string }, Logistics>() {
                         </Button>
                         <Button
                             type="reset"
-                            kind="danger"
+                            color="danger"
                             block
                             onClick={() => history.push(RouteRoot.Logistics)}
                         >

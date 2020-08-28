@@ -306,7 +306,7 @@ export class VirusMap extends mixin<Props, {}>() {
         chartPath
     }: Props) {
         return (
-            <Fragment>
+            <>
                 <EChartsMap
                     className={style.map}
                     mapUrl={MapUrls[name]}
@@ -325,7 +325,7 @@ export class VirusMap extends mixin<Props, {}>() {
                     area={currentChartArea}
                     path={chartPath}
                 />
-            </Fragment>
+            </>
         );
     }
 }

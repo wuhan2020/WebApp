@@ -82,7 +82,7 @@ export class SuppliesField extends mixin<SuppliesFieldProps>() {
                         <div className="input-group-append">
                             <Button onClick={this.addItem}>+</Button>
                             <Button
-                                kind="danger"
+                                color="danger"
                                 disabled={!list[1]}
                                 onClick={() => this.deleteItem(index)}
                             >

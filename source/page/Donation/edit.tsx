@@ -167,7 +167,7 @@ export class DonationEdit extends mixin<
                                 <div className="input-group-append">
                                     <Button onClick={this.addAccount}>+</Button>
                                     <Button
-                                        kind="danger"
+                                        color="danger"
                                         disabled={!accounts[1]}
                                         onClick={() =>
                                             this.deleteAccount(index)
@@ -202,7 +202,7 @@ export class DonationEdit extends mixin<
                         </Button>
                         <Button
                             type="reset"
-                            kind="danger"
+                            color="danger"
                             block
                             onClick={() => history.push(RouteRoot.Donation)}
                         >

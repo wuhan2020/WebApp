@@ -90,7 +90,7 @@ export class PageRouter extends HTMLRouter {
 
     render() {
         return (
-            <Fragment>
+            <>
                 <NavBar
                     theme="light"
                     background="light"
@@ -157,7 +157,7 @@ export class PageRouter extends HTMLRouter {
                     </p>
                     <a href="disclaimer">免责声明</a>
                 </footer>
-            </Fragment>
+            </>
         );
     }
 }

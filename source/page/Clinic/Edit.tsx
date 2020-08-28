@@ -140,7 +140,7 @@ export class ClinicEdit extends mixin<ClinicEditProps, Clinic>() {
                         </Button>
                         <Button
                             type="reset"
-                            kind="danger"
+                            color="danger"
                             block
                             onClick={() => history.push(RouteRoot.Clinic)}
                         >
