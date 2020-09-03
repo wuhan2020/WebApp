@@ -1,6 +1,5 @@
-import { component, createCell, Fragment } from 'web-cell';
-import { observer } from 'mobx-web-cell';
-import { HTMLRouter } from 'cell-router/source';
+import { createCell } from 'web-cell';
+import { CellRouter } from 'cell-router/source';
 import { NavBar } from 'boot-cell/source/Navigator/NavBar';
 import { NavLink } from 'boot-cell/source/Navigator/Nav';
 import { DropMenu, DropMenuItem } from 'boot-cell/source/Navigator/DropMenu';
@@ -28,14 +27,7 @@ import { UserAdmin } from './Admin/User';
 import { CommunityPage } from './Community';
 import Disclaimer from '../../Disclaimer.md';
 
-@observer
-@component({
-    tagName: 'page-router',
-    renderTarget: 'children'
-})
-export class PageRouter extends HTMLRouter {
-    protected history = history;
-    protected routes = [
+const routes = [
         { paths: [''], component: HomePage },
         { paths: [RouteRoot.Hospital], component: HospitalPage },
         { paths: [RouteRoot.Hospital + '/edit'], component: HospitalEdit },
@@ -62,8 +54,7 @@ export class PageRouter extends HTMLRouter {
             paths: ['disclaimer'],
             component: () => <div innerHTML={marked(Disclaimer)} />
         }
-    ];
-
+    ],
     userMenu = [
         {
             title: '管理',
@@ -72,92 +63,79 @@ export class PageRouter extends HTMLRouter {
         },
         {
             title: '登出',
-            onClick: this.signOut
+            onClick: () => session.signOut()
         }
     ];
 
-    connectedCallback() {
-        this.classList.add('d-flex', 'flex-column', 'vh-100');
+export function PageFrame() {
+    return (
+        <div className="d-flex flex-column vh-100">
+            <NavBar
+                theme="light"
+                background="light"
+                narrow
+                brand={
+                    <img
+                        alt="新冠战疫信息平台"
+                        src={logo}
+                        style={{ height: '2rem' }}
+                    />
+                }
+            >
+                {menu.map(({ href, title }) => (
+                    <NavLink
+                        href={href}
+                        active={
+                            history.path === href ||
+                            (!!href && history.path.startsWith(href))
+                        }
+                    >
+                        {title}
+                    </NavLink>
+                ))}
+                {session.user && (
+                    <DropMenu
+                        caption={session.user.username}
+                        alignType="right"
+                        alignSize="md"
+                    >
+                        {userMenu.map(({ roles, title, ...rest }) =>
+                            !roles ||
+                            roles?.find(role => session.hasRole(role)) ? (
+                                <DropMenuItem {...rest}>{title}</DropMenuItem>
+                            ) : null
+                        )}
+                    </DropMenu>
+                )}
+            </NavBar>
 
-        super.connectedCallback();
-    }
+            <CellRouter
+                className="flex-grow-1 container pt-3"
+                routes={routes}
+                history={history}
+            />
 
-    async signOut() {
-        await session.signOut();
-
-        location.href = '.';
-    }
-
-    render() {
-        return (
-            <>
-                <NavBar
-                    theme="light"
-                    background="light"
-                    narrow
-                    brand={
-                        <img
-                            alt="新冠战疫信息平台"
-                            src={logo}
-                            style={{ height: '2rem' }}
-                        />
-                    }
-                >
-                    {menu.map(({ href, title }) => (
-                        <NavLink
-                            href={href}
-                            active={
-                                history.path === href ||
-                                (!!href && history.path.startsWith(href))
-                            }
-                        >
-                            {title}
-                        </NavLink>
-                    ))}
-                    {session.user && (
-                        <DropMenu
-                            caption={session.user.username}
-                            alignType="right"
-                            alignSize="md"
-                        >
-                            {this.userMenu.map(({ roles, title, ...rest }) =>
-                                !roles ||
-                                roles?.find(role => session.hasRole(role)) ? (
-                                    <DropMenuItem {...rest}>
-                                        {title}
-                                    </DropMenuItem>
-                                ) : null
-                            )}
-                        </DropMenu>
-                    )}
-                </NavBar>
-
-                <main className="flex-grow-1 container my-5 pt-3">
-                    {super.render()}
-                </main>
-
-                <footer className="d-md-flex justify-content-around text-center bg-light py-5">
-                    <p>
-                        Proudly developed with
-                        <a
-                            className="mx-1"
-                            target="_blank"
-                            href="https://web-cell.dev/"
-                        >
-                            WebCell v2
-                        </a>
-                        &amp;
-                        <a
-                            className="mx-1"
-                            target="_blank"
-                            href="https://web-cell.dev/BootCell/"
-                        >
-                            BootCell v1
-                        </a>
-                    </p>
-                    <a href="disclaimer">免责声明</a>
-                </footer>
-            </>
-        );
-    }
+            <footer className="d-md-flex justify-content-around text-center bg-light py-5">
+                <p>
+                    Proudly developed with
+                    <a
+                        className="mx-1"
+                        target="_blank"
+                        href="https://web-cell.dev/"
+                    >
+                        WebCell v2
+                    </a>
+                    &amp;
+                    <a
+                        className="mx-1"
+                        target="_blank"
+                        href="https://web-cell.dev/BootCell/"
+                    >
+                        BootCell v1
+                    </a>
+                </p>
+                <a href="disclaimer">免责声明</a>
+            </footer>
+        </div>
+    );
 }

@@ -45,6 +45,8 @@ export class Session {
         await service.delete('/session');
 
         this.save(null);
+
+        location.href = '.';
     }
 
     hasRole(name: RoleNames) {

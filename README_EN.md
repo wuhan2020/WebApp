@@ -20,13 +20,13 @@ Almost all the mainstream web browsers like Chrome, Firefox, Opera, Edge, UC, Xi
 
 ## Tech stack
 
--   Programming language : [TypeScript v3][6]
+-   Programming language : [TypeScript v4][6]
 -   Engine : [WebCell v2][7]
 -   Library : [BootCell v1][8]
 -   State management : [MobX v5][9]
 -   PWA framework : [Workbox v4][10]
 -   Packaging tool : [Parcel v1][11]
--   CI/CD : [Travis CI][12] + [GitHub Pages][13]
+-   CI / CD: GitHub [Actions][12] + [Pages][13]
 
 ## Development needs
 
@@ -84,7 +84,7 @@ Special thanks to the following students for providing the epidemic data from Li
 [9]: https://mobx.js.org
 [10]: https://developers.google.com/web/tools/workbox
 [11]: https://parceljs.org
-[12]: https://travis-ci.com/
+[12]: https://github.com/features/actions
 [13]: https://pages.github.com/
 [14]: https://docs.microsoft.com/zh-cn/powershell/scripting/learn/using-familiar-command-names?view=powershell-5.1
 [15]: https://gitforwindows.org/#bash

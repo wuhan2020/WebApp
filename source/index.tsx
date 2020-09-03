@@ -3,7 +3,7 @@ import { HTTPError } from 'koajax';
 import { serviceWorkerUpdate } from 'web-utility/source/event';
 import { documentReady, render, createCell } from 'web-cell';
 
-import { PageRouter } from './page';
+import { PageFrame } from './page';
 
 auto();
 
@@ -33,4 +33,4 @@ serviceWorker?.addEventListener('controllerchange', () =>
     window.location.reload()
 );
 
-documentReady.then(() => render(<PageRouter />));
+documentReady.then(() => render(<PageFrame />));
