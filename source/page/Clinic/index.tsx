@@ -2,7 +2,7 @@ import { component, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
 import { Card } from 'boot-cell/source/Content/Card';
-import { BGIcon } from 'boot-cell/source/Reminder/Icon';
+import { BGIcon } from 'boot-cell/source/Reminder/FAIcon';
 
 import { CardsPage, AuditBar } from '../../component';
 import { clinic, Clinic } from '../../model';

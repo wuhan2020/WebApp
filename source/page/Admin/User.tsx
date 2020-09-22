@@ -3,7 +3,7 @@ import { observer } from 'mobx-web-cell';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import 'boot-cell/source/Content/EdgeDetector';
 import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
-import { Table } from 'boot-cell/source/Content/Table';
+import { Table, TableRow } from 'boot-cell/source/Content/Table';
 import { ToggleField } from 'boot-cell/source/Form/ToggleField';
 
 import { User } from '../../service';
@@ -50,7 +50,7 @@ export class UserAdmin extends mixin() {
         roles,
         objectId: uid
     }: User) => (
-        <tr>
+        <TableRow>
             <td>{mobilePhoneNumber}</td>
             <td>{new Date(createdAt).toLocaleString()}</td>
             <td>
@@ -66,7 +66,7 @@ export class UserAdmin extends mixin() {
                     </ToggleField>
                 ))}
             </td>
-        </tr>
+        </TableRow>
     );
 
     render() {
@@ -88,14 +88,12 @@ export class UserAdmin extends mixin() {
 
                 <edge-detector onTouchEdge={this.loadMore}>
                     <Table center striped hover>
-                        <thead>
-                            <tr>
-                                <th>手机号</th>
-                                <th>注册时间</th>
-                                <th>角色</th>
-                            </tr>
-                        </thead>
-                        <tbody>{list.map(this.renderItem)}</tbody>
+                        <TableRow type="head">
+                            <th>手机号</th>
+                            <th>注册时间</th>
+                            <th>角色</th>
+                        </TableRow>
+                        {list.map(this.renderItem)}
                     </Table>
 
                     <p slot="bottom" className="text-center mt-2">
