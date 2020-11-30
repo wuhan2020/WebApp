@@ -1,6 +1,6 @@
 import { component, createCell, Fragment } from 'web-cell';
 import { observer } from 'mobx-web-cell';
-import { Card } from 'boot-cell/source/Content/Card';
+import { Card, CardFooter } from 'boot-cell/source/Content/Card';
 import { BGIcon } from 'boot-cell/source/Reminder/FAIcon';
 
 import { AuditBar, CardsPage } from '../../component';
@@ -43,13 +43,15 @@ export class LogisticsPage extends CardsPage<Logistics> {
                     name
                 )
             }
-            footer={<AuditBar scope="logistics" model={logistics} {...rest} />}
         >
             {serviceArea.map(this.renderServiceArea)}
 
             {contacts[0] && contacts.map(this.renderContact)}
 
             <p className="text-muted">{remark}</p>
+            <CardFooter>
+                <AuditBar scope="logistics" model={logistics} {...rest} />
+            </CardFooter>
         </Card>
     );
 

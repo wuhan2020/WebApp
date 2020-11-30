@@ -2,7 +2,7 @@ import { component, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
 import { Button } from 'boot-cell/source/Form/Button';
-import { Card } from 'boot-cell/source/Content/Card';
+import { Card, CardFooter } from 'boot-cell/source/Content/Card';
 import { DropMenu, DropMenuItem } from 'boot-cell/source/Navigator/DropMenu';
 
 import { factory, Factory } from '../../model';
@@ -44,7 +44,6 @@ export class FactoryPage extends CardsPage<Factory> {
                     name
                 )
             }
-            footer={<AuditBar scope="factory" model={factory} {...rest} />}
         >
             <p>
                 资质证明：<code>{qualification}</code>
@@ -85,6 +84,9 @@ export class FactoryPage extends CardsPage<Factory> {
                     </DropMenu>
                 )}
             </div>
+            <CardFooter>
+                <AuditBar scope="factory" model={factory} {...rest} />
+            </CardFooter>
         </Card>
     );
 }

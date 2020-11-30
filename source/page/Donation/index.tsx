@@ -1,7 +1,7 @@
 import { component, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
-import { Card } from 'boot-cell/source/Content/Card';
+import { Card, CardFooter } from 'boot-cell/source/Content/Card';
 import { DropMenu, DropMenuItem } from 'boot-cell/source/Navigator/DropMenu';
 
 import { CardsPage, AuditBar } from '../../component';
@@ -71,13 +71,6 @@ export class DonationPage extends CardsPage<DonationRecipient> {
                     name
                 )
             }
-            footer={
-                <AuditBar
-                    scope="donation"
-                    model={donationRecipient}
-                    {...rest}
-                />
-            }
         >
             <ol className="list-unstyled">
                 {accounts.map(this.renderAccount)}
@@ -100,6 +93,13 @@ export class DonationPage extends CardsPage<DonationRecipient> {
                     </DropMenu>
                 )}
             </div>
+            <CardFooter>
+                <AuditBar
+                    scope="donation"
+                    model={donationRecipient}
+                    {...rest}
+                />
+            </CardFooter>
         </Card>
     );
 }

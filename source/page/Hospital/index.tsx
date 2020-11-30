@@ -1,7 +1,7 @@
 import { component, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
-import { Card } from 'boot-cell/source/Content/Card';
+import { Card, CardFooter } from 'boot-cell/source/Content/Card';
 import { Button } from 'boot-cell/source/Form/Button';
 import { DropMenu, DropMenuItem } from 'boot-cell/source/Navigator/DropMenu';
 
@@ -33,13 +33,6 @@ export class HospitalPage extends CardsPage<SuppliesRequirement> {
             className="mx-auto mb-4 mx-sm-1"
             style={{ minWidth: '20rem', maxWidth: '20rem' }}
             title={hospital}
-            footer={
-                <AuditBar
-                    scope="hospital"
-                    model={suppliesRequirement}
-                    {...rest}
-                />
-            }
         >
             <ol>
                 {supplies.map(({ name, count, remark }) => (
@@ -73,6 +66,13 @@ export class HospitalPage extends CardsPage<SuppliesRequirement> {
                     </DropMenu>
                 )}
             </div>
+            <CardFooter>
+                <AuditBar
+                    scope="hospital"
+                    model={suppliesRequirement}
+                    {...rest}
+                />
+            </CardFooter>
         </Card>
     );
 }

@@ -1,7 +1,7 @@
 import { component, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
-import { Card } from 'boot-cell/source/Content/Card';
+import { Card, CardFooter } from 'boot-cell/source/Content/Card';
 import { Button } from 'boot-cell/source/Form/Button';
 import { DropMenu, DropMenuItem } from 'boot-cell/source/Navigator/DropMenu';
 
@@ -44,7 +44,6 @@ export class HotelPage extends CardsPage<Hotel> {
                     name
                 )
             }
-            footer={<AuditBar scope="hotel" model={hotel} {...rest} />}
         >
             <p>
                 可接待人数：
@@ -84,6 +83,9 @@ export class HotelPage extends CardsPage<Hotel> {
                     </DropMenu>
                 )}
             </div>
+            <CardFooter>
+                <AuditBar scope="hotel" model={hotel} {...rest} />
+            </CardFooter>
         </Card>
     );
 }

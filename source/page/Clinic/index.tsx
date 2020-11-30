@@ -1,7 +1,7 @@
 import { component, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
-import { Card } from 'boot-cell/source/Content/Card';
+import { Card, CardFooter } from 'boot-cell/source/Content/Card';
 import { BGIcon } from 'boot-cell/source/Reminder/FAIcon';
 
 import { CardsPage, AuditBar } from '../../component';
@@ -38,7 +38,6 @@ export class ClinicList extends CardsPage<Clinic> {
                     name
                 )
             }
-            footer={<AuditBar scope="clinic" model={clinic} {...rest} />}
         >
             <p>
                 每日接诊起止时间：{startTime} ~ {endTime}
@@ -61,6 +60,9 @@ export class ClinicList extends CardsPage<Clinic> {
                 </ol>
             )}
             {remark && <p className="text-muted">{remark}</p>}
+            <CardFooter>
+                <AuditBar scope="clinic" model={clinic} {...rest} />
+            </CardFooter>
         </Card>
     );
 }
