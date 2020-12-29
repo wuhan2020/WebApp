@@ -1,4 +1,3 @@
-import 'core-js/es/string/match-all';
 import { GitHubClient } from './GitHub';
 
 export const repository = new GitHubClient({

@@ -1,5 +1,7 @@
 import { component, mixin, watch, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
+import { InputGroup } from 'boot-cell/source/Form/InputGroup';
+import { Field } from 'boot-cell/source/Form/Field';
 import { Button } from 'boot-cell/source/Form/Button';
 
 import { User } from '../service';
@@ -67,38 +69,34 @@ export class SessionBox extends mixin() {
             >
                 <h2 className="text-center mb-3">登录</h2>
 
-                <div className="input-group input-group-lg mb-3">
-                    <input
+                <InputGroup size="lg" className="mb-3">
+                    <Field
                         type="tel"
-                        className="form-control"
                         name="phone"
                         maxLength="11"
                         required
                         placeholder="手机号"
                     />
-                </div>
+                </InputGroup>
 
-                <div className="input-group input-group-lg mb-3">
-                    <input
-                        className="form-control"
+                <InputGroup size="lg" className="mb-3">
+                    <Field
                         name="code"
                         required
                         placeholder="短信验证码"
                         autocomplete="off"
                     />
-                    <div className="input-group-append">
-                        <button
-                            type="button"
-                            className="btn btn-outline-secondary"
-                            onClick={this.handleSMSCode}
-                            disabled={!!countDown}
-                        >
-                            {countDown ? countDown + 's' : '获取'}
-                        </button>
-                    </div>
-                </div>
+                    <Button
+                        outline
+                        color="secondary"
+                        onClick={this.handleSMSCode}
+                        disabled={!!countDown}
+                    >
+                        {countDown ? countDown + 's' : '获取'}
+                    </Button>
+                </InputGroup>
 
-                <Button type="submit" block size="lg">
+                <Button type="submit" block color="primary" size="lg">
                     登录
                 </Button>
             </form>

@@ -1,5 +1,7 @@
 import { component, mixin, watch, createCell } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
+import { InputGroup } from 'boot-cell/source/Form/InputGroup';
+import { Field } from 'boot-cell/source/Form/Field';
 import { Button } from 'boot-cell/source/Form/Button';
 
 import { RouteRoot } from '../data/menu';
@@ -126,21 +128,19 @@ export class LogisticsEdit extends mixin<{ dataId: string }, Logistics>() {
                                 { city, direction, personal }: ServiceArea,
                                 index
                             ) => (
-                                <div
-                                    className="input-group my-1"
+                                <InputGroup
+                                    className="my-1"
                                     onChange={(event: Event) =>
                                         this.changeServiceArea(index, event)
                                     }
                                 >
-                                    <input
-                                        type="text"
-                                        className="form-control"
+                                    <Field
                                         name="city"
                                         value={city}
                                         placeholder="请输入寄送城市"
                                     />
-                                    <select
-                                        class="custom-select"
+                                    <Field
+                                        is="select"
                                         name="direction"
                                         value={direction}
                                     >
@@ -148,34 +148,41 @@ export class LogisticsEdit extends mixin<{ dataId: string }, Logistics>() {
                                         <option value="in">只能寄入</option>
                                         <option value="out">只能寄出</option>
                                         <option value="both">寄入寄出</option>
-                                    </select>
-                                    <select
-                                        class="custom-select"
-                                        name="personal"
-                                        value={personal}
-                                    >
+                                    </Field>
+                                    <Field is="select" name="personal">
                                         <option selected>
                                             是否接受个人捐赠
                                         </option>
-                                        <option value={true}>是</option>
-                                        <option value={false}>否</option>
-                                    </select>
-
-                                    <div className="input-group-append">
-                                        <Button onClick={this.addServiceArea}>
-                                            +
-                                        </Button>
-                                        <Button
-                                            color="danger"
-                                            disabled={!serviceArea[1]}
-                                            onClick={() =>
-                                                this.deleteServiceArea(index)
-                                            }
+                                        <option
+                                            value={true}
+                                            selected={personal}
                                         >
-                                            -
-                                        </Button>
-                                    </div>
-                                </div>
+                                            是
+                                        </option>
+                                        <option
+                                            value={false}
+                                            selected={!personal}
+                                        >
+                                            否
+                                        </option>
+                                    </Field>
+
+                                    <Button
+                                        color="primary"
+                                        onClick={this.addServiceArea}
+                                    >
+                                        +
+                                    </Button>
+                                    <Button
+                                        color="danger"
+                                        disabled={!serviceArea[1]}
+                                        onClick={() =>
+                                            this.deleteServiceArea(index)
+                                        }
+                                    >
+                                        -
+                                    </Button>
+                                </InputGroup>
                             )
                         )}
                     </FormField>
@@ -195,6 +202,7 @@ export class LogisticsEdit extends mixin<{ dataId: string }, Logistics>() {
                     <div className="form-group mt-3">
                         <Button
                             type="submit"
+                            color="primary"
                             block
                             disabled={logistics.loading}
                         >

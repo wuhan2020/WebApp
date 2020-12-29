@@ -1,5 +1,7 @@
 import { component, mixin, watch, createCell } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
+import { InputGroup } from 'boot-cell/source/Form/InputGroup';
+import { Field } from 'boot-cell/source/Form/Field';
 import { Button } from 'boot-cell/source/Form/Button';
 
 import { Clinic, history, clinic } from '../../model';
@@ -102,24 +104,22 @@ export class ClinicEdit extends mixin<ClinicEditProps, Clinic>() {
                     />
 
                     <FormField label="每日接诊起止时间">
-                        <div className="input-group">
-                            <input
+                        <InputGroup>
+                            <Field
                                 type="time"
-                                className="form-control"
                                 name="startTime"
                                 required
                                 defaultValue={startTime}
                                 placeholder="开始"
                             />
-                            <input
+                            <Field
                                 type="time"
-                                className="form-control"
                                 name="endTime"
                                 required
                                 defaultValue={endTime}
                                 placeholder="结束"
                             />
-                        </div>
+                        </InputGroup>
                     </FormField>
 
                     <ContactField
@@ -135,7 +135,12 @@ export class ClinicEdit extends mixin<ClinicEditProps, Clinic>() {
                         label="备注"
                     />
                     <div className="form-group mt-3">
-                        <Button type="submit" block disabled={clinic.loading}>
+                        <Button
+                            type="submit"
+                            color="primary"
+                            block
+                            disabled={clinic.loading}
+                        >
                             提交
                         </Button>
                         <Button

@@ -21,13 +21,14 @@ self.addEventListener('unhandledrejection', event => {
 
 const { serviceWorker } = window.navigator;
 
-serviceWorker
-    ?.register('sw.js')
-    .then(serviceWorkerUpdate)
-    .then(worker => {
-        if (window.confirm('检测到新版本，是否立即启用？'))
-            worker.postMessage({ type: 'SKIP_WAITING' });
-    });
+if (process.env.NODE_ENV !== 'development')
+    serviceWorker
+        ?.register('sw.js')
+        .then(serviceWorkerUpdate)
+        .then(worker => {
+            if (window.confirm('检测到新版本，是否立即启用？'))
+                worker.postMessage({ type: 'SKIP_WAITING' });
+        });
 
 serviceWorker?.addEventListener('controllerchange', () =>
     window.location.reload()

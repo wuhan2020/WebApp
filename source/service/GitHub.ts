@@ -1,6 +1,15 @@
-import { Octokit } from '@octokit/rest';
+import { components } from '@octokit/openapi-types';
+import { HTTPClient } from 'koajax';
 import { Base64 } from 'js-base64';
 import { parse } from 'yaml';
+
+export type PickItem<T> = T extends (infer R)[] ? R : T;
+
+export type Content =
+    | PickItem<components['schemas']['content-directory']>
+    | PickItem<components['schemas']['content-file']>;
+
+export type Contributor = components['schemas']['contributor'];
 
 interface GitHubOptions {
     owner: string;
@@ -8,7 +17,10 @@ interface GitHubOptions {
 }
 
 export class GitHubClient {
-    client = new Octokit();
+    client = new HTTPClient({
+        baseURI: 'https://api.github.com/',
+        responseType: 'json'
+    });
     options: GitHubOptions;
 
     constructor(options: GitHubOptions) {
@@ -16,12 +28,13 @@ export class GitHubClient {
     }
 
     async getContents(path: string) {
+        const { owner, repo } = this.options;
+
         const type = path.split('.').slice(-1)[0],
-            { data } = await this.client.repos.getContent({
-                ...this.options,
-                path
-            });
-        const raw = Base64.decode(data.content);
+            { body } = await this.client.get<Content>(
+                `repos/${owner}/${repo}/contents/${path}`
+            );
+        const raw = Base64.decode(body.content);
 
         switch (type) {
             case 'json':
@@ -35,11 +48,11 @@ export class GitHubClient {
     }
 
     async getContributors() {
-        const { data } = await this.client.repos.listContributors({
-            ...this.options,
-            per_page: 100
-        });
+        const { owner, repo } = this.options;
 
-        return data;
+        const { body } = await this.client.get<Contributor[]>(
+            `repos/${owner}/${repo}/contributors?per_page=100`
+        );
+        return body;
     }
 }

@@ -24,7 +24,7 @@
 -   组件引擎: [WebCell v2][7]
 -   组件库: [BootCell v1][8]
 -   状态管理: [MobX v5][9]
--   PWA 框架: [Workbox v4][10]
+-   PWA 框架: [Workbox v6][10]
 -   打包工具: [Parcel v1][11]
 -   CI / CD: GitHub [Actions][12] + [Pages][13]
 

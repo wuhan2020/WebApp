@@ -24,7 +24,7 @@ Almost all the mainstream web browsers like Chrome, Firefox, Opera, Edge, UC, Xi
 -   Engine : [WebCell v2][7]
 -   Library : [BootCell v1][8]
 -   State management : [MobX v5][9]
--   PWA framework : [Workbox v4][10]
+-   PWA framework : [Workbox v6][10]
 -   Packaging tool : [Parcel v1][11]
 -   CI / CD: GitHub [Actions][12] + [Pages][13]
 

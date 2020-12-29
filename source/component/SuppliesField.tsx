@@ -1,6 +1,7 @@
 import { WebCellProps, component, mixin, watch, createCell } from 'web-cell';
-import { FieldProps } from 'boot-cell/source/Form/Field';
+import { FieldProps, Field } from 'boot-cell/source/Form/Field';
 import { FormField } from 'boot-cell/source/Form/FormField';
+import { InputGroup } from 'boot-cell/source/Form/InputGroup';
 import { Button } from 'boot-cell/source/Form/Button';
 
 import { Supplies } from '../model';
@@ -51,45 +52,36 @@ export class SuppliesField extends mixin<SuppliesFieldProps>() {
         return (
             <FormField label="物资列表">
                 {list.map(({ name, count, remark }, index) => (
-                    <div
-                        className="input-group my-1"
+                    <InputGroup
+                        className="my-1"
                         onChange={(event: Event) =>
                             this.changeItem(index, event)
                         }
                     >
-                        <input
-                            type="text"
-                            className="form-control"
-                            name="name"
-                            value={name}
-                            placeholder="名称"
-                        />
-                        <input
+                        <Field name="name" value={name} placeholder="名称" />
+                        <Field
                             type="number"
-                            className="form-control"
                             name="count"
                             min="0"
-                            value={count}
+                            value={count + ''}
                             placeholder="数量"
                         />
-                        <input
-                            type="text"
-                            className="form-control"
+                        <Field
                             name="remark"
                             value={remark}
                             placeholder="备注"
                         />
-                        <div className="input-group-append">
-                            <Button onClick={this.addItem}>+</Button>
-                            <Button
-                                color="danger"
-                                disabled={!list[1]}
-                                onClick={() => this.deleteItem(index)}
-                            >
-                                -
-                            </Button>
-                        </div>
-                    </div>
+                        <Button color="primary" onClick={this.addItem}>
+                            +
+                        </Button>
+                        <Button
+                            color="danger"
+                            disabled={!list[1]}
+                            onClick={() => this.deleteItem(index)}
+                        >
+                            -
+                        </Button>
+                    </InputGroup>
                 ))}
             </FormField>
         );

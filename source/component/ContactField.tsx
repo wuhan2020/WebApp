@@ -1,6 +1,7 @@
-import { WebCellProps, component, mixin, createCell, watch } from 'web-cell';
-import { FieldProps } from 'boot-cell/source/Form/Field';
+import { WebCellProps, component, mixin, watch, createCell } from 'web-cell';
+import { FieldProps, Field } from 'boot-cell/source/Form/Field';
 import { FormField } from 'boot-cell/source/Form/FormField';
+import { InputGroup } from 'boot-cell/source/Form/InputGroup';
 import { Button } from 'boot-cell/source/Form/Button';
 
 import { Contact } from '../service';
@@ -51,37 +52,31 @@ export class ContactField extends mixin<ContactFieldProps>() {
         return (
             <FormField label="联系方式">
                 {list.map(({ name, phone }, index) => (
-                    <div
-                        className="input-group my-1"
+                    <InputGroup
+                        className="my-1"
                         onChange={(event: Event) =>
                             this.changeItem(index, event)
                         }
                     >
-                        <input
-                            type="text"
-                            className="form-control"
-                            name="name"
-                            value={name}
-                            placeholder="姓名"
-                        />
-                        <input
+                        <Field name="name" value={name} placeholder="姓名" />
+                        <Field
                             type="tel"
-                            className="form-control"
                             name="phone"
                             value={phone}
                             placeholder="电话号码（含国家码、区号）"
                         />
-                        <div className="input-group-append">
-                            <Button onClick={this.addItem}>+</Button>
-                            <Button
-                                color="danger"
-                                disabled={!list[1]}
-                                onClick={() => this.deleteItem(index)}
-                            >
-                                -
-                            </Button>
-                        </div>
-                    </div>
+
+                        <Button color="primary" onClick={this.addItem}>
+                            +
+                        </Button>
+                        <Button
+                            color="danger"
+                            disabled={!list[1]}
+                            onClick={() => this.deleteItem(index)}
+                        >
+                            -
+                        </Button>
+                    </InputGroup>
                 ))}
             </FormField>
         );

@@ -2,13 +2,13 @@
     "compilerOptions": {
         "rootDir": "source/",
         "target": "ES5",
-        "module": "ESNext",
+        "module": "ES2020",
         "moduleResolution": "Node",
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
         "jsx": "react",
         "jsxFactory": "createCell",
         "jsxFragmentFactory": "Fragment",
-        "lib": ["ES2019", "DOM"]
+        "lib": ["ES2020", "DOM"]
     }
 }

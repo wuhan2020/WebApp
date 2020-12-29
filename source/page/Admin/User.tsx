@@ -82,7 +82,9 @@ export class UserAdmin extends mixin() {
                             className="form-control mr-3"
                             name="phone"
                         />
-                        <Button type="submit">搜索</Button>
+                        <Button type="submit" color="primary">
+                            搜索
+                        </Button>
                     </form>
                 </header>
 

@@ -95,9 +95,10 @@ export function PageFrame() {
                 ))}
                 {session.user && (
                     <DropMenu
-                        caption={session.user.username}
+                        buttonColor="primary"
                         alignType="right"
                         alignSize="md"
+                        caption={session.user.username}
                     >
                         {userMenu.map(({ roles, title, ...rest }) =>
                             !roles ||

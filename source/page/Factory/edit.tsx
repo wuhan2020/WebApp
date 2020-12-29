@@ -183,7 +183,12 @@ export class FactoryEdit extends mixin<{ dataId: string }, Factory>() {
                         defaultValue={remark}
                     />
                     <div className="form-group mt-3">
-                        <Button type="submit" block disabled={factory.loading}>
+                        <Button
+                            type="submit"
+                            color="primary"
+                            block
+                            disabled={factory.loading}
+                        >
                             提交
                         </Button>
                         <Button

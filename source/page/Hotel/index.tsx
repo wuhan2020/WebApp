@@ -55,6 +55,7 @@ export class HotelPage extends CardsPage<Hotel> {
 
             <div className="text-center">
                 <Button
+                    color="primary"
                     target="_top"
                     href={
                         '//uri.amap.com/marker?' +
@@ -72,6 +73,7 @@ export class HotelPage extends CardsPage<Hotel> {
                 {contacts[0] && (
                     <DropMenu
                         className="d-inline-block ml-3"
+                        buttonColor="primary"
                         alignType="right"
                         caption="联系方式"
                     >

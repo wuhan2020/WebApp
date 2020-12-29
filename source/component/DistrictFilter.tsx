@@ -86,6 +86,7 @@ export class DistrictFilter extends mixin<DistrictFilterProps>() {
             <>
                 <DropMenu
                     className="mr-3 mb-3"
+                    buttonColor="primary"
                     caption={`省 | ${province || '全部'}`}
                 >
                     {[allItem, ...area.provinces].map(({ name }) => (
@@ -98,6 +99,7 @@ export class DistrictFilter extends mixin<DistrictFilterProps>() {
                 </DropMenu>
                 <DropMenu
                     className="mr-3 mb-3"
+                    buttonColor="primary"
                     caption={`市 | ${city || '全部'}`}
                 >
                     {[allItem, ...area.cities].map(({ name }) => (
@@ -108,6 +110,7 @@ export class DistrictFilter extends mixin<DistrictFilterProps>() {
                 </DropMenu>
                 <DropMenu
                     className="mr-3 mb-3"
+                    buttonColor="primary"
                     caption={`区 | ${district || '全部'}`}
                 >
                     {[allItem, ...area.districts].map(({ name }) => (

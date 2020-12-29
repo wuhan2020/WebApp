@@ -184,6 +184,7 @@ export class HospitalEdit extends mixin<
                     <div className="form-group mt-3">
                         <Button
                             type="submit"
+                            color="primary"
                             block
                             disabled={suppliesRequirement.loading}
                         >

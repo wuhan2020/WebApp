@@ -1,13 +1,12 @@
 import { component, mixin, createCell } from 'web-cell';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
 import { GithubRepository } from 'github-web-widget/source/Repository';
-import { ReposListContributorsResponseData } from '@octokit/types';
 
-import { repository } from '../../service';
+import { Contributor, repository } from '../../service';
 
 interface CommunityPageState {
     loading?: boolean;
-    list?: ReposListContributorsResponseData;
+    list?: Contributor[];
 }
 
 @component({
