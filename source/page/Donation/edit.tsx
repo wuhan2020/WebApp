@@ -1,4 +1,4 @@
-import { component, mixin, watch, createCell } from 'web-cell';
+import { WebCellProps, component, mixin, watch, createCell } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
 import { InputGroup } from 'boot-cell/source/Form/InputGroup';
 import { Field } from 'boot-cell/source/Form/Field';
@@ -14,12 +14,16 @@ import {
 import { Contact } from '../../service';
 import { SessionBox, ContactField } from '../../component';
 
+export interface DonationEditProps extends WebCellProps {
+    dataId: string;
+}
+
 @component({
     tagName: 'donation-edit',
     renderTarget: 'children'
 })
 export class DonationEdit extends mixin<
-    { dataId: string },
+    DonationEditProps,
     DonationRecipient
 >() {
     @watch

@@ -1,4 +1,4 @@
-import { component, mixin, watch, createCell } from 'web-cell';
+import { WebCellProps, component, mixin, watch, createCell } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
 import { InputGroup } from 'boot-cell/source/Form/InputGroup';
 import { Field } from 'boot-cell/source/Form/Field';
@@ -8,7 +8,7 @@ import { Clinic, history, clinic } from '../../model';
 import { RouteRoot } from '../data/menu';
 import { SessionBox, ContactField } from '../../component';
 
-interface ClinicEditProps {
+export interface ClinicEditProps extends WebCellProps {
     dataId?: string;
 }
 

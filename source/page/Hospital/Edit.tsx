@@ -1,4 +1,4 @@
-import { component, mixin, watch, createCell } from 'web-cell';
+import { WebCellProps, component, mixin, watch, createCell } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
@@ -19,12 +19,16 @@ import {
     SuppliesField
 } from '../../component';
 
+export interface HospitalEditProps extends WebCellProps {
+    dataId: string;
+}
+
 @component({
     tagName: 'hospital-edit',
     renderTarget: 'children'
 })
 export class HospitalEdit extends mixin<
-    { dataId: string },
+    HospitalEditProps,
     SuppliesRequirement
 >() {
     @watch

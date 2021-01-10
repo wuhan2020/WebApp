@@ -1,14 +1,13 @@
 import { component, mixin, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
-import 'boot-cell/source/Content/EdgeDetector';
-import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
-import { Table, TableRow } from 'boot-cell/source/Content/Table';
 import { ToggleField } from 'boot-cell/source/Form/ToggleField';
+import { Button } from 'boot-cell/source/Form/Button';
+import { EdgeEvent, EdgeDetector } from 'boot-cell/source/Content/EdgeDetector';
+import { Table, TableRow } from 'boot-cell/source/Content/Table';
 
 import { User } from '../../service';
 import { user } from '../../model';
-import { Button } from 'boot-cell/source/Form/Button';
 
 @observer
 @component({
@@ -88,7 +87,7 @@ export class UserAdmin extends mixin() {
                     </form>
                 </header>
 
-                <edge-detector onTouchEdge={this.loadMore}>
+                <EdgeDetector onTouchEdge={this.loadMore}>
                     <Table center striped hover>
                         <TableRow type="head">
                             <th>手机号</th>
@@ -101,7 +100,7 @@ export class UserAdmin extends mixin() {
                     <p slot="bottom" className="text-center mt-2">
                         {noMore ? '没有更多数据了' : '加载更多...'}
                     </p>
-                </edge-detector>
+                </EdgeDetector>
             </SpinnerBox>
         );
     }

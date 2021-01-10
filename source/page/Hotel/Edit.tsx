@@ -1,4 +1,4 @@
-import { component, mixin, watch, createCell } from 'web-cell';
+import { WebCellProps, component, mixin, watch, createCell } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
@@ -7,11 +7,15 @@ import { Hotel, hotel, history } from '../../model';
 import { GeoCoord, Contact } from '../../service';
 import { SessionBox, AddressField, ContactField } from '../../component';
 
+export interface HotelEditProps extends WebCellProps {
+    dataId: string;
+}
+
 @component({
     tagName: 'hotel-edit',
     renderTarget: 'children'
 })
-export class HotelEdit extends mixin<{ dataId: string }, Hotel>() {
+export class HotelEdit extends mixin<HotelEditProps, Hotel>() {
     @watch
     dataId = '';
 

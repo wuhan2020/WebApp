@@ -1,4 +1,4 @@
-import { component, mixin, watch, createCell } from 'web-cell';
+import { component, mixin, watch, createCell, WebCellProps } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
@@ -14,11 +14,15 @@ import {
     ContactField
 } from '../../component';
 
+export interface FactoryEditProps extends WebCellProps {
+    dataId: string;
+}
+
 @component({
     tagName: 'factory-edit',
     renderTarget: 'children'
 })
-export class FactoryEdit extends mixin<{ dataId: string }, Factory>() {
+export class FactoryEdit extends mixin<FactoryEditProps, Factory>() {
     @watch
     dataId = '';
 

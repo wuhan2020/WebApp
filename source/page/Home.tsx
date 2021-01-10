@@ -13,7 +13,7 @@ export function HomePage() {
             />
             <ul className="row list-unstyled">
                 {menu.slice(1, -1).map(({ title, href, icon }) => (
-                    <li class="col-sm-6 col-md-6 col-lg-4">
+                    <li className="col-sm-6 col-md-6 col-lg-4">
                         <a
                             className="card text-center text-decoration-none mb-3"
                             href={href}

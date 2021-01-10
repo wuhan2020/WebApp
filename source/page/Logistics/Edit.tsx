@@ -1,4 +1,4 @@
-import { component, mixin, watch, createCell } from 'web-cell';
+import { WebCellProps, component, mixin, watch, createCell } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
 import { InputGroup } from 'boot-cell/source/Form/InputGroup';
 import { Field } from 'boot-cell/source/Form/Field';
@@ -14,11 +14,15 @@ const initServiceArea: ServiceArea = {
     personal: false
 };
 
+export interface LogisticsEditProps extends WebCellProps {
+    dataId: string;
+}
+
 @component({
     tagName: 'logistics-edit',
     renderTarget: 'children'
 })
-export class LogisticsEdit extends mixin<{ dataId: string }, Logistics>() {
+export class LogisticsEdit extends mixin<LogisticsEditProps, Logistics>() {
     @watch
     dataId = '';
 
@@ -154,13 +158,13 @@ export class LogisticsEdit extends mixin<{ dataId: string }, Logistics>() {
                                             是否接受个人捐赠
                                         </option>
                                         <option
-                                            value={true}
+                                            value="true"
                                             selected={personal}
                                         >
                                             是
                                         </option>
                                         <option
-                                            value={false}
+                                            value="false"
                                             selected={!personal}
                                         >
                                             否

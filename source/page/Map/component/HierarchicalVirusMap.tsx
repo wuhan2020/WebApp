@@ -8,11 +8,12 @@
  * resolution: 时间精度
  */
 import {
+    WebCellProps,
     component,
     mixin,
-    createCell,
     attribute,
     watch,
+    createCell,
     Fragment
 } from 'web-cell';
 import { observer } from 'mobx-web-cell';
@@ -32,7 +33,7 @@ import {
 
 import style from './HierarchicalVirusMap.module.css';
 
-interface Props {
+interface Props extends WebCellProps {
     data: OverallCountryData;
     resolution: number;
 }

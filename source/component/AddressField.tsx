@@ -7,11 +7,12 @@ import {
     createCell,
     Fragment
 } from 'web-cell';
+import type { HTMLFieldProps } from 'web-utility';
 import { Field } from 'boot-cell/source/Form/Field';
 
 import { searchAddress, coordsOf } from '../service';
 
-interface AddressFieldProps extends WebCellProps {
+export interface AddressFieldProps extends HTMLFieldProps, WebCellProps {
     place?: string;
     province: string;
     city: string;
