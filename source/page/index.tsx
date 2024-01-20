@@ -31,8 +31,6 @@ import { CommunityPage } from './Community';
 import Disclaimer from '../../Disclaimer.md';
 
 // const routes = [
-//         { paths: [''], component: HomePage },
-//         { paths: [RouteRoot.Hospital], component: HospitalPage },
 //         { paths: [RouteRoot.Hospital + '/edit'], component: HospitalEdit },
 //         { paths: [RouteRoot.Logistics], component: LogisticsPage },
 //         { paths: [RouteRoot.Logistics + '/edit'], component: LogisticsEdit },
@@ -51,8 +49,7 @@ import Disclaimer from '../../Disclaimer.md';
 //         {
 //             paths: [RouteRoot.Admin, RouteRoot.Admin + '/user'],
 //             component: UserAdmin
-//         },
-//         { paths: [RouteRoot.Community], component: CommunityPage }
+//         }
 //     ],
 const userMenu = [
     {
@@ -115,9 +112,17 @@ export const PageFrame: FC = () => (
 
         <Container className="flex-fill overflow-auto scrollbar-none">
             <Route path="" component={HomePage} />
+            <Route path={RouteRoot.Hospital} component={HospitalPage} />
+            <Route path={RouteRoot.Community} component={CommunityPage} />
             <Route
                 path="disclaimer"
-                component={props => <div {...props} innerHTML={Disclaimer} />}
+                component={({ className = '', ...props }) => (
+                    <article
+                        className={`py-5 ${className}`}
+                        {...props}
+                        innerHTML={Disclaimer}
+                    />
+                )}
             />
         </Container>
 

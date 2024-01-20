@@ -1,18 +1,18 @@
-import { component, createCell } from 'web-cell';
-import { observer } from 'mobx-web-cell';
-
-import { Card, CardFooter } from 'boot-cell/source/Content/Card';
-import { Button } from 'boot-cell/source/Form/Button';
-import { DropMenu, DropMenuItem } from 'boot-cell/source/Navigator/DropMenu';
+import { component, observer } from 'web-cell';
+import {
+    Card,
+    CardFooter,
+    Button,
+    DropdownButton,
+    DropdownItem
+} from 'boot-cell';
 
 import { suppliesRequirement, SuppliesRequirement } from '../../model';
-import { AuditBar, CardsPage } from '../../component';
+import { AuditBar } from '../../component/AuditBar';
+import { CardsPage } from '../../component/CardsPage';
 
+@component({ tagName: 'hospital-page' })
 @observer
-@component({
-    tagName: 'hospital-page',
-    renderTarget: 'children'
-})
 export class HospitalPage extends CardsPage<SuppliesRequirement> {
     scope = 'hospital';
     model = suppliesRequirement;
@@ -45,7 +45,7 @@ export class HospitalPage extends CardsPage<SuppliesRequirement> {
 
             <div className="text-center">
                 <Button
-                    color="primary"
+                    variant="primary"
                     onClick={() =>
                         this.clip2board(province + city + district + address)
                     }
@@ -54,18 +54,18 @@ export class HospitalPage extends CardsPage<SuppliesRequirement> {
                 </Button>
 
                 {contacts[0] && (
-                    <DropMenu
+                    <DropdownButton
                         className="d-inline-block ml-3"
-                        buttonColor="primary"
-                        alignType="right"
+                        variant="primary"
+                        // alignType="right"
                         caption="联系方式"
                     >
                         {contacts.map(({ name, phone }) => (
-                            <DropMenuItem href={'tel:' + phone}>
+                            <DropdownItem href={'tel:' + phone}>
                                 {name}：{phone}
-                            </DropMenuItem>
+                            </DropdownItem>
                         ))}
-                    </DropMenu>
+                    </DropdownButton>
                 )}
             </div>
             <CardFooter>

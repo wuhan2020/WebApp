@@ -48,6 +48,7 @@
         "parcel-transformer-markdown": "^3.0.1",
         "prettier": "^3.2.4",
         "process": "^0.11.10",
+        "tsx": "^4.7.0",
         "typescript": "~5.3.3",
         "workbox-cli": "^7.0.0"
     },
@@ -69,13 +70,15 @@
         "*.{html,md,less,json,yml}": "prettier --write",
         "*.{js,ts,tsx}": "eslint --fix"
     },
+    "browserslist": "> 0.5%, last 2 versions, not dead, IE 11",
     "scripts": {
+        "prepare": "husky install",
         "test": "lint-staged",
         "clean": "rm -rf .parcel-cache/ dist/",
         "start:local": "npm run clean  &&  cross-env HTTP_ENV=local  parcel source/index.html --open",
         "start:remote": "npm run clean  &&  cross-env HTTP_ENV=remote  parcel source/index.html --open",
         "start": "npm run clean  &&  cross-env HTTP_ENV=test  parcel source/index.html --open",
-        "pack-dist": "parcel build source/index.html --public-url .",
+        "pack-dist": "parcel build source/index.html --public-url . --no-source-maps  &&  tsx fix-script",
         "pack-sw": "rm -f dist/sw.js.map  &&  workbox generateSW",
         "build": "npm run clean  &&  npm run pack-dist  &&  npm run pack-sw"
     }

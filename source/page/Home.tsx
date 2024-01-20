@@ -21,7 +21,7 @@ export const HomePage: FC<PageProps> = props => (
                             <CardTitle className="m-0">
                                 <a
                                     className="text-decoration-none stretched-link"
-                                    href={href}
+                                    href={`#${href}`}
                                 >
                                     {title}
                                 </a>

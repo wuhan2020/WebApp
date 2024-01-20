@@ -1,52 +1,40 @@
-import {
-    WebCellProps,
-    component,
-    mixin,
-    watch,
-    attribute,
-    createCell,
-    Fragment
-} from 'web-cell';
-import { observer } from 'mobx-web-cell';
-import { FieldProps } from 'boot-cell/source/Form/Field';
-import { DropMenu, DropMenuItem } from 'boot-cell/source/Navigator/DropMenu';
+import { WebCell, component, attribute, observer } from 'web-cell';
+import { observable } from 'mobx';
+import { FormControlProps, DropdownButton, DropdownItem } from 'boot-cell';
 
 import { area } from '../model';
+import { GeoCode } from '../service';
 
-export interface District {
-    province?: string;
-    city?: string;
-    district?: string;
-}
+export type District = Partial<Pick<GeoCode, 'province' | 'city' | 'district'>>;
 
-export type DistrictFilterProps = FieldProps & WebCellProps & District;
+export type DistrictFilterProps = FormControlProps<'input'> & District;
 
 export interface DistrictEvent extends CustomEvent {
     detail: District;
 }
 
+export interface DistrictFilter extends WebCell<DistrictFilterProps> {}
+
+@component({ tagName: 'district-filter' })
 @observer
-@component({
-    tagName: 'district-filter',
-    renderTarget: 'children'
-})
-export class DistrictFilter extends mixin<DistrictFilterProps>() {
+export class DistrictFilter
+    extends HTMLElement
+    implements WebCell<DistrictFilterProps>
+{
     @attribute
-    @watch
-    province = '';
+    @observable
+    accessor province = '';
 
     @attribute
-    @watch
-    city = '';
+    @observable
+    accessor city = '';
 
     @attribute
-    @watch
-    district = '';
+    @observable
+    accessor district = '';
 
     connectedCallback() {
-        this.classList.add('d-flex', 'flex-wrap');
-
-        super.connectedCallback();
+        this.classList.add('d-flex', 'flex-wrap', 'gap-2');
     }
 
     async change(level: keyof District, name: string) {
@@ -67,60 +55,61 @@ export class DistrictFilter extends mixin<DistrictFilterProps>() {
                 break;
         }
 
-        const { defaultSlot, ...data } = this.props;
+        const { province, city, district } = this;
 
         this.emit(
             'change',
             Object.fromEntries(
-                Object.entries(data).filter(
+                Object.entries({ province, city, district }).filter(
                     ([key, value]) => value && value !== '全部'
                 )
             )
         );
     }
 
-    render({ province, city, district }: DistrictFilterProps) {
-        const allItem = { name: '全部' };
+    render() {
+        const { province, city, district } = this,
+            allItem = { name: '全部' };
 
         return (
             <>
-                <DropMenu
+                <DropdownButton
                     className="mr-3 mb-3"
-                    buttonColor="primary"
+                    variant="primary"
                     caption={`省 | ${province || '全部'}`}
                 >
                     {[allItem, ...area.provinces].map(({ name }) => (
-                        <DropMenuItem
+                        <DropdownItem
                             onClick={() => this.change('province', name)}
                         >
                             {name}
-                        </DropMenuItem>
+                        </DropdownItem>
                     ))}
-                </DropMenu>
-                <DropMenu
+                </DropdownButton>
+                <DropdownButton
                     className="mr-3 mb-3"
-                    buttonColor="primary"
+                    variant="primary"
                     caption={`市 | ${city || '全部'}`}
                 >
                     {[allItem, ...area.cities].map(({ name }) => (
-                        <DropMenuItem onClick={() => this.change('city', name)}>
+                        <DropdownItem onClick={() => this.change('city', name)}>
                             {name}
-                        </DropMenuItem>
+                        </DropdownItem>
                     ))}
-                </DropMenu>
-                <DropMenu
+                </DropdownButton>
+                <DropdownButton
                     className="mr-3 mb-3"
-                    buttonColor="primary"
+                    variant="primary"
                     caption={`区 | ${district || '全部'}`}
                 >
                     {[allItem, ...area.districts].map(({ name }) => (
-                        <DropMenuItem
+                        <DropdownItem
                             onClick={() => this.change('district', name)}
                         >
                             {name}
-                        </DropMenuItem>
+                        </DropdownItem>
                     ))}
-                </DropMenu>
+                </DropdownButton>
             </>
         );
     }
