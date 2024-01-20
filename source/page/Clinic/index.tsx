@@ -2,11 +2,11 @@ import { component, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
 import { Card, CardFooter } from 'boot-cell/source/Content/Card';
-import { BGIcon } from 'boot-cell/source/Reminder/FAIcon';
 
 import { CardsPage, AuditBar } from '../../component';
 import { clinic, Clinic } from '../../model';
 import { getIsLive } from './time';
+import './index.css'
 
 @observer
 @component({
