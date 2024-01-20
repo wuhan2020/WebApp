@@ -3,11 +3,11 @@ export const getTimeFromTimeStr = (timeStr: string) =>
     new Date(new Date().toJSON().split('T')[0] + 'T' + timeStr);
 
 // 计算当前时间是否介于起始与结束算出时间内
-export const getIsLive = (startTimeStr:string, endTimeStr:string) => {
-    const now = new Date().getTime();
-    const startTime = getTimeFromTimeStr(startTimeStr).getTime();
-    const endTime = getTimeFromTimeStr(endTimeStr).getTime();
+export const getIsLive = (startTimeStr: string, endTimeStr: string) => {
+    const now = Date.now(),
+        startTime = +getTimeFromTimeStr(startTimeStr),
+        endTime = +getTimeFromTimeStr(endTimeStr);
+
     return now > startTime && now < endTime;
 }
-
 
