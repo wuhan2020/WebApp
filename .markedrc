@@ -1,0 +1,8 @@
+{
+    "marked": {
+        "breaks": true,
+        "tables": true,
+        "smartLists": true,
+        "gfm": true
+    }
+}

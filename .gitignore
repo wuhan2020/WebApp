@@ -1,7 +1,8 @@
-.vscode/
+.vscode/settings.json
 .idea/
 .DS_Store
 package-lock.json
+yarn.lock
 node_modules/
 dist/
-.cache/
+.parcel-cache/

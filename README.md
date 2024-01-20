@@ -4,9 +4,10 @@
 
 简体中文 | [English](./README_EN.md)
 
-[![NPM Dependency](https://david-dm.org/wuhan2020/WebApp.svg)][2]
-[![CI Status](https://github.com/wuhan2020/WebApp/workflows/PWA%20CI/CD/badge.svg)][3]
-[![Github](https://img.shields.io/badge/Slack%20Channel-%23proj--front--pages-blue.svg)][4]
+[![在 Gitpod 中打开](https://gitpod.io/button/open-in-gitpod.svg)][2]
+
+[![持续集成状态](https://github.com/wuhan2020/WebApp/actions/workflows/main.yml/badge.svg)][3]
+[![Slack 频道](https://img.shields.io/badge/Slack%20Channel-%23proj--front--pages-blue.svg)][4]
 
 ## 基本用法
 
@@ -20,12 +21,12 @@
 
 ## 技术栈
 
--   逻辑语言: [TypeScript v4][6]
--   组件引擎: [WebCell v2][7]
--   组件库: [BootCell v1][8]
--   状态管理: [MobX v5][9]
--   PWA 框架: [Workbox v6][10]
--   打包工具: [Parcel v1][11]
+-   逻辑语言: [TypeScript v5][6]
+-   组件引擎: [WebCell v3][7]
+-   组件库: [BootCell v2][8]
+-   状态管理: [MobX v6][9]
+-   PWA 框架: [Workbox v7][10]
+-   打包工具: [Parcel v2][11]
 -   CI / CD: GitHub [Actions][12] + [Pages][13]
 
 ## 开发需求
@@ -40,14 +41,20 @@
 
 1. [安装 Node.js](https://nodejs.org/en/download/package-manager/)
 
-2. `git clone https://github.com/wuhan2020/WebApp.git`
+2. 安装 [PNPM](https://pnpm.io/zh/)
 
-3. 在本项目文件夹中执行命令
+    ```shell
+    npm i pnpm -g
+    ```
 
-```shell
-npm install
-npm start
-```
+3. `git clone https://github.com/wuhan2020/WebApp.git`
+
+4. 在本项目文件夹中执行命令
+
+    ```shell
+    pnpm i
+    npm start
+    ```
 
 （Windows 用户请在 [PowerShell 5.1+][14]、[Git Bash][15] 或 [WSL][16] 中运行）
 
@@ -55,7 +62,7 @@ npm start
 
 1. 安装、启动[后端项目](https://github.com/wuhan2020/rest-api)
 
-2. `npm run start:local`
+2. `pnpm start:local`
 
 ## 特别感谢
 
@@ -76,8 +83,8 @@ https://github.com/wuhan2020/WebApp/graphs/contributors
 -   [@BlankerL](https://github.com/BlankerL/DXY-2019-nCoV-Crawler)
 
 [1]: https://developers.google.cn/web/progressive-web-apps
-[2]: https://david-dm.org/wuhan2020/WebApp
-[3]: https://github.com/wuhan2020/WebApp/actions
+[2]: https://gitpod.io/?autostart=true#https://github.com/wuhan2020/WebApp
+[3]: https://github.com/wuhan2020/WebApp/actions/workflows/main.yml
 [4]: https://app.slack.com/client/TT5U1VCPQ/CSTPXN533
 [5]: https://www.w3.org/
 [6]: https://typescriptlang.org

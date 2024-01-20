@@ -12,53 +12,44 @@
     "bugs": {
         "url": "https://github.com/EasyWebApp/wuhan2020/issues"
     },
-    "main": "source/index.html",
     "dependencies": {
-        "boot-cell": "^1.9.3",
+        "boot-cell": "^2.0.0-beta.7",
         "browser-unhandled-rejection": "^1.0.2",
-        "cell-router": "^2.0.4",
-        "classnames": "^2.2.6",
-        "clipboard-polyfill": "^3.0.2",
-        "echarts": "^4.9.0",
-        "github-web-widget": "^3.0.0-beta.8",
-        "iterable-observer": "^1.0.0-beta.5",
-        "js-base64": "^3.6.0",
-        "koajax": "^0.6.4",
-        "marked": "^1.2.7",
-        "mobx": "^5.15.7",
-        "mobx-web-cell": "^0.3.4",
-        "web-cell": "^2.3.0-rc.1",
-        "web-utility": "^2.4.3",
-        "yaml": "^1.10.0"
+        "cell-router": "^3.0.0-rc.5",
+        "classnames": "^2.5.1",
+        "dom-renderer": "^2.0.6",
+        "echarts": "^5.4.3",
+        "github-web-widget": "^4.0.0-rc.1",
+        "js-base64": "^3.7.5",
+        "koajax": "^0.9.6",
+        "marked": "^11.1.1",
+        "mobx": "^6.12.0",
+        "web-cell": "^3.0.0-rc.8",
+        "web-utility": "^4.1.3",
+        "yaml": "^2.3.4"
     },
     "devDependencies": {
-        "@babel/helper-compilation-targets": "^7.12.5",
-        "@octokit/openapi-types": "^2.2.0",
-        "@types/classnames": "^2.2.11",
-        "@types/echarts": "^4.9.3",
-        "@types/js-base64": "^3.0.0",
-        "@types/marked": "^1.2.1",
-        "@types/yaml": "^1.9.7",
-        "@typescript-eslint/parser": "^4.12.0",
-        "autoprefixer": "^9.8.6",
+        "@octokit/openapi-types": "^19.1.0",
+        "@parcel/config-default": "~2.11.0",
+        "@parcel/packager-raw-url": "~2.11.0",
+        "@parcel/transformer-less": "~2.11.0",
+        "@parcel/transformer-typescript-tsc": "~2.11.0",
+        "@parcel/transformer-webmanifest": "~2.11.0",
+        "@types/node": "^18.19.8",
+        "@typescript-eslint/eslint-plugin": "^6.19.0",
+        "@typescript-eslint/parser": "^6.19.0",
+        "buffer": "^5.5.0||^6.0.0",
         "cross-env": "^7.0.3",
-        "eslint": "^7.17.0",
-        "husky": "^4.3.7",
-        "less": "^4.1.0",
-        "lint-staged": "^10.5.3",
-        "parcel-bundler": "^1.12.4",
-        "postcss-modules": "^3.2.2",
-        "prettier": "^2.2.1",
-        "typescript": "^4.1.3",
-        "workbox-cli": "^6.0.2"
-    },
-    "postcss": {
-        "modules": true,
-        "plugins": {
-            "autoprefixer": {
-                "grid": true
-            }
-        }
+        "eslint": "^8.56.0",
+        "eslint-config-prettier": "^9.1.0",
+        "husky": "^8.0.3",
+        "lint-staged": "^15.2.0",
+        "parcel": "~2.11.0",
+        "parcel-transformer-markdown": "^3.0.1",
+        "prettier": "^3.2.4",
+        "process": "^0.11.10",
+        "typescript": "~5.3.3",
+        "workbox-cli": "^7.0.0"
     },
     "prettier": {
         "singleQuote": true,
@@ -76,24 +67,16 @@
     },
     "lint-staged": {
         "*.{html,md,less,json,yml}": "prettier --write",
-        "*.{js,ts,tsx}": [
-            "prettier --write",
-            "eslint --fix"
-        ]
+        "*.{js,ts,tsx}": "eslint --fix"
     },
     "scripts": {
         "test": "lint-staged",
-        "start:local": "rm -rf dist/  &&  cross-env HTTP_ENV=local  parcel source/index.html --open",
-        "start:remote": "rm -rf dist/  &&  cross-env HTTP_ENV=remote  parcel source/index.html --open",
-        "start": "rm -rf dist/  &&  cross-env HTTP_ENV=test  parcel source/index.html --open",
+        "clean": "rm -rf .parcel-cache/ dist/",
+        "start:local": "npm run clean  &&  cross-env HTTP_ENV=local  parcel source/index.html --open",
+        "start:remote": "npm run clean  &&  cross-env HTTP_ENV=remote  parcel source/index.html --open",
+        "start": "npm run clean  &&  cross-env HTTP_ENV=test  parcel source/index.html --open",
         "pack-dist": "parcel build source/index.html --public-url .",
         "pack-sw": "rm -f dist/sw.js.map  &&  workbox generateSW",
-        "build": "rm -rf dist/  &&  npm run pack-dist  &&  npm run pack-sw"
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "npm test",
-            "pre-push": "npm run build"
-        }
+        "build": "npm run clean  &&  npm run pack-dist  &&  npm run pack-sw"
     }
 }

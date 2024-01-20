@@ -1,14 +1,13 @@
 {
     "compilerOptions": {
         "rootDir": "source/",
-        "target": "ES5",
+        "target": "ES6",
         "module": "ES2020",
         "moduleResolution": "Node",
         "allowSyntheticDefaultImports": true,
-        "experimentalDecorators": true,
-        "jsx": "react",
-        "jsxFactory": "createCell",
-        "jsxFragmentFactory": "Fragment",
-        "lib": ["ES2020", "DOM"]
+        "useDefineForClassFields": true,
+        "jsx": "react-jsx",
+        "jsxImportSource": "dom-renderer",
+        "lib": ["ES2023", "DOM"]
     }
 }

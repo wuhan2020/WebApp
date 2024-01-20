@@ -1,76 +1,62 @@
+import { HTTPClient, HTTPError } from 'koajax';
+import { buildURLData, parseURLData } from 'web-utility';
+
 const key = '8325164e247e15eea68b59e89200988b';
 
-async function requestAMap<T = {}>(path: string, data: any): Promise<T> {
-    const response = await fetch(
-        `//restapi.amap.com/v3/${path}?${new URLSearchParams({ ...data, key })}`
-    );
-    const { status, info, ...rest } = await response.json();
+const amapClient = new HTTPClient({
+    baseURI: 'https://restapi.amap.com/v3/',
+    responseType: 'json'
+}).use(async ({ request, response }, next) => {
+    const [path, search] = (request.path + '').split('?');
 
-    if (status !== '1') throw new URIError(info);
+    request.path = `${path}?${buildURLData({ ...parseURLData(search), key })}`;
 
-    return rest;
-}
+    await next();
 
-interface POI {
-    name: string;
-    pname: string;
-    cityname: string;
-    adname: string;
-    address: string;
-    location: string;
-}
+    const { status, info, ...rest } = response.body;
+
+    if (status !== '1') throw new HTTPError(info, response);
+
+    response.body = rest;
+});
+
+type POI = Record<
+    'name' | 'pname' | 'cityname' | 'adname' | 'address' | 'location',
+    string
+>;
 
 export async function searchAddress(keywords: string) {
-    const { pois } = await requestAMap<{ pois: POI[] }>('place/text', {
-        keywords
-    });
-
-    return pois.sort(({ name }) => (name === keywords ? -1 : 1));
+    const { body } = await amapClient.get<{ pois: POI[] }>(
+        `place/text?${buildURLData({ keywords })}`
+    );
+    return body!.pois.sort(({ name }) => (name === keywords ? -1 : 1));
 }
 
-export interface District {
-    adcode: string;
-    name: string;
-    level: string;
-    center: string;
+export interface District
+    extends Record<'adcode' | 'name' | 'level' | 'center', string> {
     districts: District[];
 }
 
 export async function getSubDistricts(keywords = '中国') {
-    const {
-        districts: [{ districts }]
-    } = await requestAMap<District>('config/district', { keywords });
-
-    return districts;
+    const { body } = await amapClient.get<District>(
+        `config/district?${buildURLData({ keywords })}`
+    );
+    return body!.districts[0].districts;
 }
 
-interface GeoCode {
-    location: string;
-    province: string;
-    city: string;
-    district: string;
-    street: string;
-    number: string;
-}
+type GeoCode = Record<
+    'location' | 'province' | 'city' | 'district' | 'street' | 'number',
+    string
+>;
 
 export async function coordsOf(address: string) {
-    const { geocodes } = await requestAMap<{ geocodes: GeoCode[] }>(
-        'geocode/geo',
-        { address }
+    const { body } = await amapClient.get<{ geocodes: GeoCode[] }>(
+        `geocode/geo?${buildURLData({ address })}`
     );
 
-    return geocodes.map(
-        ({ location, province, city, district, street, number }) => {
-            const [longitude, latitude] = location.split(',').map(Number);
+    return body!.geocodes.map(({ location, street, number, ...rest }) => {
+        const [longitude, latitude] = location.split(',').map(Number);
 
-            return {
-                latitude,
-                longitude,
-                province,
-                city,
-                district,
-                address: street + number
-            };
-        }
-    );
+        return { latitude, longitude, ...rest, address: street + number };
+    });
 }

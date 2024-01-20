@@ -1,11 +1,7 @@
 import { VerifiableData, VerifiableModel } from './BaseModel';
 import { Organization } from '../service';
 
-export interface BankAccount {
-    name: string;
-    number: string;
-    bank: string;
-}
+export type BankAccount = Record<'name' | 'number' | 'bank', string>;
 
 export interface DonationRecipient extends VerifiableData, Organization {
     name?: string;

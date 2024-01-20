@@ -23,17 +23,17 @@ export default [
     {
         title: '物流',
         href: RouteRoot.Logistics,
-        icon: 'shipping-fast'
+        icon: 'truck'
     },
     {
         title: '酒店',
         href: RouteRoot.Hotel,
-        icon: 'hotel'
+        icon: 'building-check'
     },
     {
         title: '生产',
         href: RouteRoot.Factory,
-        icon: 'medkit'
+        icon: 'buildings'
     },
     {
         title: '捐赠',
@@ -43,7 +43,7 @@ export default [
     {
         title: '义诊',
         href: RouteRoot.Clinic,
-        icon: 'user-md'
+        icon: 'house-heart'
     },
     {
         title: '疫情地图',

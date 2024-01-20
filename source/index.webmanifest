@@ -1,7 +1,7 @@
 {
   "name": "新冠战疫信息平台",
   "short_name": "新冠战疫",
-  "start_url": "https://wuhan2020.kaiyuanshe.cn/",
+  "start_url": ".",
   "description": "武汉新型冠状病毒防疫信息平台",
   "scope": "/",
   "display": "standalone",

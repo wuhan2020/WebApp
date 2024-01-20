@@ -15,11 +15,9 @@ export const service = new HTTPClient({
     responseType: 'json'
 });
 
-export interface DataItem {
-    objectId?: string;
-    createdAt?: string;
-    updatedAt?: string;
-}
+export type DataItem = Partial<
+    Record<'objectId' | 'createdAt' | 'updatedAt', string>
+>;
 
 export interface PageData<T> {
     data: T[];
@@ -42,10 +40,7 @@ export interface FileData extends DataItem {
     url: string;
 }
 
-export interface Contact {
-    name: string;
-    phone: string;
-}
+export type Contact = Record<'name' | 'phone', string>;
 
 export interface Organization {
     url?: string;
@@ -56,15 +51,10 @@ export interface Organization {
     verifier?: User;
 }
 
-export interface GeoCoord {
-    latitude: number;
-    longitude: number;
-}
+export type GeoCoord = Record<'latitude' | 'longitude', number>;
 
-export interface Place extends Organization {
-    province?: string;
-    city?: string;
-    district?: string;
-    address?: string;
+export interface Place
+    extends Organization,
+        Partial<Record<'province' | 'city' | 'district' | 'address', string>> {
     coords?: GeoCoord;
 }

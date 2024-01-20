@@ -1,11 +1,14 @@
 import { auto } from 'browser-unhandled-rejection';
+import { DOMRenderer } from 'dom-renderer';
 import { HTTPError } from 'koajax';
-import { serviceWorkerUpdate } from 'web-utility/source/event';
-import { documentReady, render, createCell } from 'web-cell';
+import { configure } from 'mobx';
+import { documentReady, serviceWorkerUpdate } from 'web-utility';
 
 import { PageFrame } from './page';
 
 auto();
+
+configure({ enforceActions: 'never' });
 
 self.addEventListener('unhandledrejection', event => {
     if (!(event.reason instanceof URIError)) return;
@@ -34,4 +37,4 @@ serviceWorker?.addEventListener('controllerchange', () =>
     window.location.reload()
 );
 
-documentReady.then(() => render(<PageFrame />));
+documentReady.then(() => new DOMRenderer().render(<PageFrame />));

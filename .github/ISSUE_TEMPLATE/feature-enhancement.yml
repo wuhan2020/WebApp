@@ -1,0 +1,35 @@
+name: ✨ Feature/Enhancement
+description: Request a new feature or enhancement
+title: <title>
+labels:
+    - enhancement
+body:
+    - type: checkboxes
+      attributes:
+          label: Is there an existing feature request for this?
+          description: Please search to see if a feature request already exists for the enhancement you are proposing.
+          options:
+              - label: I have searched the existing feature requests
+                required: true
+
+    - type: textarea
+      attributes:
+          label: Description
+          description: |
+              A detailed description of the new feature or enhancement you are proposing. Additionally, provide any relevant
+              links, references, or attachments to offer more context about the proposal. You can also attach images or other
+              files by clicking this area to highlight it and then dragging files in.
+
+              Tip: You can attach images or other files by clicking this area to highlight it and then dragging files in.
+      validations:
+          required: true
+
+    - type: textarea
+      attributes:
+          label: Use Case
+          description: Provide a use case or scenario where this feature or enhancement would be beneficial.
+
+    - type: textarea
+      attributes:
+          label: Proposed Solution
+          description: If you have a specific solution in mind, please describe it here.
