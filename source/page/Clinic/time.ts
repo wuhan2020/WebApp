@@ -1,15 +1,6 @@
 // 目前的时间格式为 hh:mm 的 String, 该方法将其转化为当天的该时间
-export const getTimeFromTimeStr = (timeStr:string) => {
-    const [hours, minutes] = timeStr.split(':').map(parseInt)
-    const time = new Date();
-    if(hours){
-        time.setHours(hours);
-    }
-    if(minutes) {
-        time.setMinutes(minutes)
-    }
-    return time;
-}
+export const getTimeFromTimeStr = (timeStr: string) =>
+    new Date(new Date().toJSON().split('T')[0] + 'T' + timeStr);
 
 // 计算当前时间是否介于起始与结束算出时间内
 export const getIsLive = (startTimeStr:string, endTimeStr:string) => {
