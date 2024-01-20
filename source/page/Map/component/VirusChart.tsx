@@ -169,7 +169,8 @@ export class VirusChart extends mixin<Props, State>() {
                 x: 'center'
             },
             grid: {
-                bottom: '25%'
+                bottom: '25%',
+                left: 60
             },
             tooltip: {
                 trigger: 'axis'
@@ -251,7 +252,8 @@ export class VirusChart extends mixin<Props, State>() {
                 x: 'center'
             },
             grid: {
-                bottom: '25%'
+                bottom: '25%',
+                left: 60
             },
             xAxis: {
                 name: '日期',
