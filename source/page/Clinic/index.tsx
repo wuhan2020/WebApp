@@ -26,9 +26,8 @@ export class ClinicList extends CardsPage<Clinic> {
         contacts,
         remark,
         ...rest
-    }: Clinic) => {
-        const isLive = getIsLive(startTime, endTime);
-        return <Card
+    }: Clinic) => (
+        <Card
                 className="mx-auto mb-4 mx-sm-1"
                 style={{ minWidth: '20rem', maxWidth: '20rem' }}
                 title={
@@ -41,8 +40,9 @@ export class ClinicList extends CardsPage<Clinic> {
                     )
                 }
             >
+                {getIsLive(startTime, endTime) && <div className="clinic-card__live-label">正在接诊</div>}
                 <p>
-                    每日接诊起止时间：{startTime} ~ {endTime}{isLive?<span>正在接诊</span>:null}
+                    每日接诊起止时间：{startTime} ~ {endTime}
                 </p>
                 {contacts[0] && (
                     <ol className="list-unstyled">
@@ -60,5 +60,5 @@ export class ClinicList extends CardsPage<Clinic> {
 
                 <AuditBar scope="clinic" model={clinic} {...rest} />
             </Card>
-    };
+    );
 }
