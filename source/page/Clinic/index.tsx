@@ -2,10 +2,11 @@ import { component, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
 import { Card, CardFooter } from 'boot-cell/source/Content/Card';
-import { BGIcon } from 'boot-cell/source/Reminder/FAIcon';
 
 import { CardsPage, AuditBar } from '../../component';
 import { clinic, Clinic } from '../../model';
+import { getIsLive } from './time';
+import './index.css'
 
 @observer
 @component({
@@ -27,42 +28,37 @@ export class ClinicList extends CardsPage<Clinic> {
         ...rest
     }: Clinic) => (
         <Card
-            className="mx-auto mb-4 mx-sm-1"
-            style={{ minWidth: '20rem', maxWidth: '20rem' }}
-            title={
-                url ? (
-                    <a target="_blank" href={url}>
-                        {name}
-                    </a>
-                ) : (
-                    name
-                )
-            }
-        >
-            <p>
-                每日接诊起止时间：{startTime} ~ {endTime}
-            </p>
-            {contacts[0] && (
-                <ol className="list-unstyled">
-                    {contacts.map(({ name, phone }) => (
-                        <li>
-                            <a href={'tel:' + phone}>
-                                <BGIcon
-                                    type="square"
-                                    name="phone"
-                                    color="primary"
-                                    className="d-inline-block"
-                                />{' '}
-                                {name}：{phone}
-                            </a>
-                        </li>
-                    ))}
-                </ol>
-            )}
-            {remark && <p className="text-muted">{remark}</p>}
-            <CardFooter>
+                className="mx-auto mb-4 mx-sm-1"
+                style={{ minWidth: '20rem', maxWidth: '20rem' }}
+                title={
+                    url ? (
+                        <a target="_blank" href={url}>
+                            {name}
+                        </a>
+                    ) : (
+                        name
+                    )
+                }
+            >
+                {getIsLive(startTime, endTime) && <div className="clinic-card__live-label">正在接诊</div>}
+                <p>
+                    每日接诊起止时间：{startTime} ~ {endTime}
+                </p>
+                {contacts[0] && (
+                    <ol className="list-unstyled">
+                        {contacts.map(({ name, phone }) => (
+                            <li>
+                                <a href={'tel:' + phone}>
+                                    <i className="fa fa-phone d-inline-block bg-primary text-white p-1 rounded" />{' '}
+                                    {name}：{phone}
+                                </a>
+                            </li>
+                        ))}
+                    </ol>
+                )}
+                {remark && <p className="text-muted">{remark}</p>}
+
                 <AuditBar scope="clinic" model={clinic} {...rest} />
-            </CardFooter>
-        </Card>
+            </Card>
     );
 }
