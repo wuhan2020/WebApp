@@ -1,14 +1,13 @@
 import { component, mixin, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
-import 'boot-cell/source/Content/EdgeDetector';
-import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
-import { Table } from 'boot-cell/source/Content/Table';
 import { ToggleField } from 'boot-cell/source/Form/ToggleField';
+import { Button } from 'boot-cell/source/Form/Button';
+import { EdgeEvent, EdgeDetector } from 'boot-cell/source/Content/EdgeDetector';
+import { Table, TableRow } from 'boot-cell/source/Content/Table';
 
 import { User } from '../../service';
 import { user } from '../../model';
-import { Button } from 'boot-cell/source/Form/Button';
 
 @observer
 @component({
@@ -33,7 +32,8 @@ export class UserAdmin extends mixin() {
         const { value } = elements.item(0) as HTMLInputElement;
 
         return user.getNextPage(
-            (this.filter = value ? { phone: value } : undefined)
+            (this.filter = value ? { phone: value } : {}),
+            true
         );
     };
 
@@ -49,7 +49,7 @@ export class UserAdmin extends mixin() {
         roles,
         objectId: uid
     }: User) => (
-        <tr>
+        <TableRow>
             <td>{mobilePhoneNumber}</td>
             <td>{new Date(createdAt).toLocaleString()}</td>
             <td>
@@ -65,7 +65,7 @@ export class UserAdmin extends mixin() {
                     </ToggleField>
                 ))}
             </td>
-        </tr>
+        </TableRow>
     );
 
     render() {
@@ -81,26 +81,26 @@ export class UserAdmin extends mixin() {
                             className="form-control mr-3"
                             name="phone"
                         />
-                        <Button type="submit">搜索</Button>
+                        <Button type="submit" color="primary">
+                            搜索
+                        </Button>
                     </form>
                 </header>
 
-                <edge-detector onTouchEdge={this.loadMore}>
+                <EdgeDetector onTouchEdge={this.loadMore}>
                     <Table center striped hover>
-                        <thead>
-                            <tr>
-                                <th>手机号</th>
-                                <th>注册时间</th>
-                                <th>角色</th>
-                            </tr>
-                        </thead>
-                        <tbody>{list.map(this.renderItem)}</tbody>
+                        <TableRow type="head">
+                            <th>手机号</th>
+                            <th>注册时间</th>
+                            <th>角色</th>
+                        </TableRow>
+                        {list.map(this.renderItem)}
                     </Table>
 
                     <p slot="bottom" className="text-center mt-2">
                         {noMore ? '没有更多数据了' : '加载更多...'}
                     </p>
-                </edge-detector>
+                </EdgeDetector>
             </SpinnerBox>
         );
     }

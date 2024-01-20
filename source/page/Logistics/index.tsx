@@ -1,6 +1,7 @@
 import { component, createCell, Fragment } from 'web-cell';
 import { observer } from 'mobx-web-cell';
-import { Card } from 'boot-cell/source/Content/Card';
+import { Card, CardFooter } from 'boot-cell/source/Content/Card';
+import { BGIcon } from 'boot-cell/source/Reminder/FAIcon';
 
 import { AuditBar, CardsPage } from '../../component';
 import { logistics, Logistics, ServiceArea } from '../../model';
@@ -45,16 +46,17 @@ export class LogisticsPage extends CardsPage<Logistics> {
         >
             {serviceArea.map(this.renderServiceArea)}
 
-            {contacts.map(this.renderContact)}
+            {contacts[0] && contacts.map(this.renderContact)}
 
             <p className="text-muted">{remark}</p>
-
-            <AuditBar scope="logistics" model={logistics} {...rest} />
+            <CardFooter>
+                <AuditBar scope="logistics" model={logistics} {...rest} />
+            </CardFooter>
         </Card>
     );
 
     renderServiceArea = ({ city, direction, personal }: ServiceArea) => (
-        <Fragment>
+        <>
             <p className="mb-1">
                 <strong>地区：</strong>
                 {city}
@@ -68,7 +70,7 @@ export class LogisticsPage extends CardsPage<Logistics> {
                     <span className="badge badge-danger">不接受个人捐赠</span>
                 </p>
             )}
-        </Fragment>
+        </>
     );
 
     renderContact = ({ name, phone }: Contact) => (
@@ -77,14 +79,8 @@ export class LogisticsPage extends CardsPage<Logistics> {
                 className="text-center text-decoration-none"
                 href={'tel:' + phone}
             >
-                <i
-                    className="fa fa-phone btn btn-sm btn-primary"
-                    aria-hidden="true"
-                />
-                &nbsp;
-                {name}
-                &nbsp;
-                {phone}
+                <BGIcon type="square" name="phone" color="primary" />
+                {` ${name} ${phone}`}
             </a>
         </p>
     );

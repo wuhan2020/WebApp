@@ -1,12 +1,14 @@
-import { component, mixin, watch, createCell } from 'web-cell';
+import { WebCellProps, component, mixin, watch, createCell } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
+import { InputGroup } from 'boot-cell/source/Form/InputGroup';
+import { Field } from 'boot-cell/source/Form/Field';
 import { Button } from 'boot-cell/source/Form/Button';
 
 import { Clinic, history, clinic } from '../../model';
-import { RouteRoot } from '../menu';
+import { RouteRoot } from '../data/menu';
 import { SessionBox, ContactField } from '../../component';
 
-interface ClinicEditProps {
+export interface ClinicEditProps extends WebCellProps {
     dataId?: string;
 }
 
@@ -60,17 +62,19 @@ export class ClinicEdit extends mixin<ClinicEditProps, Clinic>() {
     handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        const { contacts, ...rest } = this.state;
+        const { contacts, ...data } = this.state;
 
         await clinic.update(
             {
-                ...rest,
-                contacts: contacts.filter(({ name }) => name.trim())
+                ...data,
+                contacts: contacts.filter(
+                    ({ name, phone }) => name?.trim() && phone?.trim()
+                )
             },
             this.dataId
         );
 
-        self.alert('发布成功！');
+        self.alert('提交成功，工作人员审核后即可查看');
 
         history.push(RouteRoot.Clinic);
     };
@@ -100,24 +104,22 @@ export class ClinicEdit extends mixin<ClinicEditProps, Clinic>() {
                     />
 
                     <FormField label="每日接诊起止时间">
-                        <div className="input-group">
-                            <input
+                        <InputGroup>
+                            <Field
                                 type="time"
-                                className="form-control"
                                 name="startTime"
                                 required
                                 defaultValue={startTime}
                                 placeholder="开始"
                             />
-                            <input
+                            <Field
                                 type="time"
-                                className="form-control"
                                 name="endTime"
                                 required
                                 defaultValue={endTime}
                                 placeholder="结束"
                             />
-                        </div>
+                        </InputGroup>
                     </FormField>
 
                     <ContactField
@@ -133,12 +135,17 @@ export class ClinicEdit extends mixin<ClinicEditProps, Clinic>() {
                         label="备注"
                     />
                     <div className="form-group mt-3">
-                        <Button type="submit" block disabled={clinic.loading}>
+                        <Button
+                            type="submit"
+                            color="primary"
+                            block
+                            disabled={clinic.loading}
+                        >
                             提交
                         </Button>
                         <Button
                             type="reset"
-                            kind="danger"
+                            color="danger"
                             block
                             onClick={() => history.push(RouteRoot.Clinic)}
                         >

@@ -1,8 +1,8 @@
 import { component, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
-import { Card } from 'boot-cell/source/Content/Card';
-import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
+import { Card, CardFooter } from 'boot-cell/source/Content/Card';
+import { DropMenu, DropMenuItem } from 'boot-cell/source/Navigator/DropMenu';
 
 import { CardsPage, AuditBar } from '../../component';
 import { donationRecipient, BankAccount, DonationRecipient } from '../../model';
@@ -79,20 +79,28 @@ export class DonationPage extends CardsPage<DonationRecipient> {
             {remark && <p className="text-muted">{remark}</p>}
 
             <div className="text-center">
-                {contacts && (
+                {contacts[0] && (
                     <DropMenu
                         className="d-inline-block ml-3"
+                        buttonColor="primary"
                         alignType="right"
-                        title="联系方式"
-                        list={contacts.map(({ name, phone }) => ({
-                            title: `${name}：${phone}`,
-                            href: 'tel:' + phone
-                        }))}
-                    />
+                        caption="联系方式"
+                    >
+                        {contacts.map(({ name, phone }) => (
+                            <DropMenuItem href={'tel:' + phone}>
+                                {name}：{phone}
+                            </DropMenuItem>
+                        ))}
+                    </DropMenu>
                 )}
             </div>
-
-            <AuditBar scope="donation" model={donationRecipient} {...rest} />
+            <CardFooter>
+                <AuditBar
+                    scope="donation"
+                    model={donationRecipient}
+                    {...rest}
+                />
+            </CardFooter>
         </Card>
     );
 }

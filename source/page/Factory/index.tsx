@@ -2,8 +2,8 @@ import { component, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
 import { Button } from 'boot-cell/source/Form/Button';
-import { Card } from 'boot-cell/source/Content/Card';
-import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
+import { Card, CardFooter } from 'boot-cell/source/Content/Card';
+import { DropMenu, DropMenuItem } from 'boot-cell/source/Navigator/DropMenu';
 
 import { factory, Factory } from '../../model';
 import { AuditBar, CardsPage } from '../../component';
@@ -64,25 +64,31 @@ export class FactoryPage extends CardsPage<Factory> {
 
             <div className="text-center">
                 <Button
+                    color="primary"
                     onClick={() =>
                         this.clip2board(province + city + district + address)
                     }
                 >
                     复制地址
                 </Button>
-                {contacts && (
+                {contacts[0] && (
                     <DropMenu
                         className="d-inline-block ml-3"
+                        buttonColor="primary"
                         alignType="right"
-                        title="联系方式"
-                        list={contacts.map(({ name, phone }) => ({
-                            title: `${name}：${phone}`,
-                            href: 'tel:' + phone
-                        }))}
-                    />
+                        caption="联系方式"
+                    >
+                        {contacts.map(({ name, phone }) => (
+                            <DropMenuItem href={'tel:' + phone}>
+                                {name}：{phone}
+                            </DropMenuItem>
+                        ))}
+                    </DropMenu>
                 )}
             </div>
-            <AuditBar scope="factory" model={factory} {...rest} />
+            <CardFooter>
+                <AuditBar scope="factory" model={factory} {...rest} />
+            </CardFooter>
         </Card>
     );
 }

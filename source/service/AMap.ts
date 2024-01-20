@@ -43,3 +43,34 @@ export async function getSubDistricts(keywords = '中国') {
 
     return districts;
 }
+
+interface GeoCode {
+    location: string;
+    province: string;
+    city: string;
+    district: string;
+    street: string;
+    number: string;
+}
+
+export async function coordsOf(address: string) {
+    const { geocodes } = await requestAMap<{ geocodes: GeoCode[] }>(
+        'geocode/geo',
+        { address }
+    );
+
+    return geocodes.map(
+        ({ location, province, city, district, street, number }) => {
+            const [longitude, latitude] = location.split(',').map(Number);
+
+            return {
+                latitude,
+                longitude,
+                province,
+                city,
+                district,
+                address: street + number
+            };
+        }
+    );
+}

@@ -1,4 +1,5 @@
 import {
+    WebCellProps,
     component,
     mixin,
     attribute,
@@ -6,11 +7,12 @@ import {
     createCell,
     Fragment
 } from 'web-cell';
-import { WebCellProps } from 'boot-cell/source/utility/type';
+import type { HTMLFieldProps } from 'web-utility';
+import { Field } from 'boot-cell/source/Form/Field';
 
-import { searchAddress } from '../service';
+import { searchAddress, coordsOf } from '../service';
 
-interface AddressFieldProps extends WebCellProps {
+export interface AddressFieldProps extends HTMLFieldProps, WebCellProps {
     place?: string;
     province: string;
     city: string;
@@ -92,12 +94,21 @@ export class AddressField extends mixin<
         this.classList.add('input-group');
     }
 
-    emitChange = (event: Event) => {
+    emitChange = async (event: Event) => {
         event.stopPropagation();
 
-        const { name, value } = event.target as HTMLInputElement;
+        const { name, value } = event.target as HTMLInputElement,
+            { props } = this;
 
-        this.props[name] = value;
+        props[name] = value;
+
+        const { province, city, district, address } = this;
+
+        const [{ latitude, longitude }] = await coordsOf(
+            province + city + district + address
+        );
+
+        (props.latitude = latitude), (props.longitude = longitude);
 
         this.emitData();
     };
@@ -107,10 +118,8 @@ export class AddressField extends mixin<
         { loading }: AddressFieldState
     ) {
         return (
-            <Fragment>
-                <input
-                    type="text"
-                    className="form-control"
+            <>
+                <Field
                     name="province"
                     required
                     defaultValue={province}
@@ -118,9 +127,7 @@ export class AddressField extends mixin<
                     disabled={loading}
                     onChange={this.emitChange}
                 />
-                <input
-                    type="text"
-                    className="form-control"
+                <Field
                     name="city"
                     required
                     defaultValue={city}
@@ -128,9 +135,7 @@ export class AddressField extends mixin<
                     disabled={loading}
                     onChange={this.emitChange}
                 />
-                <input
-                    type="text"
-                    className="form-control"
+                <Field
                     name="district"
                     required
                     defaultValue={district}
@@ -138,9 +143,7 @@ export class AddressField extends mixin<
                     disabled={loading}
                     onChange={this.emitChange}
                 />
-                <input
-                    type="text"
-                    className="form-control"
+                <Field
                     name="address"
                     required
                     defaultValue={address}
@@ -148,7 +151,7 @@ export class AddressField extends mixin<
                     disabled={loading}
                     onChange={this.emitChange}
                 />
-            </Fragment>
+            </>
         );
     }
 }

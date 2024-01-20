@@ -1,8 +1,10 @@
-import { component, mixin, watch, createCell } from 'web-cell';
+import { WebCellProps, component, mixin, watch, createCell } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
+import { InputGroup } from 'boot-cell/source/Form/InputGroup';
+import { Field } from 'boot-cell/source/Form/Field';
 import { Button } from 'boot-cell/source/Form/Button';
 
-import { RouteRoot } from '../menu';
+import { RouteRoot } from '../data/menu';
 import { Logistics, logistics, history, ServiceArea } from '../../model';
 import { SessionBox, ContactField } from '../../component';
 
@@ -12,11 +14,15 @@ const initServiceArea: ServiceArea = {
     personal: false
 };
 
+export interface LogisticsEditProps extends WebCellProps {
+    dataId: string;
+}
+
 @component({
     tagName: 'logistics-edit',
     renderTarget: 'children'
 })
-export class LogisticsEdit extends mixin<{ dataId: string }, Logistics>() {
+export class LogisticsEdit extends mixin<LogisticsEditProps, Logistics>() {
     @watch
     dataId = '';
 
@@ -62,12 +68,14 @@ export class LogisticsEdit extends mixin<{ dataId: string }, Logistics>() {
         const { name, value } = event.target as HTMLInputElement;
 
         if (name === 'personal')
-            this.state.serviceArea[index]['personal'] = JSON.parse(value);
+            this.state.serviceArea[index].personal = JSON.parse(value);
         else this.state.serviceArea[index][name] = value;
     }
 
     addServiceArea = () =>
-        this.setState({ serviceArea: [...this.state.serviceArea, {}] });
+        this.setState({
+            serviceArea: [...this.state.serviceArea, {} as ServiceArea]
+        });
 
     deleteServiceArea(index: number) {
         const { serviceArea } = this.state;
@@ -80,14 +88,25 @@ export class LogisticsEdit extends mixin<{ dataId: string }, Logistics>() {
     handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        await logistics.update(this.state, this.dataId);
+        const { serviceArea, contacts, ...data } = this.state;
 
-        self.alert('发布成功！');
+        await logistics.update(
+            {
+                ...data,
+                serviceArea: serviceArea.filter(({ city }) => city?.trim()),
+                contacts: contacts.filter(
+                    ({ name, phone }) => name?.trim() && phone?.trim()
+                )
+            },
+            this.dataId
+        );
+
+        self.alert('提交成功，工作人员审核后即可查看');
 
         history.push(RouteRoot.Logistics);
     };
 
-    render(_, { name, url, serviceArea, remark, contacts }) {
+    render(_, { name, url, serviceArea, remark, contacts }: Logistics) {
         return (
             <SessionBox>
                 <h2>物流信息发布</h2>
@@ -113,21 +132,19 @@ export class LogisticsEdit extends mixin<{ dataId: string }, Logistics>() {
                                 { city, direction, personal }: ServiceArea,
                                 index
                             ) => (
-                                <div
-                                    className="input-group my-1"
+                                <InputGroup
+                                    className="my-1"
                                     onChange={(event: Event) =>
                                         this.changeServiceArea(index, event)
                                     }
                                 >
-                                    <input
-                                        type="text"
-                                        className="form-control"
+                                    <Field
                                         name="city"
                                         value={city}
                                         placeholder="请输入寄送城市"
                                     />
-                                    <select
-                                        class="custom-select"
+                                    <Field
+                                        is="select"
                                         name="direction"
                                         value={direction}
                                     >
@@ -135,34 +152,41 @@ export class LogisticsEdit extends mixin<{ dataId: string }, Logistics>() {
                                         <option value="in">只能寄入</option>
                                         <option value="out">只能寄出</option>
                                         <option value="both">寄入寄出</option>
-                                    </select>
-                                    <select
-                                        class="custom-select"
-                                        name="personal"
-                                        value={personal}
-                                    >
+                                    </Field>
+                                    <Field is="select" name="personal">
                                         <option selected>
                                             是否接受个人捐赠
                                         </option>
-                                        <option value={true}>是</option>
-                                        <option value={false}>否</option>
-                                    </select>
-
-                                    <div className="input-group-append">
-                                        <Button onClick={this.addServiceArea}>
-                                            +
-                                        </Button>
-                                        <Button
-                                            kind="danger"
-                                            disabled={!serviceArea[1]}
-                                            onClick={() =>
-                                                this.deleteServiceArea(index)
-                                            }
+                                        <option
+                                            value="true"
+                                            selected={personal}
                                         >
-                                            -
-                                        </Button>
-                                    </div>
-                                </div>
+                                            是
+                                        </option>
+                                        <option
+                                            value="false"
+                                            selected={!personal}
+                                        >
+                                            否
+                                        </option>
+                                    </Field>
+
+                                    <Button
+                                        color="primary"
+                                        onClick={this.addServiceArea}
+                                    >
+                                        +
+                                    </Button>
+                                    <Button
+                                        color="danger"
+                                        disabled={!serviceArea[1]}
+                                        onClick={() =>
+                                            this.deleteServiceArea(index)
+                                        }
+                                    >
+                                        -
+                                    </Button>
+                                </InputGroup>
                             )
                         )}
                     </FormField>
@@ -182,6 +206,7 @@ export class LogisticsEdit extends mixin<{ dataId: string }, Logistics>() {
                     <div className="form-group mt-3">
                         <Button
                             type="submit"
+                            color="primary"
                             block
                             disabled={logistics.loading}
                         >
@@ -189,7 +214,7 @@ export class LogisticsEdit extends mixin<{ dataId: string }, Logistics>() {
                         </Button>
                         <Button
                             type="reset"
-                            kind="danger"
+                            color="danger"
                             block
                             onClick={() => history.push(RouteRoot.Logistics)}
                         >

@@ -1,12 +1,12 @@
-import { component, mixin, watch, createCell } from 'web-cell';
+import { component, mixin, watch, createCell, WebCellProps } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
 import { mergeList } from '../../utility';
 import { GeoCoord, Contact } from '../../service';
 import { history, Supplies, factory, Factory } from '../../model';
-import { RouteRoot } from '../menu';
-import CommonSupplies from '../Hospital/Supplies';
+import { RouteRoot } from '../data/menu';
+import CommonSupplies from '../data/Supplies';
 import {
     SessionBox,
     AddressField,
@@ -14,11 +14,15 @@ import {
     ContactField
 } from '../../component';
 
+export interface FactoryEditProps extends WebCellProps {
+    dataId: string;
+}
+
 @component({
     tagName: 'factory-edit',
     renderTarget: 'children'
 })
-export class FactoryEdit extends mixin<{ dataId: string }, Factory>() {
+export class FactoryEdit extends mixin<FactoryEditProps, Factory>() {
     @watch
     dataId = '';
 
@@ -99,13 +103,19 @@ export class FactoryEdit extends mixin<{ dataId: string }, Factory>() {
     handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        const { supplies, ...data } = this.state;
+        const { supplies, contacts, ...data } = this.state;
 
         await factory.update(
-            { ...data, supplies: supplies.filter(({ count }) => count) },
+            {
+                ...data,
+                supplies: supplies.filter(({ count }) => count),
+                contacts: contacts.filter(
+                    ({ name, phone }) => name?.trim() && phone?.trim()
+                )
+            },
             this.dataId
         );
-        self.alert('发布成功！');
+        self.alert('提交成功，工作人员审核后即可查看');
 
         history.push(RouteRoot.Factory);
     };
@@ -177,12 +187,17 @@ export class FactoryEdit extends mixin<{ dataId: string }, Factory>() {
                         defaultValue={remark}
                     />
                     <div className="form-group mt-3">
-                        <Button type="submit" block disabled={factory.loading}>
+                        <Button
+                            type="submit"
+                            color="primary"
+                            block
+                            disabled={factory.loading}
+                        >
                             提交
                         </Button>
                         <Button
                             type="reset"
-                            kind="danger"
+                            color="danger"
                             block
                             onClick={() => history.push(RouteRoot.Factory)}
                         >

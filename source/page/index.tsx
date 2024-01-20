@@ -1,12 +1,14 @@
-import { component, createCell, Fragment } from 'web-cell';
-import { observer } from 'mobx-web-cell';
-import { HTMLRouter } from 'cell-router/source';
+import { createCell } from 'web-cell';
+import { CellRouter } from 'cell-router/source';
 import { NavBar } from 'boot-cell/source/Navigator/NavBar';
-import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
+import { NavLink } from 'boot-cell/source/Navigator/Nav';
+import { DropMenu, DropMenuItem } from 'boot-cell/source/Navigator/DropMenu';
+import marked from 'marked';
 
 import { history, session } from '../model';
 import { RoleNames } from '../service';
-import menu from './menu';
+import menu, { RouteRoot } from './data/menu';
+import logo from '../image/wuhan2020.png';
 
 import { HomePage } from './Home';
 import { HospitalPage } from './Hospital';
@@ -21,34 +23,38 @@ import { DonationPage } from './Donation/index';
 import { DonationEdit } from './Donation/edit';
 import { ClinicList } from './Clinic';
 import { ClinicEdit } from './Clinic/Edit';
-import { MapsPage } from './Map';
 import { UserAdmin } from './Admin/User';
+import { CommunityPage } from './Community';
+import Disclaimer from '../../Disclaimer.md';
 
-@observer
-@component({
-    tagName: 'page-router',
-    renderTarget: 'children'
-})
-export class PageRouter extends HTMLRouter {
-    protected history = history;
-    protected routes = [
+const routes = [
         { paths: [''], component: HomePage },
-        { paths: ['hospital'], component: HospitalPage },
-        { paths: ['hospital/edit'], component: HospitalEdit },
-        { paths: ['logistics'], component: LogisticsPage },
-        { paths: ['logistics/edit'], component: LogisticsEdit },
-        { paths: ['hotel'], component: HotelPage },
-        { paths: ['hotel/edit'], component: HotelEdit },
-        { paths: ['factory'], component: FactoryPage },
-        { paths: ['factory/edit'], component: FactoryEdit },
-        { paths: ['donation'], component: DonationPage },
-        { paths: ['donation/edit'], component: DonationEdit },
-        { paths: ['clinic'], component: ClinicList },
-        { paths: ['clinic/edit'], component: ClinicEdit },
-        { paths: ['maps'], component: MapsPage },
-        { paths: ['admin', 'admin/user'], component: UserAdmin }
-    ];
-
+        { paths: [RouteRoot.Hospital], component: HospitalPage },
+        { paths: [RouteRoot.Hospital + '/edit'], component: HospitalEdit },
+        { paths: [RouteRoot.Logistics], component: LogisticsPage },
+        { paths: [RouteRoot.Logistics + '/edit'], component: LogisticsEdit },
+        { paths: [RouteRoot.Hotel], component: HotelPage },
+        { paths: [RouteRoot.Hotel + '/edit'], component: HotelEdit },
+        { paths: [RouteRoot.Factory], component: FactoryPage },
+        { paths: [RouteRoot.Factory + '/edit'], component: FactoryEdit },
+        { paths: [RouteRoot.Donation], component: DonationPage },
+        { paths: [RouteRoot.Donation + '/edit'], component: DonationEdit },
+        { paths: [RouteRoot.Clinic], component: ClinicList },
+        { paths: [RouteRoot.Clinic + '/edit'], component: ClinicEdit },
+        {
+            paths: [RouteRoot.Maps],
+            component: async () => (await import('./Map')).MapsPage
+        },
+        {
+            paths: [RouteRoot.Admin, RouteRoot.Admin + '/user'],
+            component: UserAdmin
+        },
+        { paths: [RouteRoot.Community], component: CommunityPage },
+        {
+            paths: ['disclaimer'],
+            component: () => <div innerHTML={marked(Disclaimer)} />
+        }
+    ],
     userMenu = [
         {
             title: '管理',
@@ -57,56 +63,61 @@ export class PageRouter extends HTMLRouter {
         },
         {
             title: '登出',
-            href: '#',
-            onClick: this.signOut
+            onClick: () => session.signOut()
         }
     ];
 
-    connectedCallback() {
-        this.classList.add('d-flex', 'flex-column', 'vh-100');
-
-        super.connectedCallback();
-    }
-
-    async signOut() {
-        await session.signOut();
-
-        location.href = '.';
-    }
-
-    render() {
-        return (
-            <Fragment>
-                <NavBar
-                    title="2020 援助武汉"
-                    menu={menu.map(({ title, href }) => ({
-                        title,
-                        href,
-                        active:
+export function PageFrame() {
+    return (
+        <div className="d-flex flex-column vh-100">
+            <NavBar
+                theme="light"
+                background="light"
+                narrow
+                brand={
+                    <img
+                        alt="新冠战疫信息平台"
+                        src={logo}
+                        style={{ height: '2rem' }}
+                    />
+                }
+            >
+                {menu.map(({ href, title }) => (
+                    <NavLink
+                        href={href}
+                        active={
                             history.path === href ||
                             (!!href && history.path.startsWith(href))
-                    }))}
-                    narrow
-                >
-                    {session.user && (
-                        <DropMenu
-                            title={session.user.username}
-                            alignType="right"
-                            alignSize="md"
-                            list={this.userMenu.filter(
-                                ({ roles }) =>
-                                    !roles ||
-                                    roles?.find(role => session.hasRole(role))
-                            )}
-                        />
-                    )}
-                </NavBar>
+                        }
+                    >
+                        {title}
+                    </NavLink>
+                ))}
+                {session.user && (
+                    <DropMenu
+                        buttonColor="primary"
+                        alignType="right"
+                        alignSize="md"
+                        caption={session.user.username}
+                    >
+                        {userMenu.map(({ roles, title, ...rest }) =>
+                            !roles ||
+                            roles?.find(role => session.hasRole(role)) ? (
+                                <DropMenuItem {...rest}>{title}</DropMenuItem>
+                            ) : null
+                        )}
+                    </DropMenu>
+                )}
+            </NavBar>
 
-                <main className="flex-grow-1 container my-5 pt-3">
-                    {super.render()}
-                </main>
+            <CellRouter
+                className="flex-grow-1 container pt-3"
+                routes={routes}
+                history={history}
+            />
 
-                <footer className="text-center bg-light py-5">
+            <footer className="d-md-flex justify-content-around text-center bg-light py-5">
+                <p>
                     Proudly developed with
                     <a
                         className="mx-1"
@@ -123,8 +134,9 @@ export class PageRouter extends HTMLRouter {
                     >
                         BootCell v1
                     </a>
-                </footer>
-            </Fragment>
-        );
-    }
+                </p>
+                <a href="disclaimer">免责声明</a>
+            </footer>
+        </div>
+    );
 }
