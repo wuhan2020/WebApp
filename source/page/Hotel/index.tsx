@@ -1,9 +1,9 @@
 import { component, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
-import { Card } from 'boot-cell/source/Content/Card';
+import { Card, CardFooter } from 'boot-cell/source/Content/Card';
 import { Button } from 'boot-cell/source/Form/Button';
-import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
+import { DropMenu, DropMenuItem } from 'boot-cell/source/Navigator/DropMenu';
 
 import { hotel, Hotel } from '../../model';
 import { AuditBar, CardsPage } from '../../component';
@@ -55,6 +55,7 @@ export class HotelPage extends CardsPage<Hotel> {
 
             <div className="text-center">
                 <Button
+                    color="primary"
                     target="_top"
                     href={
                         '//uri.amap.com/marker?' +
@@ -69,19 +70,24 @@ export class HotelPage extends CardsPage<Hotel> {
                     地图导航
                 </Button>
 
-                {contacts && (
+                {contacts[0] && (
                     <DropMenu
                         className="d-inline-block ml-3"
+                        buttonColor="primary"
                         alignType="right"
-                        title="联系方式"
-                        list={contacts.map(({ name, phone }) => ({
-                            title: `${name}：${phone}`,
-                            href: 'tel:' + phone
-                        }))}
-                    />
+                        caption="联系方式"
+                    >
+                        {contacts.map(({ name, phone }) => (
+                            <DropMenuItem href={'tel:' + phone}>
+                                {name}：{phone}
+                            </DropMenuItem>
+                        ))}
+                    </DropMenu>
                 )}
             </div>
-            <AuditBar scope="hotel" model={hotel} {...rest} />
+            <CardFooter>
+                <AuditBar scope="hotel" model={hotel} {...rest} />
+            </CardFooter>
         </Card>
     );
 }

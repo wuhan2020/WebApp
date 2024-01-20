@@ -52,11 +52,11 @@ export abstract class CardsPage<T> extends mixin() {
             admin = session.hasRole('Admin');
 
         return (
-            <Fragment>
+            <>
                 <header className="d-flex justify-content-between align-items-center my-3">
                     <h2 className="m-0">{title}</h2>
                     <span>
-                        <Button kind="warning" href={scope + '/edit'}>
+                        <Button color="warning" href={scope + '/edit'}>
                             发布
                         </Button>
                     </span>
@@ -86,7 +86,7 @@ export abstract class CardsPage<T> extends mixin() {
                         {noMore ? '没有更多数据了' : '加载更多...'}
                     </p>
                 </edge-detector>
-            </Fragment>
+            </>
         );
     }
 }

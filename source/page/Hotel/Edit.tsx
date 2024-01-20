@@ -1,17 +1,21 @@
-import { component, mixin, watch, createCell } from 'web-cell';
+import { WebCellProps, component, mixin, watch, createCell } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
-import { RouteRoot } from '../menu';
+import { RouteRoot } from '../data/menu';
 import { Hotel, hotel, history } from '../../model';
 import { GeoCoord, Contact } from '../../service';
 import { SessionBox, AddressField, ContactField } from '../../component';
+
+export interface HotelEditProps extends WebCellProps {
+    dataId: string;
+}
 
 @component({
     tagName: 'hotel-edit',
     renderTarget: 'children'
 })
-export class HotelEdit extends mixin<{ dataId: string }, Hotel>() {
+export class HotelEdit extends mixin<HotelEditProps, Hotel>() {
     @watch
     dataId = '';
 
@@ -85,12 +89,20 @@ export class HotelEdit extends mixin<{ dataId: string }, Hotel>() {
     handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        const data = this.state;
-        data.capacity *= 1;
+        const { capacity, contacts, ...data } = this.state;
 
-        await hotel.update(data, this.dataId);
+        await hotel.update(
+            {
+                ...data,
+                capacity: +capacity,
+                contacts: contacts.filter(
+                    ({ name, phone }) => name?.trim() && phone?.trim()
+                )
+            },
+            this.dataId
+        );
 
-        self.alert('发布成功！');
+        self.alert('提交成功，工作人员审核后即可查看');
 
         history.push(RouteRoot.Hotel);
     };
@@ -156,12 +168,17 @@ export class HotelEdit extends mixin<{ dataId: string }, Hotel>() {
                         label="备注"
                     />
                     <div className="form-group mt-3">
-                        <Button type="submit" block disabled={hotel.loading}>
+                        <Button
+                            type="submit"
+                            color="primary"
+                            block
+                            disabled={hotel.loading}
+                        >
                             提交
                         </Button>
                         <Button
                             type="reset"
-                            kind="danger"
+                            color="danger"
                             block
                             onClick={() => history.push(RouteRoot.Hotel)}
                         >

@@ -3,29 +3,24 @@ on:
   push:
     branches:
       - dev
-  pull_request:
-    branches:
-      - dev
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - name: Use Node.js
+        uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '14'
       - name: Install & build
         run: |
           npm install
           npm run build
-          echo wuhan2020.kaiyuanshe.cn > dist/CNAME
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v2.10.1
-        env:
-          PUBLISH_DIR: ./dist
-          PUBLISH_BRANCH: gh-pages
-          PERSONAL_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          forceOrphan: true
+          publish_dir: ./dist
+          cname: wuhan2020.kaiyuanshe.cn
+          personal_token: ${{ secrets.GITHUB_TOKEN }}
+          force_orphan: true

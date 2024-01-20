@@ -8,12 +8,19 @@
  * data: 各省市或国家数据。
  * area: 当前选中的国家或省市。
  */
-
+import {
+    WebCellProps,
+    component,
+    mixin,
+    createCell,
+    watch,
+    attribute,
+    Fragment
+} from 'web-cell';
 import { observer } from 'mobx-web-cell';
-import { component, mixin, createCell, watch, attribute } from 'web-cell';
 
-import { WebCellECharts } from './WebCellEcharts';
-import { isLandscape } from '../../../utility';
+import { CellCharts } from './CellCharts';
+import { isLandscape } from '../utility';
 import {
     Series,
     ProvinceData,
@@ -23,10 +30,10 @@ import {
 } from '../adapter';
 import { area as areaModel } from '../../../model';
 
-interface Props {
+interface Props extends WebCellProps {
     data: OverallCountryData;
     area: string;
-    path: Array<string>;
+    path: string[];
 }
 
 interface State {
@@ -42,66 +49,55 @@ const SYMOBL_SIZE = 10;
     renderTarget: 'children'
 })
 export class VirusChart extends mixin<Props, State>() {
-    @attribute
     @watch
-    public data: OverallCountryData = {
+    data: OverallCountryData = {
         provincesSeries: {},
         countrySeries: {}
     };
 
     @attribute
     @watch
-    public area: string = '';
+    area: string = '';
 
     @attribute
     @watch
-    public path: Array<string> = [];
+    path: string[] = [];
 
-    public getOrderedTimeData(
+    getOrderedTimeData(
         data: CountryData | Series<ProvinceData> | Series<CountryOverviewData>
     ) {
-        let output = [];
+        const output = [];
+
         for (const property in data) {
             data[property].date = parseInt(property);
+
             output.push(data[property]);
         }
-        output.sort((a, b) => {
-            return a.date - b.date;
-        });
-        return output;
+
+        return output.sort(({ date: A }, { date: B }) => A - B);
     }
 
-    public fixChartFontSize(baseFontSize: number) {
-        const isPC = isLandscape();
-        if (isPC) {
-            return (
-                (baseFontSize *
-                    (window.innerWidth ||
-                        document.documentElement.clientWidth ||
-                        document.body.clientWidth)) /
-                1000
-            );
-        } else {
-            return (
-                (baseFontSize *
-                    (window.innerWidth ||
-                        document.documentElement.clientWidth ||
-                        document.body.clientWidth)) /
-                500
-            );
-        }
+    fixChartFontSize(baseFontSize: number) {
+        const base =
+            (baseFontSize *
+                (window.innerWidth ||
+                    document.documentElement.clientWidth ||
+                    document.body.clientWidth)) /
+            500;
+
+        return base / (isLandscape() ? 2 : 1);
     }
 
-    public getData(
-        orderedProvinceData: Array<any>,
-        orderedOverviewData: Array<any>,
+    getData(
+        orderedProvinceData: any[],
+        orderedOverviewData: any[],
         area: string,
-        path: Array<string>
+        path: string[]
     ) {
-        let confirmedData = [];
-        let suspectedData = [];
-        let curedData = [];
-        let deadData = [];
+        const confirmedData = [],
+            suspectedData = [],
+            curedData = [],
+            deadData = [];
 
         if (path.length === 0 && area === '中国') {
             for (const item of orderedOverviewData) {
@@ -113,56 +109,28 @@ export class VirusChart extends mixin<Props, State>() {
         } else if (path.length === 1) {
             if (areaModel.provinces.find(({ name }) => name.startsWith(area)))
                 for (const item of orderedProvinceData) {
-                    confirmedData.push([
-                        item.date,
-                        item[area] ? item[area].confirmed : 0
-                    ]);
-                    suspectedData.push([
-                        item.date,
-                        item[area] ? item[area].suspected : 0
-                    ]);
-                    curedData.push([
-                        item.date,
-                        item[area] ? item[area].cured : 0
-                    ]);
-                    deadData.push([
-                        item.date,
-                        item[area] ? item[area].dead : 0
-                    ]);
+                    confirmedData.push([item.date, item[area]?.confirmed || 0]);
+                    suspectedData.push([item.date, item[area]?.suspected || 0]);
+                    curedData.push([item.date, item[area]?.cured || 0]);
+                    deadData.push([item.date, item[area]?.dead || 0]);
                 }
             else {
                 for (const item of orderedProvinceData) {
                     confirmedData.push([
                         item.date,
-                        item[path[0]]
-                            ? item[path[0]].cities[area]
-                                ? item[path[0]].cities[area].confirmed
-                                : 0
-                            : 0
+                        item[path[0]]?.cities[area]?.confirmed || 0
                     ]);
                     suspectedData.push([
                         item.date,
-                        item[path[0]]
-                            ? item[path[0]].cities[area]
-                                ? item[path[0]].cities[area].suspected
-                                : 0
-                            : 0
+                        item[path[0]]?.cities[area]?.suspected || 0
                     ]);
                     curedData.push([
                         item.date,
-                        item[path[0]]
-                            ? item[path[0]].cities[area]
-                                ? item[path[0]].cities[area].cured
-                                : 0
-                            : 0
+                        item[path[0]]?.cities[area]?.cured || 0
                     ]);
                     deadData.push([
                         item.date,
-                        item[path[0]]
-                            ? item[path[0]].cities[area]
-                                ? item[path[0]].cities[area].dead
-                                : 0
-                            : 0
+                        item[path[0]]?.cities[area]?.dead || 0
                     ]);
                 }
             }
@@ -176,11 +144,11 @@ export class VirusChart extends mixin<Props, State>() {
         };
     }
 
-    public getConfirmedSuspectChartOptions(
-        orderedProvinceData: Array<any>,
-        orderedOverviewData: Array<any>,
+    getConfirmedSuspectChartOptions(
+        orderedProvinceData: any[],
+        orderedOverviewData: any[],
         area: string,
-        path: Array<string>
+        path: string[]
     ) {
         const { confirmedData, suspectedData } = this.getData(
             orderedProvinceData,
@@ -218,8 +186,9 @@ export class VirusChart extends mixin<Props, State>() {
                     textStyle: {
                         fontSize: this.fixChartFontSize(7)
                     },
-                    formatter: function(params) {
-                        const date = new Date(params);
+                    formatter(time: string | number) {
+                        const date = new Date(time);
+
                         return date.getMonth() + 1 + '/' + date.getDate();
                     }
                 }
@@ -260,11 +229,11 @@ export class VirusChart extends mixin<Props, State>() {
         };
     }
 
-    public getCuredDeadChartOptions(
-        orderedProvinceData: Array<any>,
-        orderedOverviewData: Array<any>,
+    getCuredDeadChartOptions(
+        orderedProvinceData: any[],
+        orderedOverviewData: any[],
         area: string,
-        path: Array<string>
+        path: string[]
     ) {
         const { curedData, deadData } = this.getData(
             orderedProvinceData,
@@ -297,8 +266,9 @@ export class VirusChart extends mixin<Props, State>() {
                     textStyle: {
                         fontSize: this.fixChartFontSize(7)
                     },
-                    formatter: function(params) {
-                        const date = new Date(params);
+                    formatter(time: string | number) {
+                        const date = new Date(time);
+
                         return date.getMonth() + 1 + '/' + date.getDate();
                     }
                 }
@@ -340,24 +310,24 @@ export class VirusChart extends mixin<Props, State>() {
         };
     }
 
-    public render() {
+    connectedCallback() {
+        this.classList.add('d-flex', 'flex-column');
+
+        super.connectedCallback();
+    }
+
+    render() {
         const { data, area, path } = this.props;
+
         const orderedProvincesData = this.getOrderedTimeData(
-            data.provincesSeries
-        );
-        const orderedCountryData = this.getOrderedTimeData(data.countrySeries);
+                data.provincesSeries
+            ),
+            orderedCountryData = this.getOrderedTimeData(data.countrySeries);
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    width: '100%',
-                    height: '100%'
-                }}
-            >
-                <WebCellECharts
-                    style={{ width: '100%', height: '50%' }}
+            <>
+                <CellCharts
+                    className="w-100 h-50"
                     chartOptions={this.getConfirmedSuspectChartOptions(
                         orderedProvincesData,
                         orderedCountryData,
@@ -365,8 +335,8 @@ export class VirusChart extends mixin<Props, State>() {
                         path
                     )}
                 />
-                <WebCellECharts
-                    style={{ width: '100%', height: '50%' }}
+                <CellCharts
+                    className="w-100 h-50"
                     chartOptions={this.getCuredDeadChartOptions(
                         orderedProvincesData,
                         orderedCountryData,
@@ -374,7 +344,7 @@ export class VirusChart extends mixin<Props, State>() {
                         path
                     )}
                 />
-            </div>
+            </>
         );
     }
 }

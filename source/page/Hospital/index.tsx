@@ -1,9 +1,9 @@
 import { component, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
-import { Card } from 'boot-cell/source/Content/Card';
+import { Card, CardFooter } from 'boot-cell/source/Content/Card';
 import { Button } from 'boot-cell/source/Form/Button';
-import { DropMenu } from 'boot-cell/source/Navigator/DropMenu';
+import { DropMenu, DropMenuItem } from 'boot-cell/source/Navigator/DropMenu';
 
 import { suppliesRequirement, SuppliesRequirement } from '../../model';
 import { AuditBar, CardsPage } from '../../component';
@@ -45,6 +45,7 @@ export class HospitalPage extends CardsPage<SuppliesRequirement> {
 
             <div className="text-center">
                 <Button
+                    color="primary"
                     onClick={() =>
                         this.clip2board(province + city + district + address)
                     }
@@ -52,20 +53,28 @@ export class HospitalPage extends CardsPage<SuppliesRequirement> {
                     邮寄地址
                 </Button>
 
-                {contacts && (
+                {contacts[0] && (
                     <DropMenu
                         className="d-inline-block ml-3"
+                        buttonColor="primary"
                         alignType="right"
-                        title="联系方式"
-                        list={contacts.map(({ name, phone }) => ({
-                            title: `${name}：${phone}`,
-                            href: 'tel:' + phone
-                        }))}
-                    />
+                        caption="联系方式"
+                    >
+                        {contacts.map(({ name, phone }) => (
+                            <DropMenuItem href={'tel:' + phone}>
+                                {name}：{phone}
+                            </DropMenuItem>
+                        ))}
+                    </DropMenu>
                 )}
             </div>
-
-            <AuditBar scope="hospital" model={suppliesRequirement} {...rest} />
+            <CardFooter>
+                <AuditBar
+                    scope="hospital"
+                    model={suppliesRequirement}
+                    {...rest}
+                />
+            </CardFooter>
         </Card>
     );
 }

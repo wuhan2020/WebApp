@@ -1,7 +1,8 @@
 import { component, createCell } from 'web-cell';
 import { observer } from 'mobx-web-cell';
 
-import { Card } from 'boot-cell/source/Content/Card';
+import { Card, CardFooter } from 'boot-cell/source/Content/Card';
+import { BGIcon } from 'boot-cell/source/Reminder/FAIcon';
 
 import { CardsPage, AuditBar } from '../../component';
 import { clinic, Clinic } from '../../model';
@@ -46,7 +47,12 @@ export class ClinicList extends CardsPage<Clinic> {
                     {contacts.map(({ name, phone }) => (
                         <li>
                             <a href={'tel:' + phone}>
-                                <i className="fa fa-phone d-inline-block bg-primary text-white p-1 rounded" />{' '}
+                                <BGIcon
+                                    type="square"
+                                    name="phone"
+                                    color="primary"
+                                    className="d-inline-block"
+                                />{' '}
                                 {name}：{phone}
                             </a>
                         </li>
@@ -54,8 +60,9 @@ export class ClinicList extends CardsPage<Clinic> {
                 </ol>
             )}
             {remark && <p className="text-muted">{remark}</p>}
-
-            <AuditBar scope="clinic" model={clinic} {...rest} />
+            <CardFooter>
+                <AuditBar scope="clinic" model={clinic} {...rest} />
+            </CardFooter>
         </Card>
     );
 }

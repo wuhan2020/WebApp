@@ -1,10 +1,10 @@
-import { component, mixin, watch, createCell } from 'web-cell';
+import { WebCellProps, component, mixin, watch, createCell } from 'web-cell';
 import { FormField } from 'boot-cell/source/Form/FormField';
 import { Button } from 'boot-cell/source/Form/Button';
 
 import { mergeList } from '../../utility';
-import { RouteRoot } from '../menu';
-import CommonSupplies from './Supplies';
+import { RouteRoot } from '../data/menu';
+import CommonSupplies from '../data/Supplies';
 import {
     SuppliesRequirement,
     Supplies,
@@ -19,12 +19,16 @@ import {
     SuppliesField
 } from '../../component';
 
+export interface HospitalEditProps extends WebCellProps {
+    dataId: string;
+}
+
 @component({
     tagName: 'hospital-edit',
     renderTarget: 'children'
 })
 export class HospitalEdit extends mixin<
-    { dataId: string },
+    HospitalEditProps,
     SuppliesRequirement
 >() {
     @watch
@@ -104,13 +108,19 @@ export class HospitalEdit extends mixin<
     handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        const { supplies, ...data } = this.state;
+        const { supplies, contacts, ...data } = this.state;
 
         await suppliesRequirement.update(
-            { ...data, supplies: supplies.filter(({ count }) => count) },
+            {
+                ...data,
+                supplies: supplies.filter(({ count }) => count),
+                contacts: contacts.filter(
+                    ({ name, phone }) => name?.trim() && phone?.trim()
+                )
+            },
             this.dataId
         );
-        self.alert('发布成功！');
+        self.alert('提交成功，工作人员审核后即可查看');
 
         history.push(RouteRoot.Hospital);
     };
@@ -178,6 +188,7 @@ export class HospitalEdit extends mixin<
                     <div className="form-group mt-3">
                         <Button
                             type="submit"
+                            color="primary"
                             block
                             disabled={suppliesRequirement.loading}
                         >
@@ -185,7 +196,7 @@ export class HospitalEdit extends mixin<
                         </Button>
                         <Button
                             type="reset"
-                            kind="danger"
+                            color="danger"
                             block
                             onClick={() => history.push(RouteRoot.Hospital)}
                         >

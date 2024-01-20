@@ -1,48 +1,3 @@
-const TimeUnit = [
-    {
-        scale: 1000,
-        code: 's'
-    },
-    {
-        scale: 60,
-        code: 'm'
-    },
-    {
-        scale: 60,
-        code: 'H'
-    },
-    {
-        scale: 24,
-        code: 'D'
-    },
-    {
-        scale: 7,
-        code: 'W'
-    },
-    {
-        scale: 30 / 7,
-        code: 'M'
-    },
-    {
-        scale: 12,
-        code: 'Y'
-    }
-];
-
-export function relativeTimeTo(date: number | string | Date) {
-    let distance = +new Date(date) - +new Date(),
-        unit = 'ms';
-
-    for (const { scale, code } of TimeUnit) {
-        const rest = distance / scale;
-
-        if (Math.abs(rest) > 1) (distance = rest), (unit = code);
-        else break;
-    }
-
-    return { distance: +distance.toFixed(0), unit };
-}
-
 export enum TimeUnitName {
     ms = '毫秒',
     s = '秒',
@@ -87,14 +42,4 @@ export function transform<T>(
     }
 
     return data;
-}
-
-// 宽屏模式（通常是 PC）
-export function isLandscape() {
-    const { documentElement: html, body } = document;
-
-    return (
-        (self.innerWidth || html.clientWidth || body.clientWidth) >
-        (self.innerHeight || html.clientHeight || body.clientHeight) * 0.8
-    );
 }

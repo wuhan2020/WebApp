@@ -9,14 +9,14 @@
  * chartOnClickCallBack: 点击地图后的回调函数。
  * chartGeoRoamCallBack: 地图缩放事件回调函数。
  */
-
-import { observer } from 'mobx-web-cell';
 // eslint-disable-next-line no-unused-vars
-import { component, mixin, createCell, attribute, watch } from 'web-cell';
-import echarts from 'echarts';
+import { WebCellProps, component, mixin, attribute, watch } from 'web-cell';
+import { observer } from 'mobx-web-cell';
+import { init, registerMap } from 'echarts';
+
 import { long2short } from '../adapter';
 
-interface MapProps {
+export interface EChartsMapProps extends WebCellProps {
     mapUrl?: string;
     chartOptions?: any;
     mapName?: string;
@@ -30,7 +30,7 @@ interface MapProps {
     tagName: 'echarts-map',
     renderTarget: 'children'
 })
-export class EchartsMap extends mixin<MapProps, {}>() {
+export class EChartsMap extends mixin<EChartsMapProps>() {
     @attribute
     @watch
     public mapUrl: string = '';
@@ -39,140 +39,88 @@ export class EchartsMap extends mixin<MapProps, {}>() {
     @watch
     public mapName: string = 'map';
 
-    @attribute
     @watch
-    public chartOptions: Object = {};
+    public chartOptions: any = {};
 
-    @attribute
     @watch
     public chartOnClickCallBack = (param, chart: any) => {
         console.log('click', param, chart);
     };
 
-    @attribute
     @watch
     public chartGeoRoamCallBack = (param, chart) => {
         console.log('roam', param, chart);
     };
 
-    @attribute
     @watch
     public chartAdjustLabel = (param, chart) => {
         console.log('adjust-label', param, chart);
     };
 
-    chartId = this.generateChartId();
     chart: any;
 
-    /**
-     * 使用随机数+date生成当前组件的唯一ID
-     */
-    generateChartId() {
-        const random = Math.floor(Math.random() * 100);
-        const dateStr = new Date().getTime();
-        return 'map' + random.toString() + dateStr.toString();
-    }
-
     connectedCallback() {
-        let originFunction = (window as any).onresize;
-        window.onresize = () => {
-            if (typeof originFunction === 'function') {
-                originFunction();
-            }
-            if (this.chart) {
-                this.chart.resize();
-            }
+        this.classList.add('w-100', 'h-100');
+        // @ts-ignore
+        this.chart = init(this);
+
+        this.listen(), this.loadData();
+
+        self.addEventListener('resize', () => {
+            this.chart.resize();
+
             this.adjustLabel();
-            // this.adjustOption();
-        };
-    }
-
-    updatedCallback() {
-        const {
-            mapUrl,
-            mapName,
-            chartOptions,
-            chartOnClickCallBack
-        } = this.props;
-
-        if (this.chart !== undefined) {
-            this.chart.showLoading();
-        }
-        fetch(mapUrl)
-            .then(response => response.json())
-            .then(data => {
-                // convert to short names, better to use a map already with short names
-                if (!document.getElementById(this.chartId)) {
-                    return;
-                }
-                data.features.forEach(
-                    (f: { properties: { name: string } }) =>
-                        (f.properties.name = long2short(f.properties.name))
-                );
-                echarts.registerMap(mapName, data);
-                this.chart = echarts.init(
-                    document.getElementById(this.chartId) as HTMLDivElement
-                );
-                this.chart.setOption(chartOptions);
-
-                // implement hover-then-click on mobile devices
-                let eventState = {
-                    hovered: ''
-                };
-                this.chart.on('mouseover', 'series', params => {
-                    // prevent click event to trigger immediately
-                    setTimeout(() => (eventState.hovered = params.name), 0);
-                });
-                this.chart.on('mouseout', 'series', () => {
-                    eventState.hovered = '';
-                });
-                this.chart.on('click', 'series', params => {
-                    if (eventState.hovered.length > 0) {
-                        chartOnClickCallBack(params, this.chart);
-                        eventState.hovered = '';
-                    }
-                });
-
-                this.chart.on('click', 'timeline', params => {
-                    this.chart.dispatchAction({
-                        type: 'timelineChange',
-                        // index of time point
-                        currentIndex: chartOptions.baseOption.timeline.data.findIndex(
-                            d => d === params.dataIndex
-                        )
-                    });
-                });
-
-                // this.chart.on('georoam', function(params) {
-                //   if (
-                //     this.chart !== undefined &&
-                //     params.dy === undefined &&
-                //     params.dx === undefined
-                //   ) {
-                //     chartGeoRoamCallBack(params, this.chart);
-                //   }
-                // });
-
-                this.adjustLabel();
-                this.chart.hideLoading();
-            })
-            .catch(e => console.log('获取地图失败', e));
+        });
     }
 
     adjustLabel() {
-        if (this.props.chartAdjustLabel && this.chart) {
-            this.props.chartAdjustLabel(null, this.chart);
-        }
+        this.props.chartAdjustLabel(null, this.chart);
     }
 
-    public render() {
-        return (
-            <div>
-                <div
-                    id={this.chartId}
-                    style={{ width: '100%', height: '100%' }}
-                ></div>
-            </div>
+    listen() {
+        const { chart, chartOnClickCallBack, chartOptions } = this;
+        // implement hover-then-click on mobile devices
+        var hovered = '';
+
+        chart.on('mouseover', 'series', ({ name }) =>
+            // prevent click event to trigger immediately
+            setTimeout(() => (hovered = name))
         );
+        chart.on('mouseout', 'series', () => (hovered = ''));
+
+        chart.on('click', 'series', params => {
+            if (hovered.length > 0) {
+                chartOnClickCallBack(params, chart);
+                hovered = '';
+            }
+        });
+        chart.on('click', 'timeline', ({ dataIndex }) =>
+            chart.dispatchAction({
+                type: 'timelineChange',
+                // index of time point
+                currentIndex: chartOptions.baseOption.timeline.data.findIndex(
+                    d => d === dataIndex
+                )
+            })
+        );
+    }
+
+    async loadData() {
+        const { chart, mapUrl, mapName, chartOptions } = this;
+
+        chart.showLoading();
+
+        const data = await (await fetch(mapUrl)).json();
+
+        for (const { properties } of data.features)
+            properties.name = long2short(properties.name);
+
+        registerMap(mapName, data);
+
+        chart.setOption(chartOptions);
+
+        this.adjustLabel();
+
+        chart.hideLoading();
     }
 }
