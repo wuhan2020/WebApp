@@ -1,6 +1,7 @@
-import { BaseModel } from './BaseModel';
-import { DataItem, RoleNames, User, service } from '../service';
 import { observable } from 'mobx';
+
+import { DataItem, RoleNames, User, service } from '../service';
+import { BaseModel } from './BaseModel';
 
 export interface Role extends DataItem {
     name: RoleNames;
@@ -10,7 +11,7 @@ export class UserModel extends BaseModel<User, { phone?: string }> {
     baseURI = '/user/';
 
     @observable
-    roles: Role[];
+    accessor roles: Role[];
 
     async getRoles() {
         const { body } = await service.get<Role[]>('/role');

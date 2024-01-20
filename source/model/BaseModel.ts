@@ -1,13 +1,14 @@
 import { observable } from 'mobx';
+
 import { DataItem, service, PageData, User } from '../service';
 import { session } from '.';
 
 export abstract class BaseModel<T extends DataItem = {}, F = {}> {
     @observable
-    loading = false;
+    accessor loading = false;
 
     @observable
-    noMore = false;
+    accessor noMore = false;
 
     pageIndex = 0;
 
@@ -16,7 +17,7 @@ export abstract class BaseModel<T extends DataItem = {}, F = {}> {
     totalCount = 0;
 
     @observable
-    list: T[] = [];
+    accessor list: T[] = [];
 
     abstract baseURI: string;
 

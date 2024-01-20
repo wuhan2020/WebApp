@@ -1,4 +1,3 @@
-import { History } from 'cell-router/source';
 import { Session } from './Session';
 import { UserModel } from './User';
 import { SuppliesRequirementModel } from './SuppliesRequirement';
@@ -9,7 +8,6 @@ import { DonationRecipientModel } from './DonationRecipient';
 import { FactoryModel } from './Factory';
 import { AreaModel } from './Area';
 
-export const history = new History();
 export const session = new Session();
 export const user = new UserModel();
 export const suppliesRequirement = new SuppliesRequirementModel();

@@ -4,13 +4,13 @@ import { District, getSubDistricts } from '../service';
 
 export class AreaModel {
     @observable
-    provinces: District[] = [];
+    accessor provinces: District[] = [];
 
     @observable
-    cities: District[] = [];
+    accessor cities: District[] = [];
 
     @observable
-    districts: District[] = [];
+    accessor districts: District[] = [];
 
     constructor() {
         getSubDistricts().then(list => (this.provinces = list));

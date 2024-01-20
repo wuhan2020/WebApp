@@ -1,11 +1,11 @@
 import { observable } from 'mobx';
-import { blobOf } from 'koajax';
+import { blobOf } from 'web-utility';
 
 import { User, service, RoleNames, FileData } from '../service';
 
 export class Session {
     @observable
-    user: User;
+    accessor user: User;
 
     constructor() {
         if (sessionStorage.user) this.user = JSON.parse(sessionStorage.user);

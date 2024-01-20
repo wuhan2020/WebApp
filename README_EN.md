@@ -4,9 +4,10 @@ Wuhan new coronavirus epidemic prevention information platform [Progressive Web 
 
 [简体中文](./README.md) | English
 
-[![NPM Dependency](https://david-dm.org/wuhan2020/WebApp.svg)][2]
-[![CI Status](https://github.com/wuhan2020/WebApp/workflows/PWA%20CI/CD/badge.svg)][3]
-[![Github](https://img.shields.io/badge/Slack%20Channel-%23proj--front--pages-blue.svg)][4]
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)][2]
+
+[![CI Status](https://github.com/wuhan2020/WebApp/actions/workflows/main.yml/badge.svg)][3]
+[![Slack channel](https://img.shields.io/badge/Slack%20Channel-%23proj--front--pages-blue.svg)][4]
 
 ## Basics
 
@@ -20,12 +21,12 @@ Almost all the mainstream web browsers like Chrome, Firefox, Opera, Edge, UC, Xi
 
 ## Tech stack
 
--   Programming language : [TypeScript v4][6]
--   Engine : [WebCell v2][7]
--   Library : [BootCell v1][8]
--   State management : [MobX v5][9]
--   PWA framework : [Workbox v6][10]
--   Packaging tool : [Parcel v1][11]
+-   Programming language : [TypeScript v5][6]
+-   Engine : [WebCell v3][7]
+-   Library : [BootCell v2][8]
+-   State management : [MobX v6][9]
+-   PWA framework : [Workbox v7][10]
+-   Packaging tool : [Parcel v2][11]
 -   CI / CD: GitHub [Actions][12] + [Pages][13]
 
 ## Development needs
@@ -38,14 +39,20 @@ Almost all the mainstream web browsers like Chrome, Firefox, Opera, Edge, UC, Xi
 
 1. [Install Node.js](https://nodejs.org/en/download/package-manager/)
 
-2. `git clone https://github.com/wuhan2020/WebApp.git`
+2. Install [PNPM](https://pnpm.io/zh/)
 
-3. Run the commands in the directory of this project
+    ```shell
+    npm i pnpm -g
+    ```
 
-```shell
-npm install
-npm start
-```
+3. `git clone https://github.com/wuhan2020/WebApp.git`
+
+4. Run the commands in the directory of this project
+
+    ```shell
+    pnpm i
+    npm start
+    ```
 
 （Windows users please run in [PowerShell 5.1+][14]、[Git Bash][15] or [WSL][16]）
 
@@ -53,7 +60,7 @@ npm start
 
 1. Install and start [rest-api](https://github.com/wuhan2020/rest-api)
 
-2. `npm run start:local`
+2. `pnpm start:local`
 
 ## Thanks
 
@@ -74,8 +81,8 @@ Special thanks to the following students for providing the epidemic data from Li
 -   [@BlankerL](https://github.com/BlankerL/DXY-2019-nCoV-Crawler)
 
 [1]: https://developers.google.cn/web/progressive-web-apps
-[2]: https://david-dm.org/wuhan2020/WebApp
-[3]: https://github.com/wuhan2020/WebApp/actions
+[2]: https://gitpod.io/?autostart=true#https://github.com/wuhan2020/WebApp
+[3]: https://github.com/wuhan2020/WebApp/actions/workflows/main.yml
 [4]: https://app.slack.com/client/TT5U1VCPQ/CSTPXN533
 [5]: https://www.w3.org/
 [6]: https://typescriptlang.org

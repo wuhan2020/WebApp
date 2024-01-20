@@ -11,24 +11,20 @@ export type Content =
 
 export type Contributor = components['schemas']['contributor'];
 
-interface GitHubOptions {
-    owner: string;
-    repo: string;
-}
 
 export class GitHubClient {
     client = new HTTPClient({
         baseURI: 'https://api.github.com/',
         responseType: 'json'
     });
-    options: GitHubOptions;
 
-    constructor(options: GitHubOptions) {
-        this.options = options;
-    }
+    constructor(
+        public owner: string,
+        public repo: string
+    ) {}
 
     async getContents(path: string) {
-        const { owner, repo } = this.options;
+        const { owner, repo } = this;
 
         const type = path.split('.').slice(-1)[0],
             { body } = await this.client.get<Content>(
@@ -48,7 +44,7 @@ export class GitHubClient {
     }
 
     async getContributors() {
-        const { owner, repo } = this.options;
+        const { owner, repo } = this;
 
         const { body } = await this.client.get<Contributor[]>(
             `repos/${owner}/${repo}/contributors?per_page=100`
