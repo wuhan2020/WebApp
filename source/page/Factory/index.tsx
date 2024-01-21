@@ -57,7 +57,7 @@ export class FactoryPage extends CardsPage<Factory> {
                 <h6>物资产能</h6>
                 <ol>
                     {supplies.map(({ name, count, remark }) => (
-                        <li key={remark} title={remark}>
+                        <li key={name} title={remark}>
                             {name} <Badge bg="danger">{count}个</Badge>
                         </li>
                     ))}

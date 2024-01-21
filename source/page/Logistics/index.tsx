@@ -1,6 +1,12 @@
 import { component, observer } from 'web-cell';
-import { Badge, Card, CardBody, CardFooter, CardTitle } from 'boot-cell';
-import { BGIcon } from '../../component/BGIcon';
+import {
+    Badge,
+    Card,
+    CardBody,
+    CardFooter,
+    CardTitle,
+    BGIcon
+} from 'boot-cell';
 
 import { AuditBar } from '../../component/AuditBar';
 import { CardsPage } from '../../component/CardsPage';

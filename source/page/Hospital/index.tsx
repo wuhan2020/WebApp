@@ -4,7 +4,8 @@ import {
     CardFooter,
     Button,
     DropdownButton,
-    DropdownItem
+    DropdownItem,
+    Badge
 } from 'boot-cell';
 
 import { suppliesRequirement, SuppliesRequirement } from '../../model';
@@ -36,9 +37,8 @@ export class HospitalPage extends CardsPage<SuppliesRequirement> {
         >
             <ol>
                 {supplies.map(({ name, count, remark }) => (
-                    <li title={remark}>
-                        {name}{' '}
-                        <span className="badge badge-danger">{count}个</span>
+                    <li key={name} title={remark}>
+                        {name} <Badge bg="danger">{count}个</Badge>
                     </li>
                 ))}
             </ol>

@@ -1,10 +1,9 @@
 import { component, observer } from 'web-cell';
-import { Badge, Card, CardTitle } from 'boot-cell';
+import { Badge, BGIcon, Card, CardTitle } from 'boot-cell';
 
 import { CardsPage } from '../../component/CardsPage';
 import { AuditBar } from '../../component/AuditBar';
-import { BGIcon } from '../../component/BGIcon';
-import { Clinic, clinic } from '../../model';
+import { clinic, Clinic } from '../../model';
 import { getIsLive } from './time';
 
 @component({ tagName: 'clinic-list' })
