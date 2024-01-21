@@ -1,18 +1,14 @@
-import { component, createCell } from 'web-cell';
-import { observer } from 'mobx-web-cell';
+import { component, observer } from 'web-cell';
+import { Badge, Card, CardTitle } from 'boot-cell';
 
-import { Card, CardFooter } from 'boot-cell/source/Content/Card';
-
-import { CardsPage, AuditBar } from '../../component';
-import { clinic, Clinic } from '../../model';
+import { CardsPage } from '../../component/CardsPage';
+import { AuditBar } from '../../component/AuditBar';
+import { BGIcon } from '../../component/BGIcon';
+import { Clinic, clinic } from '../../model';
 import { getIsLive } from './time';
-import './index.css'
 
+@component({ tagName: 'clinic-list' })
 @observer
-@component({
-    tagName: 'clinic-list',
-    renderTarget: 'children'
-})
 export class ClinicList extends CardsPage<Clinic> {
     scope = 'clinic';
     model = clinic;
@@ -28,37 +24,42 @@ export class ClinicList extends CardsPage<Clinic> {
         ...rest
     }: Clinic) => (
         <Card
-                className="mx-auto mb-4 mx-sm-1"
-                style={{ minWidth: '20rem', maxWidth: '20rem' }}
-                title={
-                    url ? (
-                        <a target="_blank" href={url}>
-                            {name}
-                        </a>
-                    ) : (
-                        name
-                    )
-                }
-            >
-                {getIsLive(startTime, endTime) && <div className="clinic-card__live-label">正在接诊</div>}
-                <p>
-                    每日接诊起止时间：{startTime} ~ {endTime}
-                </p>
-                {contacts[0] && (
-                    <ol className="list-unstyled">
-                        {contacts.map(({ name, phone }) => (
-                            <li>
-                                <a href={'tel:' + phone}>
-                                    <i className="fa fa-phone d-inline-block bg-primary text-white p-1 rounded" />{' '}
-                                    {name}：{phone}
-                                </a>
-                            </li>
-                        ))}
-                    </ol>
+            className="mx-auto mb-4 mx-sm-1"
+            style={{ minWidth: '20rem', maxWidth: '20rem' }}
+            body
+        >
+            <CardTitle>
+                {url ? (
+                    <a target="_blank" href={url}>
+                        {name}
+                    </a>
+                ) : (
+                    name
                 )}
-                {remark && <p className="text-muted">{remark}</p>}
+            </CardTitle>
 
-                <AuditBar scope="clinic" model={clinic} {...rest} />
-            </Card>
+            {getIsLive(startTime, endTime) && (
+                <Badge className="small" bg="info">
+                    正在接诊
+                </Badge>
+            )}
+            <p>
+                每日接诊起止时间：{startTime} ~ {endTime}
+            </p>
+            {contacts[0] && (
+                <ol className="list-unstyled">
+                    {contacts.map(({ name, phone }) => (
+                        <li key={name}>
+                            <a href={'tel:' + phone}>
+                                <BGIcon name="phone" /> {name}：{phone}
+                            </a>
+                        </li>
+                    ))}
+                </ol>
+            )}
+            {remark && <p className="text-muted">{remark}</p>}
+
+            <AuditBar scope="clinic" model={clinic} {...rest} />
+        </Card>
     );
 }

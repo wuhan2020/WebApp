@@ -1,9 +1,9 @@
-import { component, createCell, Fragment } from 'web-cell';
-import { observer } from 'mobx-web-cell';
-import { Card, CardFooter } from 'boot-cell/source/Content/Card';
-import { BGIcon } from 'boot-cell/source/Reminder/FAIcon';
+import { component, observer } from 'web-cell';
+import { Badge, Card, CardBody, CardFooter, CardTitle } from 'boot-cell';
+import { BGIcon } from '../../component/BGIcon';
 
-import { AuditBar, CardsPage } from '../../component';
+import { AuditBar } from '../../component/AuditBar';
+import { CardsPage } from '../../component/CardsPage';
 import { logistics, Logistics, ServiceArea } from '../../model';
 import { Contact } from '../../service';
 
@@ -13,11 +13,8 @@ const DIREACTION = {
     both: '寄入寄出'
 };
 
+@component({ tagName: 'logistics-page' })
 @observer
-@component({
-    tagName: 'logistics-page',
-    renderTarget: 'children'
-})
 export class LogisticsPage extends CardsPage<Logistics> {
     scope = 'logistics';
     model = logistics;
@@ -34,21 +31,24 @@ export class LogisticsPage extends CardsPage<Logistics> {
         <Card
             className="mx-auto mb-4 mx-sm-1"
             style={{ minWidth: '20rem', maxWidth: '20rem' }}
-            title={
-                url ? (
-                    <a target="_blank" href={url}>
-                        {name}
-                    </a>
-                ) : (
-                    name
-                )
-            }
         >
-            {serviceArea.map(this.renderServiceArea)}
+            <CardBody>
+                <CardTitle>
+                    {url ? (
+                        <a target="_blank" href={url}>
+                            {name}
+                        </a>
+                    ) : (
+                        name
+                    )}
+                </CardTitle>
 
-            {contacts[0] && contacts.map(this.renderContact)}
+                {serviceArea.map(this.renderServiceArea)}
 
-            <p className="text-muted">{remark}</p>
+                {contacts?.map(this.renderContact)}
+
+                <p className="text-muted">{remark}</p>
+            </CardBody>
             <CardFooter>
                 <AuditBar scope="logistics" model={logistics} {...rest} />
             </CardFooter>
@@ -56,21 +56,17 @@ export class LogisticsPage extends CardsPage<Logistics> {
     );
 
     renderServiceArea = ({ city, direction, personal }: ServiceArea) => (
-        <>
-            <p className="mb-1">
-                <strong>地区：</strong>
-                {city}
-            </p>
-            <p className="mb-1">
-                <strong>方向：</strong>
-                {DIREACTION[direction]}
-            </p>
-            {personal ? null : (
-                <p className="mb-1">
-                    <span className="badge badge-danger">不接受个人捐赠</span>
-                </p>
+        <dl>
+            <dt>地区：</dt>
+            <dd>{city}</dd>
+            <dt>方向：</dt>
+            <dd>{DIREACTION[direction]}</dd>
+            {!personal && (
+                <dd>
+                    <Badge bg="danger">不接受个人捐赠</Badge>
+                </dd>
             )}
-        </>
+        </dl>
     );
 
     renderContact = ({ name, phone }: Contact) => (
@@ -79,8 +75,7 @@ export class LogisticsPage extends CardsPage<Logistics> {
                 className="text-center text-decoration-none"
                 href={'tel:' + phone}
             >
-                <BGIcon type="square" name="phone" color="primary" />
-                {` ${name} ${phone}`}
+                <BGIcon name="phone" /> {name} {phone}
             </a>
         </p>
     );

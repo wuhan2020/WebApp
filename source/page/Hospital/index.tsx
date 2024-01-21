@@ -55,7 +55,7 @@ export class HospitalPage extends CardsPage<SuppliesRequirement> {
 
                 {contacts[0] && (
                     <DropdownButton
-                        className="d-inline-block ml-3"
+                        className="d-inline-block ms-3"
                         variant="primary"
                         // alignType="right"
                         caption="联系方式"

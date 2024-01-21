@@ -1,17 +1,19 @@
-import { component, createCell } from 'web-cell';
-import { observer } from 'mobx-web-cell';
+import { component, observer } from 'web-cell';
+import {
+    Card,
+    CardBody,
+    CardFooter,
+    CardTitle,
+    DropdownButton,
+    DropdownItem
+} from 'boot-cell';
 
-import { Card, CardFooter } from 'boot-cell/source/Content/Card';
-import { DropMenu, DropMenuItem } from 'boot-cell/source/Navigator/DropMenu';
-
-import { CardsPage, AuditBar } from '../../component';
+import { CardsPage } from '../../component/CardsPage';
+import { AuditBar } from '../../component/AuditBar';
 import { donationRecipient, BankAccount, DonationRecipient } from '../../model';
 
+@component({ tagName: 'donation-page' })
 @observer
-@component({
-    tagName: 'donation-page',
-    renderTarget: 'children'
-})
 export class DonationPage extends CardsPage<DonationRecipient> {
     scope = 'donation';
     model = donationRecipient;
@@ -19,35 +21,35 @@ export class DonationPage extends CardsPage<DonationRecipient> {
 
     renderAccount = ({ name, number, bank }: BankAccount) => (
         <li>
-            <ul className="list-unstyled mb-2">
-                <li>
-                    户名
+            <dl className="mb-2">
+                <dt>户名</dt>
+                <dd>
                     <code
-                        className="ml-1"
+                        className="ms-1"
                         onClick={() => this.clip2board(name)}
                     >
                         {name}
                     </code>
-                </li>
-                <li>
-                    账号
+                </dd>
+                <dt>账号</dt>
+                <dd>
                     <code
-                        className="ml-1"
+                        className="ms-1"
                         onClick={() => this.clip2board(number)}
                     >
                         {number}
                     </code>
-                </li>
-                <li>
-                    开户行
+                </dd>
+                <dt>开户行</dt>
+                <dd>
                     <code
-                        className="ml-1"
+                        className="ms-1"
                         onClick={() => this.clip2board(bank)}
                     >
                         {bank}
                     </code>
-                </li>
-            </ul>
+                </dd>
+            </dl>
         </li>
     );
 
@@ -62,38 +64,41 @@ export class DonationPage extends CardsPage<DonationRecipient> {
         <Card
             className="mx-auto mb-4 mx-sm-1"
             style={{ minWidth: '20rem', maxWidth: '20rem' }}
-            title={
-                url ? (
-                    <a target="_blank" href={url}>
-                        {name}
-                    </a>
-                ) : (
-                    name
-                )
-            }
         >
-            <ol className="list-unstyled">
-                {accounts.map(this.renderAccount)}
-            </ol>
+            <CardBody>
+                <CardTitle>
+                    {url ? (
+                        <a target="_blank" href={url}>
+                            {name}
+                        </a>
+                    ) : (
+                        name
+                    )}
+                </CardTitle>
 
-            {remark && <p className="text-muted">{remark}</p>}
+                <ol className="list-unstyled">
+                    {accounts.map(this.renderAccount)}
+                </ol>
 
-            <div className="text-center">
-                {contacts[0] && (
-                    <DropMenu
-                        className="d-inline-block ml-3"
-                        buttonColor="primary"
-                        alignType="right"
-                        caption="联系方式"
-                    >
-                        {contacts.map(({ name, phone }) => (
-                            <DropMenuItem href={'tel:' + phone}>
-                                {name}：{phone}
-                            </DropMenuItem>
-                        ))}
-                    </DropMenu>
-                )}
-            </div>
+                {remark && <p className="text-muted">{remark}</p>}
+
+                <div className="text-center">
+                    {contacts[0] && (
+                        <DropdownButton
+                            className="d-inline-block ms-3"
+                            variant="primary"
+                            // alignType="right"
+                            caption="联系方式"
+                        >
+                            {contacts.map(({ name, phone }) => (
+                                <DropdownItem key={name} href={'tel:' + phone}>
+                                    {name}：{phone}
+                                </DropdownItem>
+                            ))}
+                        </DropdownButton>
+                    )}
+                </div>
+            </CardBody>
             <CardFooter>
                 <AuditBar
                     scope="donation"
