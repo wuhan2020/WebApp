@@ -34,14 +34,15 @@ export class LogisticsPage extends CardsPage<Logistics> {
         remark,
         ...rest
     }: Logistics) => (
-        <Card
-            className="mx-auto mb-4 mx-sm-1"
-            style={{ minWidth: '20rem', maxWidth: '20rem' }}
-        >
+        <Card>
             <CardBody>
                 <CardTitle>
                     {url ? (
-                        <a target="_blank" href={url}>
+                        <a
+                            className="text-decoration-none"
+                            target="_blank"
+                            href={url}
+                        >
                             {name}
                         </a>
                     ) : (

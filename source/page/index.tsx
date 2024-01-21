@@ -36,7 +36,6 @@ import Disclaimer from '../../Disclaimer.md';
 //         { paths: [RouteRoot.Hotel + '/edit'], component: HotelEdit },
 //         { paths: [RouteRoot.Factory + '/edit'], component: FactoryEdit },
 //         { paths: [RouteRoot.Donation + '/edit'], component: DonationEdit },
-//         { paths: [RouteRoot.Clinic + '/edit'], component: ClinicEdit },
 //         {
 //             paths: [RouteRoot.Maps],
 //             component: async () => (await import('./Map')).MapsPage
@@ -113,6 +112,7 @@ export const PageFrame: FC = () => (
             <Route path={RouteRoot.Factory} component={FactoryPage} />
             <Route path={RouteRoot.Donation} component={DonationPage} />
             <Route path={RouteRoot.Clinic} component={ClinicList} />
+            <Route path={RouteRoot.Clinic + '/edit'} component={ClinicEdit} />
             <Route path={RouteRoot.Community} component={CommunityPage} />
             <Route
                 path="disclaimer"

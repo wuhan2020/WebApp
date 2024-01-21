@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   boot-cell:
-    specifier: ^2.0.0-beta.8
-    version: 2.0.0-beta.8(typescript@5.3.3)
+    specifier: ^2.0.0-beta.9
+    version: 2.0.0-beta.9(typescript@5.3.3)
   browser-unhandled-rejection:
     specifier: ^1.0.2
     version: 1.0.2
@@ -3238,8 +3238,8 @@ packages:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
     dev: true
 
-  /boot-cell@2.0.0-beta.8(typescript@5.3.3):
-    resolution: {integrity: sha512-qSxE0+N3XGjzYIXrO3j1nPvuVmgfApONcRD9hTqQzjn36W/QBgW4eYdqnOcdUqu1vMs8E6FpS2SXEk3thbQS3Q==}
+  /boot-cell@2.0.0-beta.9(typescript@5.3.3):
+    resolution: {integrity: sha512-RLxcNLyH0lH2J59ibOHJeE4NMye/qeos4TlMyD8o84efzgUQ7ZsnGj0aNAp3uYEn8uWLtmbG3kSjqSKhJvTSxg==}
     peerDependencies:
       '@fortawesome/fontawesome-free': ^6
       '@nuintun/qrcode': ^3

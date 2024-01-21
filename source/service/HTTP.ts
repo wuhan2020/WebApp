@@ -2,8 +2,8 @@ import { HTTPClient } from 'koajax';
 
 export const baseUri = {
     local: 'http://localhost:3000',
-    remote: 'https://vuqjf9paihid.leanapp.cn',
-    test: 'https://vsw505fxbitp.leanapp.cn/'
+    remote: 'https://wuhan2020-data.kaiyuanshe.cn/',
+    test: 'https://wuhan2020-data-test.kaiyuanshe.cn/'
 };
 
 export const service = new HTTPClient({

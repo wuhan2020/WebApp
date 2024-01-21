@@ -1,7 +1,9 @@
 import { component, observer } from 'web-cell';
 import {
     Card,
+    CardBody,
     CardFooter,
+    CardTitle,
     Button,
     DropdownButton,
     DropdownItem,
@@ -30,44 +32,44 @@ export class HospitalPage extends CardsPage<SuppliesRequirement> {
         contacts,
         ...rest
     }: SuppliesRequirement) => (
-        <Card
-            className="mx-auto mb-4 mx-sm-1"
-            style={{ minWidth: '20rem', maxWidth: '20rem' }}
-            title={hospital}
-        >
-            <ol>
-                {supplies.map(({ name, count, remark }) => (
-                    <li key={name} title={remark}>
-                        {name} <Badge bg="danger">{count}个</Badge>
-                    </li>
-                ))}
-            </ol>
-
-            <div className="text-center">
-                <Button
-                    variant="primary"
-                    onClick={() =>
-                        this.clip2board(province + city + district + address)
-                    }
-                >
-                    邮寄地址
-                </Button>
-
-                {contacts[0] && (
-                    <DropdownButton
-                        className="d-inline-block ms-3"
+        <Card>
+            <CardBody>
+                <CardTitle>{hospital}</CardTitle>
+                <ol>
+                    {supplies.map(({ name, count, remark }) => (
+                        <li key={name} title={remark}>
+                            {name} <Badge bg="danger">{count}个</Badge>
+                        </li>
+                    ))}
+                </ol>
+                <div className="text-center">
+                    <Button
                         variant="primary"
-                        // alignType="right"
-                        caption="联系方式"
+                        onClick={() =>
+                            this.clip2board(
+                                province + city + district + address
+                            )
+                        }
                     >
-                        {contacts.map(({ name, phone }) => (
-                            <DropdownItem href={'tel:' + phone}>
-                                {name}：{phone}
-                            </DropdownItem>
-                        ))}
-                    </DropdownButton>
-                )}
-            </div>
+                        邮寄地址
+                    </Button>
+
+                    {contacts[0] && (
+                        <DropdownButton
+                            className="d-inline-block ms-3"
+                            variant="primary"
+                            // alignType="right"
+                            caption="联系方式"
+                        >
+                            {contacts.map(({ name, phone }) => (
+                                <DropdownItem href={'tel:' + phone}>
+                                    {name}：{phone}
+                                </DropdownItem>
+                            ))}
+                        </DropdownButton>
+                    )}
+                </div>
+            </CardBody>
             <CardFooter>
                 <AuditBar
                     scope="hospital"

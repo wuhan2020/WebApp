@@ -1,62 +1,58 @@
-import { WebCellProps, component, mixin, watch, createCell } from 'web-cell';
-import { FormField } from 'boot-cell/source/Form/FormField';
-import { InputGroup } from 'boot-cell/source/Form/InputGroup';
-import { Field } from 'boot-cell/source/Form/Field';
-import { Button } from 'boot-cell/source/Form/Button';
+import { WebCell, attribute, component, observer } from 'web-cell';
+import { observable } from 'mobx';
+import {
+    FormField,
+    InputGroup,
+    FormGroup,
+    FormLabel,
+    FormControl,
+    Button,
+} from 'boot-cell';
 
-import { Clinic, history, clinic } from '../../model';
+import { Clinic, clinic } from '../../model';
 import { RouteRoot } from '../data/menu';
-import { SessionBox, ContactField } from '../../component';
+import { ContactField } from '../../component/ContactField';
+import { SessionBox } from '../../component/SessionBox';
 
-export interface ClinicEditProps extends WebCellProps {
+export interface ClinicEditProps {
     dataId?: string;
 }
 
-@component({
-    tagName: 'clinic-edit',
-    renderTarget: 'children'
-})
-export class ClinicEdit extends mixin<ClinicEditProps, Clinic>() {
-    @watch
-    dataId = '';
+export interface ClinicEdit extends WebCell<ClinicEditProps> {}
 
-    state = {
+@component({ tagName: 'clinic-edit' })
+@observer
+export class ClinicEdit
+    extends HTMLElement
+    implements WebCell<ClinicEditProps>
+{
+    @attribute
+    @observable
+    accessor dataId = '';
+
+    @observable
+    accessor state = {
         name: '',
         url: '',
         startTime: '09:00',
         endTime: '18:00',
         contacts: [{ name: '', phone: '' }],
         remark: ''
-    };
+    } as Clinic;
 
     async connectedCallback() {
-        super.connectedCallback();
-
         if (!this.dataId) return;
 
-        const {
-            name,
-            url,
-            contacts,
-            startTime,
-            endTime,
-            remark
-        } = await clinic.getOne(this.dataId);
+        const { name, url, contacts, startTime, endTime, remark } =
+            await clinic.getOne(this.dataId);
 
-        await this.setState({
-            name,
-            url,
-            contacts,
-            startTime,
-            endTime,
-            remark
-        });
+        this.state = { name, url, contacts, startTime, endTime, remark };
     }
 
     changeText = ({ target }: Event) => {
         const { name, value } = target as HTMLInputElement;
 
-        this.state[name] = value;
+        this.state = { ...this.state, [name]: value };
     };
 
     handleSubmit = async (event: Event) => {
@@ -76,25 +72,27 @@ export class ClinicEdit extends mixin<ClinicEditProps, Clinic>() {
 
         self.alert('提交成功，工作人员审核后即可查看');
 
-        history.push(RouteRoot.Clinic);
+        location.hash = RouteRoot.Clinic;
     };
 
-    render(
-        { dataId }: ClinicEditProps,
-        { name, url, startTime, endTime, contacts, remark }: Clinic
-    ) {
+    render() {
+        const { dataId } = this,
+            { name, url, startTime, endTime, contacts, remark } = this.state;
+
         return (
             <SessionBox>
                 <h2>义诊服务{dataId ? '发布' : '修改'}</h2>
-
+                {/* @ts-ignore */}
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
                     <FormField
+                        as="input"
                         name="name"
                         required
                         defaultValue={name}
                         label="机构/个人名"
                     />
                     <FormField
+                        as="input"
                         type="url"
                         name="url"
                         required
@@ -103,16 +101,19 @@ export class ClinicEdit extends mixin<ClinicEditProps, Clinic>() {
                         placeholder="官网 或 信息来源"
                     />
 
-                    <FormField label="每日接诊起止时间">
+                    <FormGroup>
+                        <FormLabel>每日接诊起止时间</FormLabel>
                         <InputGroup>
-                            <Field
+                            <FormControl
+                                as="input"
                                 type="time"
                                 name="startTime"
                                 required
                                 defaultValue={startTime}
                                 placeholder="开始"
                             />
-                            <Field
+                            <FormControl
+                                as="input"
                                 type="time"
                                 name="endTime"
                                 required
@@ -120,7 +121,7 @@ export class ClinicEdit extends mixin<ClinicEditProps, Clinic>() {
                                 placeholder="结束"
                             />
                         </InputGroup>
-                    </FormField>
+                    </FormGroup>
 
                     <ContactField
                         list={contacts}
@@ -129,25 +130,23 @@ export class ClinicEdit extends mixin<ClinicEditProps, Clinic>() {
                         }
                     />
                     <FormField
-                        is="textarea"
+                        as="textarea"
                         name="remark"
                         defaultValue={remark}
                         label="备注"
                     />
-                    <div className="form-group mt-3">
+                    <div className="form-group mt-3 d-flex flex-column flex-sm-row">
                         <Button
                             type="submit"
-                            color="primary"
-                            block
+                            variant="primary"
                             disabled={clinic.loading}
                         >
                             提交
                         </Button>
                         <Button
                             type="reset"
-                            color="danger"
-                            block
-                            onClick={() => history.push(RouteRoot.Clinic)}
+                            variant="danger"
+                            onClick={() => (location.hash = RouteRoot.Clinic)}
                         >
                             取消
                         </Button>

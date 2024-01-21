@@ -13,7 +13,7 @@
         "url": "https://github.com/EasyWebApp/wuhan2020/issues"
     },
     "dependencies": {
-        "boot-cell": "^2.0.0-beta.8",
+        "boot-cell": "^2.0.0-beta.9",
         "browser-unhandled-rejection": "^1.0.2",
         "cell-router": "^3.0.0-rc.5",
         "classnames": "^2.5.1",
