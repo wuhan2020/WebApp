@@ -31,18 +31,11 @@ import { CommunityPage } from './Community';
 import Disclaimer from '../../Disclaimer.md';
 
 // const routes = [
-//         { paths: [''], component: HomePage },
-//         { paths: [RouteRoot.Hospital], component: HospitalPage },
 //         { paths: [RouteRoot.Hospital + '/edit'], component: HospitalEdit },
-//         { paths: [RouteRoot.Logistics], component: LogisticsPage },
 //         { paths: [RouteRoot.Logistics + '/edit'], component: LogisticsEdit },
-//         { paths: [RouteRoot.Hotel], component: HotelPage },
 //         { paths: [RouteRoot.Hotel + '/edit'], component: HotelEdit },
-//         { paths: [RouteRoot.Factory], component: FactoryPage },
 //         { paths: [RouteRoot.Factory + '/edit'], component: FactoryEdit },
-//         { paths: [RouteRoot.Donation], component: DonationPage },
 //         { paths: [RouteRoot.Donation + '/edit'], component: DonationEdit },
-//         { paths: [RouteRoot.Clinic], component: ClinicList },
 //         { paths: [RouteRoot.Clinic + '/edit'], component: ClinicEdit },
 //         {
 //             paths: [RouteRoot.Maps],
@@ -51,8 +44,7 @@ import Disclaimer from '../../Disclaimer.md';
 //         {
 //             paths: [RouteRoot.Admin, RouteRoot.Admin + '/user'],
 //             component: UserAdmin
-//         },
-//         { paths: [RouteRoot.Community], component: CommunityPage }
+//         }
 //     ],
 const userMenu = [
     {
@@ -86,7 +78,7 @@ export const PageFrame: FC = () => (
             {menu.map(({ href, title }) => (
                 <NavLink
                     className="m-3 my-md-0 mx-md-3"
-                    href={`#${href}`}
+                    href={href.startsWith('http') ? href : `#${href}`}
                     active={
                         location.hash.slice(1) === href ||
                         (!!href && location.hash.slice(1).startsWith(href))
@@ -115,9 +107,22 @@ export const PageFrame: FC = () => (
 
         <Container className="flex-fill overflow-auto scrollbar-none">
             <Route path="" component={HomePage} />
+            <Route path={RouteRoot.Hospital} component={HospitalPage} />
+            <Route path={RouteRoot.Logistics} component={LogisticsPage} />
+            <Route path={RouteRoot.Hotel} component={HotelPage} />
+            <Route path={RouteRoot.Factory} component={FactoryPage} />
+            <Route path={RouteRoot.Donation} component={DonationPage} />
+            <Route path={RouteRoot.Clinic} component={ClinicList} />
+            <Route path={RouteRoot.Community} component={CommunityPage} />
             <Route
                 path="disclaimer"
-                component={props => <div {...props} innerHTML={Disclaimer} />}
+                component={({ className = '', ...props }) => (
+                    <article
+                        className={`py-5 ${className}`}
+                        {...props}
+                        innerHTML={Disclaimer}
+                    />
+                )}
             />
         </Container>
 

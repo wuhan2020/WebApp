@@ -44,7 +44,7 @@ export async function getSubDistricts(keywords = '中国') {
     return body!.districts[0].districts;
 }
 
-type GeoCode = Record<
+export type GeoCode = Record<
     'location' | 'province' | 'city' | 'district' | 'street' | 'number',
     string
 >;

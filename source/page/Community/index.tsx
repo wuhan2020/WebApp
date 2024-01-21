@@ -1,39 +1,36 @@
-import { component, mixin, createCell } from 'web-cell';
-import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
-import { GithubRepository } from 'github-web-widget/source/Repository';
+import { attribute, component, observer } from 'web-cell';
+import { Image, SpinnerBox } from 'boot-cell';
+import { GithubRepository } from 'github-web-widget';
+import { observable } from 'mobx';
 
 import { Contributor, repository } from '../../service';
 
-interface CommunityPageState {
-    loading?: boolean;
-    list?: Contributor[];
-}
+@component({ tagName: 'community-page' })
+@observer
+export class CommunityPage extends HTMLElement {
+    @attribute
+    @observable
+    accessor loading = false;
 
-@component({
-    tagName: 'community-page',
-    renderTarget: 'children'
-})
-export class CommunityPage extends mixin<{}, CommunityPageState>() {
-    state = {
-        loading: false,
-        list: []
-    };
+    @observable
+    accessor list: Contributor[] = [];
 
     async connectedCallback() {
-        this.setState({ loading: true });
+        this.loading = true;
 
-        this.setState({
-            list: await repository.getContributors(),
-            loading: false
-        });
+        this.list = await repository.getContributors();
+
+        this.loading = false;
     }
 
-    render(_, { loading, list }: CommunityPageState) {
-        return (
-            <SpinnerBox cover={loading}>
-                <h2>开放社区</h2>
+    render() {
+        const { loading, list } = this;
 
-                <h3 className="text-center m-3">开源代码</h3>
+        return (
+            <SpinnerBox className="py-5" cover={loading}>
+                <h1>开放社区</h1>
+
+                <h2 className="text-center m-3">开源代码</h2>
 
                 <GithubRepository
                     className="d-block m-auto"
@@ -41,7 +38,7 @@ export class CommunityPage extends mixin<{}, CommunityPageState>() {
                     owner="wuhan2020"
                     repository="WebApp"
                 />
-                <h3 className="text-center m-3">开发志愿者</h3>
+                <h2 className="text-center m-3">开发志愿者</h2>
 
                 <ol className="list-inline text-center">
                     {list.map(({ html_url, avatar_url, login }) => (
@@ -51,12 +48,9 @@ export class CommunityPage extends mixin<{}, CommunityPageState>() {
                                 target="_blank"
                                 href={html_url}
                             >
-                                <img
-                                    className="img-thumbnail"
-                                    style={{
-                                        width: '100px',
-                                        height: '100px'
-                                    }}
+                                <Image
+                                    thumbnail
+                                    style={{ width: '100px', height: '100px' }}
                                     src={avatar_url}
                                 />
                                 {login}

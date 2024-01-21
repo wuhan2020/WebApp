@@ -1,16 +1,16 @@
-import * as clipboard from 'clipboard-polyfill';
-import { mixin, VNodeChildElement, createCell, Fragment } from 'web-cell';
-
-import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
-import { Button } from 'boot-cell/source/Form/Button';
-import { ToggleField } from 'boot-cell/source/Form/ToggleField';
-import 'boot-cell/source/Content/EdgeDetector';
-import { EdgeEvent } from 'boot-cell/source/Content/EdgeDetector';
+import { JsxChildren } from 'dom-renderer';
+import {
+    SpinnerBox,
+    Button,
+    FormCheck,
+    ScrollBoundary,
+    TouchHandler
+} from 'boot-cell';
 
 import { DistrictEvent, DistrictFilter, District } from './DistrictFilter';
 import { VerifiableModel, session } from '../model';
 
-export abstract class CardsPage<T> extends mixin() {
+export abstract class CardsPage<T> extends HTMLElement {
     abstract scope: string;
     abstract model: VerifiableModel;
     abstract name: string;
@@ -20,7 +20,7 @@ export abstract class CardsPage<T> extends mixin() {
         verified: !session.hasRole('Admin')
     };
 
-    loadMore = ({ detail }: EdgeEvent) => {
+    loadMore: TouchHandler = detail => {
         if (detail === 'bottom') return this.model.getNextPage(this.filter);
     };
 
@@ -39,12 +39,12 @@ export abstract class CardsPage<T> extends mixin() {
     };
 
     async clip2board(raw: string) {
-        await clipboard.writeText(raw);
+        await navigator.clipboard.writeText(raw);
 
         self.alert('已复制到剪贴板');
     }
 
-    abstract renderItem(data: T): VNodeChildElement;
+    abstract renderItem(data: T): JsxChildren;
 
     render() {
         const { name: title, scope, districtFilter } = this,
@@ -56,26 +56,22 @@ export abstract class CardsPage<T> extends mixin() {
                 <header className="d-flex justify-content-between align-items-center my-3">
                     <h2 className="m-0">{title}</h2>
                     <span>
-                        <Button color="warning" href={scope + '/edit'}>
+                        <Button variant="warning" href={scope + '/edit'}>
                             发布
                         </Button>
                     </span>
                 </header>
                 <div className="d-flex justify-content-between">
-                    {!districtFilter ? null : (
+                    {districtFilter && (
                         <DistrictFilter onChange={this.changeDistrict} />
                     )}
-                    {!admin ? null : (
-                        <ToggleField
-                            type="checkbox"
-                            switch
-                            onClick={this.changeVerified}
-                        >
+                    {admin && (
+                        <FormCheck type="switch" onClick={this.changeVerified}>
                             审核
-                        </ToggleField>
+                        </FormCheck>
                     )}
                 </div>
-                <edge-detector onTouchEdge={this.loadMore}>
+                <ScrollBoundary onTouch={this.loadMore}>
                     <SpinnerBox
                         cover={loading}
                         className="card-deck justify-content-around"
@@ -85,7 +81,7 @@ export abstract class CardsPage<T> extends mixin() {
                     <p slot="bottom" className="text-center mt-2">
                         {noMore ? '没有更多数据了' : '加载更多...'}
                     </p>
-                </edge-detector>
+                </ScrollBoundary>
             </>
         );
     }

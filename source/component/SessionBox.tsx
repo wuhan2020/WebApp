@@ -1,26 +1,25 @@
-import { component, mixin, watch, createCell } from 'web-cell';
-import { observer } from 'mobx-web-cell';
-import { InputGroup } from 'boot-cell/source/Form/InputGroup';
-import { Field } from 'boot-cell/source/Form/Field';
-import { Button } from 'boot-cell/source/Form/Button';
+import { WebCell, attribute, component, observer } from 'web-cell';
+import { observable } from 'mobx';
+import { InputGroup, FormControl, Button } from 'boot-cell';
 
 import { User } from '../service';
 import { session } from '../model';
 
-@observer
+export interface SessionBox extends WebCell {}
+
 @component({
     tagName: 'session-box',
-    renderTarget: 'children'
+    mode: 'open'
 })
-export class SessionBox extends mixin() {
-    @watch
-    countDown = 0;
+@observer
+export class SessionBox extends HTMLElement implements WebCell {
+    @attribute
+    @observable
+    accessor countDown = 0;
 
     emitSignIn = (user: User) => this.emit('signin', user, {});
 
     connectedCallback() {
-        super.connectedCallback();
-
         if (session.user) this.emitSignIn(session.user);
         else session.getProfile().then(this.emitSignIn);
     }
@@ -56,13 +55,12 @@ export class SessionBox extends mixin() {
         else this.classList.add(...Classes);
     }
 
-    render() {
+    renderForm() {
         const { countDown } = this;
 
-        return session.user ? (
-            this.defaultSlot
-        ) : (
+        return (
             <form
+                // @ts-ignore
                 className="mx-auto my-3 p-3 border rounded"
                 style={{ maxWidth: '20rem' }}
                 onSubmit={this.handleSignIn}
@@ -70,25 +68,24 @@ export class SessionBox extends mixin() {
                 <h2 className="text-center mb-3">登录</h2>
 
                 <InputGroup size="lg" className="mb-3">
-                    <Field
+                    <FormControl
                         type="tel"
                         name="phone"
-                        maxLength="11"
+                        maxLength={11}
                         required
                         placeholder="手机号"
                     />
                 </InputGroup>
 
                 <InputGroup size="lg" className="mb-3">
-                    <Field
+                    <FormControl
                         name="code"
                         required
                         placeholder="短信验证码"
                         autocomplete="off"
                     />
                     <Button
-                        outline
-                        color="secondary"
+                        variant="outline-secondary"
                         onClick={this.handleSMSCode}
                         disabled={!!countDown}
                     >
@@ -96,10 +93,27 @@ export class SessionBox extends mixin() {
                     </Button>
                 </InputGroup>
 
-                <Button type="submit" block color="primary" size="lg">
+                <Button
+                    type="submit"
+                    className="d-block w-100"
+                    variant="primary"
+                    size="lg"
+                >
                     登录
                 </Button>
             </form>
+        );
+    }
+
+    render() {
+        return (
+            <>
+                <link
+                    rel="stylesheet"
+                    href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+                />
+                {session.user ? <slot /> : this.renderForm()}
+            </>
         );
     }
 }

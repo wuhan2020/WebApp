@@ -1,48 +1,44 @@
-import { createCell, Fragment } from 'web-cell';
+import { FC, observer } from 'web-cell';
 import { diffTime } from 'web-utility';
-import { Button } from 'boot-cell/source/Form/Button';
+import { Button } from 'boot-cell';
 
 import { TimeUnitName } from '../utility';
 import { DataItem, Organization } from '../service';
 import { session, BaseModel, VerifiableModel } from '../model';
 
-interface AuditBarProps extends DataItem, Organization {
+export interface AuditBarProps extends DataItem, Organization {
     scope: string;
     model: BaseModel;
 }
 
-function TimeStamp({
+const TimeStamp: FC<Record<'date' | 'phone' | 'label', string>> = ({
     date,
     phone,
     label
-}: {
-    date: string;
-    phone: string;
-    label: string;
-}) {
+}) => {
     const { distance, unit } = diffTime(date);
 
     return (
-        <small className="d-block text-center text-muted">
+        <time className="d-block small text-center text-muted" dateTime={date}>
             <a href={'tel:' + phone}>{phone}</a> {label}于 {Math.abs(distance)}{' '}
             {TimeUnitName[unit]}前
-        </small>
+        </time>
     );
-}
+};
 
-export function AuditBar({
-    createdAt,
-    updatedAt,
-    creator,
-    verified,
-    verifier,
-    objectId,
-    scope,
-    model
-}: AuditBarProps) {
+export const AuditBar: FC<AuditBarProps> = observer(props => {
+    const {
+        createdAt,
+        updatedAt,
+        creator,
+        verified,
+        verifier,
+        objectId,
+        scope,
+        model
+    } = props;
     const isAdmin = session.hasRole('Admin');
-    const authorized =
-        session.user?.objectId === creator.objectId || isAdmin || null;
+    const authorized = session.user?.objectId === creator.objectId || isAdmin;
 
     return (
         <>
@@ -51,7 +47,7 @@ export function AuditBar({
                 date={createdAt}
                 phone={creator.mobilePhoneNumber}
             />
-            {!verified ? null : (
+            {verified && (
                 <TimeStamp
                     label="审核"
                     date={updatedAt}
@@ -61,15 +57,15 @@ export function AuditBar({
             {authorized && (
                 <div className="btn-group d-flex mt-2">
                     <Button
-                        color="warning"
+                        variant="warning"
                         size="sm"
                         href={scope + '/edit?dataId=' + objectId}
                     >
                         编辑
                     </Button>
-                    {!isAdmin || verified ? null : (
+                    {isAdmin && !verified && (
                         <Button
-                            color="success"
+                            variant="success"
                             size="sm"
                             onClick={() =>
                                 (model as VerifiableModel).verify(objectId)
@@ -79,7 +75,7 @@ export function AuditBar({
                         </Button>
                     )}
                     <Button
-                        color="danger"
+                        variant="danger"
                         size="sm"
                         onClick={() => model.delete(objectId)}
                     >
@@ -89,4 +85,4 @@ export function AuditBar({
             )}
         </>
     );
-}
+});
