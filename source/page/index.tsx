@@ -32,10 +32,8 @@ import Disclaimer from '../../Disclaimer.md';
 
 // const routes = [
 //         { paths: [RouteRoot.Hospital + '/edit'], component: HospitalEdit },
-//         { paths: [RouteRoot.Logistics + '/edit'], component: LogisticsEdit },
 //         { paths: [RouteRoot.Hotel + '/edit'], component: HotelEdit },
 //         { paths: [RouteRoot.Factory + '/edit'], component: FactoryEdit },
-//         { paths: [RouteRoot.Donation + '/edit'], component: DonationEdit },
 //         {
 //             paths: [RouteRoot.Maps],
 //             component: async () => (await import('./Map')).MapsPage
@@ -108,9 +106,17 @@ export const PageFrame: FC = () => (
             <Route path="" component={HomePage} />
             <Route path={RouteRoot.Hospital} component={HospitalPage} />
             <Route path={RouteRoot.Logistics} component={LogisticsPage} />
+            <Route
+                path={RouteRoot.Logistics + '/edit'}
+                component={LogisticsEdit}
+            />
             <Route path={RouteRoot.Hotel} component={HotelPage} />
             <Route path={RouteRoot.Factory} component={FactoryPage} />
             <Route path={RouteRoot.Donation} component={DonationPage} />
+            <Route
+                path={RouteRoot.Donation + '/edit'}
+                component={DonationEdit}
+            />
             <Route path={RouteRoot.Clinic} component={ClinicList} />
             <Route path={RouteRoot.Clinic + '/edit'} component={ClinicEdit} />
             <Route path={RouteRoot.Community} component={CommunityPage} />

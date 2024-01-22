@@ -6,7 +6,7 @@ import {
     FormGroup,
     FormLabel,
     InputGroup,
-    Button,
+    Button
 } from 'boot-cell';
 
 import { Contact } from '../service';
@@ -54,7 +54,9 @@ export class ContactField
         this.list = [...list.slice(0, index), ...list.slice(index + 1)];
     }
 
-    render({ list }: ContactFieldProps) {
+    render() {
+        const { list } = this;
+
         return (
             <FormGroup>
                 <FormLabel>联系方式</FormLabel>
