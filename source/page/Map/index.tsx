@@ -1,7 +1,7 @@
-/* eslint-disable no-unused-vars */
-import { component, createCell, mixin } from 'web-cell';
-import { observer } from 'mobx-web-cell';
-import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
+import { attribute, component, observer } from 'web-cell';
+import { observable } from 'mobx';
+import { SpinnerBox } from 'boot-cell';
+import { CustomElement, Hour } from 'web-utility';
 
 import { HierarchicalVirusMap } from './component';
 import {
@@ -13,61 +13,57 @@ import {
     convertProvincesSeries,
     convertCountrySeries
 } from './adapter';
-import { getHistory, getCurrent, getOverall, Province } from '../../service';
+import { getHistory, getCurrent, getOverall } from '../../service';
 import style from './index.module.css';
 
-interface MapPageState {
-    loading?: boolean;
-    virusData?: {
+const resolution = Hour * 24;
+
+@component({ tagName: 'maps-page' })
+@observer
+export default class MapsPage extends HTMLElement implements CustomElement {
+    @attribute
+    @observable
+    accessor loading = true;
+
+    @observable
+    accessor virusData: {
         provincesSeries: Series<ProvinceData>;
         countrySeries: Series<CountryOverviewData>;
         countryData?: CountryData;
     };
-}
 
-const resolution = 3600000 * 24;
-
-@observer
-@component({
-    tagName: 'maps-page',
-    renderTarget: 'children'
-})
-export class MapsPage extends mixin<{}, MapPageState>() {
-    state = { loading: true, virusData: null };
-
-    async connectedCallback() {
+    connectedCallback() {
         this.classList.add(style.box);
-
-        super.connectedCallback();
 
         this.loadMapData();
     }
 
-    loadMapData = async () => {
-        const [rawData, rawCurrentData, overviewData] = await Promise.all<
-            Province[],
-            Province[],
-            {}[]
-        >([getHistory(), getCurrent(), getOverall()]);
+    async loadMapData() {
+        const [rawData, rawCurrentData, overviewData] = await Promise.all([
+            getHistory(),
+            getCurrent(),
+            getOverall()
+        ]);
 
-        const virusData = {
+        this.virusData = {
             provincesSeries: convertProvincesSeries(rawData, resolution, true),
             countrySeries: convertCountrySeries(overviewData, resolution),
             countryData: convertCountry(rawCurrentData)
         };
+        this.loading = false;
+    }
 
-        await this.setState({ loading: false, virusData });
-    };
+    render() {
+        const { loading, virusData } = this;
 
-    render(_, { loading, virusData }: MapPageState) {
         return (
             <SpinnerBox cover={loading}>
-                {virusData ? (
+                {virusData && (
                     <HierarchicalVirusMap
                         data={virusData}
                         resolution={resolution}
                     />
-                ) : null}
+                )}
             </SpinnerBox>
         );
     }

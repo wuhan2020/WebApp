@@ -174,11 +174,10 @@ export class HospitalEdit
                         label="备注"
                         defaultValue={remark}
                     />
-                    <div className="form-group mt-3">
+                    <div className="form-group mt-3 d-flex flex-column">
                         <Button
                             type="submit"
                             variant="primary"
-                            className="d-block"
                             disabled={suppliesRequirement.loading}
                         >
                             提交
@@ -186,7 +185,6 @@ export class HospitalEdit
                         <Button
                             type="reset"
                             variant="danger"
-                            className="d-block"
                             onClick={() => (location.hash = RouteRoot.Hospital)}
                         >
                             取消

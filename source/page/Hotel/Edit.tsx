@@ -159,11 +159,10 @@ export class HotelEdit extends HTMLElement implements WebCell<HotelEditProps> {
                         defaultValue={remark}
                         label="备注"
                     />
-                    <div className="form-group mt-3">
+                    <div className="form-group mt-3 d-flex flex-column">
                         <Button
                             type="submit"
                             variant="primary"
-                            className="d-block"
                             disabled={hotel.loading}
                         >
                             提交
@@ -171,7 +170,6 @@ export class HotelEdit extends HTMLElement implements WebCell<HotelEditProps> {
                         <Button
                             type="reset"
                             variant="danger"
-                            className="d-block"
                             onClick={() => (location.hash = RouteRoot.Hotel)}
                         >
                             取消

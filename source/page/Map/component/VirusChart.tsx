@@ -1,23 +1,6 @@
-/* eslint-disable no-unused-vars */
-/**
- * WebCell 疫情数据折线图可视化组件
- * 本组件使用stack line chart和line chart展现信息
- * @author: shadowingszy
- *
- * 传入props说明:
- * data: 各省市或国家数据。
- * area: 当前选中的国家或省市。
- */
-import {
-    WebCellProps,
-    component,
-    mixin,
-    createCell,
-    watch,
-    attribute,
-    Fragment
-} from 'web-cell';
-import { observer } from 'mobx-web-cell';
+import { WebCell, component, attribute, observer } from 'web-cell';
+import { observable } from 'mobx';
+import { EChartsOption } from 'echarts';
 
 import { CellCharts } from './CellCharts';
 import { isLandscape } from '../utility';
@@ -30,38 +13,49 @@ import {
 } from '../adapter';
 import { area as areaModel } from '../../../model';
 
-interface Props extends WebCellProps {
+export interface VirusChartProps {
+    /**
+     * 各省市或国家数据
+     */
     data: OverallCountryData;
+    /**
+     * 当前选中的国家或省市
+     */
     area: string;
     path: string[];
 }
 
-interface State {
-    echartOptions: any;
-}
+const LINE_WIDTH = 5,
+    SYMOBL_SIZE = 10;
 
-const LINE_WIDTH = 5;
-const SYMOBL_SIZE = 10;
+export interface VirusChart extends WebCell<VirusChartProps> {}
 
+/**
+ * WebCell 疫情数据折线图可视化组件
+ *
+ * 本组件使用 Stack Line chart 和 Line chart 展现信息
+ *
+ * @author shadowingszy
+ */
+@component({ tagName: 'virus-line-charts' })
 @observer
-@component({
-    tagName: 'virus-line-charts',
-    renderTarget: 'children'
-})
-export class VirusChart extends mixin<Props, State>() {
-    @watch
-    data: OverallCountryData = {
+export class VirusChart
+    extends HTMLElement
+    implements WebCell<VirusChartProps>
+{
+    @observable
+    accessor data: OverallCountryData = {
         provincesSeries: {},
         countrySeries: {}
     };
 
     @attribute
-    @watch
-    area: string = '';
+    @observable
+    accessor area = '';
 
     @attribute
-    @watch
-    path: string[] = [];
+    @observable
+    accessor path: string[] = [];
 
     getOrderedTimeData(
         data: CountryData | Series<ProvinceData> | Series<CountryOverviewData>
@@ -114,7 +108,7 @@ export class VirusChart extends mixin<Props, State>() {
                     curedData.push([item.date, item[area]?.cured || 0]);
                     deadData.push([item.date, item[area]?.dead || 0]);
                 }
-            else {
+            else
                 for (const item of orderedProvinceData) {
                     confirmedData.push([
                         item.date,
@@ -133,15 +127,9 @@ export class VirusChart extends mixin<Props, State>() {
                         item[path[0]]?.cities[area]?.dead || 0
                     ]);
                 }
-            }
         }
 
-        return {
-            confirmedData,
-            suspectedData,
-            curedData,
-            deadData
-        };
+        return { confirmedData, suspectedData, curedData, deadData };
     }
 
     getConfirmedSuspectChartOptions(
@@ -226,7 +214,7 @@ export class VirusChart extends mixin<Props, State>() {
                 }
             ],
             color: ['#c22b49', '#cca42d']
-        };
+        } as EChartsOption;
     }
 
     getCuredDeadChartOptions(
@@ -307,13 +295,11 @@ export class VirusChart extends mixin<Props, State>() {
                 }
             ],
             color: ['#2dce89', '#86868d']
-        };
+        } as EChartsOption;
     }
 
     connectedCallback() {
         this.classList.add('d-flex', 'flex-column');
-
-        super.connectedCallback();
     }
 
     render() {

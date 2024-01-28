@@ -1,34 +1,27 @@
-export interface PatientStatData {
-    confirmed: number;
-    suspected: number;
-    cured: number;
-    dead: number;
+import { StatisticType } from '../../../service';
+
+export type PatientStatData = Record<StatisticType, number>;
+
+export type CountryOverviewData = CityData;
+
+export interface CountryData extends CityData {
+    provinces?: Record<string, ProvinceData>;
 }
 
-export interface CountryOverviewData extends PatientStatData {
-    name: string; // '中国'
-    timestamp?: number; // integer, unit is 'ms', unix epoch time
-}
-
-export interface CountryData extends PatientStatData {
-    name: string; // '中国'
-    timestamp?: number; // integer, unit is 'ms', unix epoch time
-    provinces?: { [name: string]: ProvinceData };
-}
-
-export interface ProvinceData extends PatientStatData {
-    name: string; // '湖北'
-    timestamp?: number;
-    cities: { [name: string]: CityData };
+export interface ProvinceData extends CityData {
+    cities: Record<string, CityData>;
 }
 
 export interface CityData extends PatientStatData {
     name: string; // '武汉'
+    /**
+     * integer, unit is 'ms', unix epoch time
+     */
     timestamp?: number;
 }
 
 export type Series<T extends CountryData | ProvinceData | CityData> = {
-    [timestamp: number]: { [name: string]: T };
+    [timestamp: number]: Record<string, T>;
 };
 
 export interface OverallCountryData {

@@ -1,24 +1,6 @@
-/* eslint-disable no-unused-vars */
-/**
- * WebCell疫情地图组件
- * 基于EchartsMap组件构建的疫情地图组件，传入地图url及各区域的具体信息后自动生成疫情地图。
- * @author: shadowingszy, yarray
- *
- * 传入props说明:
- * name: 地图对应的行政区划（简写）
- * data: 显示在地图中的疫情数据。
- * chartOnClickCallBack: 点击地图后的回调函数。
- */
-import {
-    WebCellProps,
-    component,
-    mixin,
-    createCell,
-    attribute,
-    watch,
-    Fragment
-} from 'web-cell';
-import { observer } from 'mobx-web-cell';
+import { WebCell, component, attribute, observer } from 'web-cell';
+import { observable } from 'mobx';
+import { Hour } from 'web-utility';
 
 import { EChartsMapProps, EChartsMap } from './EChartsMap';
 import { VirusChart } from './VirusChart';
@@ -28,26 +10,32 @@ import { createPieces } from '../utility';
 import MapUrls from '../data/province';
 import style from './VirusMap.module.css';
 
-export type MapDataType = { [name: string]: PatientStatData };
+export type MapDataType = Record<string, PatientStatData>;
 
+/**
+ * spatio-temporal data
+ */
 export type STMapDataType = {
     timeline: number[];
-    data: { [timestamp: number]: MapDataType };
-}; // spatio-temporal data
+    data: Record<number, MapDataType>;
+};
 
-interface Props extends WebCellProps {
+export interface VirusMapProps extends Pick<EChartsMapProps, 'onSeriesClick'> {
+    /**
+     * 地图对应的行政区划（简写）
+     */
     name: string;
+    /**
+     * 显示在地图中的疫情数据
+     */
     data?: MapDataType | STMapDataType;
     breaks?: number[];
     chartData?: OverallCountryData;
     chartPath?: string[];
     currentChartArea: string;
-    chartOnClickCallBack?: EChartsMapProps['chartOnClickCallBack'];
 }
 
-function mapName(name: string) {
-    return name === '中国' ? 'china' : 'map';
-}
+const mapName = (name: string) => (name === '中国' ? 'china' : 'map');
 
 const PALETTE = [
     '#FFFFFF',
@@ -66,45 +54,48 @@ enum PatientType {
     dead = '死亡'
 }
 
+export interface VirusMap extends WebCell<VirusMapProps> {}
+
+/**
+ * WebCell 疫情地图组件
+ *
+ * 基于 {@link EchartsMap} 组件构建的疫情地图组件，
+ * 传入地图 URL 及各区域的具体信息后自动生成疫情地图。
+ *
+ * @author shadowingszy, yarray
+ */
+@component({ tagName: 'virus-map' })
 @observer
-@component({
-    tagName: 'virus-map',
-    renderTarget: 'children'
-})
-export class VirusMap extends mixin<Props, {}>() {
+export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
     @attribute
-    @watch
-    name: string = '';
+    @observable
+    accessor name = '';
 
-    @watch
-    data: MapDataType = {};
+    @observable
+    accessor data: VirusMapProps['data'] = {};
 
     @attribute
-    @watch
-    breaks: number[] = [1, 10, 50, 100, 500, 1000];
+    @observable
+    accessor breaks = [1, 10, 50, 100, 500, 1000];
 
-    @watch
-    chartData = {};
-
-    @attribute
-    @watch
-    currentChartArea: string = '';
+    @observable
+    accessor chartData = {} as VirusChart['data'];
 
     @attribute
-    @watch
-    chartPath: string[] = [];
+    @observable
+    accessor currentChartArea = '';
 
-    @watch
-    chartOnClickCallBack = (param, chart) => {
-        console.log(param, chart);
-    };
+    @attribute
+    @observable
+    accessor chartPath: string[] = [];
 
-    state = {
+    @observable
+    accessor state = {
         mapScale: 1,
-        chartArea: this.props.name
+        chartArea: this.name
     };
 
-    private genBasicVisualMap() {
+    get basicVisualMap() {
         return {
             show: true,
             type: 'piecewise',
@@ -127,10 +118,7 @@ export class VirusMap extends mixin<Props, {}>() {
 
     private baseOptions = (name: string, breaks: number[]) => {
         const pieceDict = { pieces: createPieces(breaks, PALETTE) };
-        const visualMap = {
-            ...this.genBasicVisualMap(),
-            ...pieceDict
-        };
+        const visualMap = { ...this.basicVisualMap, ...pieceDict };
 
         return {
             title: {
@@ -165,49 +153,49 @@ export class VirusMap extends mixin<Props, {}>() {
         };
     };
 
-    private overrides = (data: MapDataType) => {
-        return {
-            tooltip: {
-                trigger: 'item',
-                formatter: ({ componentType, dataIndex, name }) => {
-                    if (componentType === 'timeline')
-                        return new Date(dataIndex).toLocaleDateString(
-                            (dataIndex % 24) * 3600000 === 0
-                                ? 'zh-CN'
-                                : 'zh-CN-u-hc-h24'
+    private overrides = (data: MapDataType) => ({
+        tooltip: {
+            trigger: 'item',
+            formatter: ({ componentType, dataIndex, name }) => {
+                if (componentType === 'timeline')
+                    return new Date(dataIndex).toLocaleDateString(
+                        (dataIndex % 24) * Hour === 0
+                            ? 'zh-CN'
+                            : 'zh-CN-u-hc-h24'
+                    );
+
+                const outputArray = [name];
+
+                if (!data[name]) return name + '<br />暂无数据';
+
+                for (const key in PatientType)
+                    if (data[name][key] != null)
+                        outputArray.push(
+                            PatientType[key] + '：' + data[name][key]
                         );
 
-                    const outputArray = [name];
+                return outputArray.join('<br />');
+            }
+        },
+        series: [
+            {
+                data: Object.keys(data).map(name => ({
+                    name,
+                    value: data[name].confirmed || 0
+                }))
+            }
+        ]
+    });
 
-                    if (!data[name]) return name + '<br />暂无数据';
-
-                    for (const key in PatientType)
-                        if (data[name][key] != null)
-                            outputArray.push(
-                                PatientType[key] + '：' + data[name][key]
-                            );
-
-                    return outputArray.join('<br />');
-                }
-            },
-            series: [
-                {
-                    data: Object.keys(data).map(name => ({
-                        name,
-                        value: data[name].confirmed || 0
-                    }))
-                }
-            ]
-        };
-    };
-
-    chartAdjustLabel = (param: any, chart: any) => {
+    handleChartLabelAdjust: EChartsMapProps['onChartLabelAdjust'] = ({
+        detail: chart
+    }) => {
         const isForceRatio = 0.75,
             isAdjustLabel = true,
             domWidth = chart.getWidth(),
             domHeight = chart.getHeight();
 
-        let options = this.baseOptions(this.props.name, this.props.breaks);
+        let options = this.baseOptions(this.name, this.breaks);
 
         if (isForceRatio)
             if (domHeight > domWidth * isForceRatio)
@@ -215,7 +203,7 @@ export class VirusMap extends mixin<Props, {}>() {
                     (options.visualMap[0].top = '50px');
             else options.visualMap[0].left = '20px';
 
-        const scale = param ? param.scale : 1;
+        const scale = 1;
 
         if (isAdjustLabel && scale && isForceRatio) {
             const maxWidth = Math.min(domWidth, domHeight / isForceRatio);
@@ -228,22 +216,18 @@ export class VirusMap extends mixin<Props, {}>() {
             for (const s of options.series) s.label.show = show;
         }
 
-        options = this.isTimelineData(this.props.data)
+        options = this.isTimelineData(this.data)
             ? (this.getSTChartOptions(
-                  this.props.data as STMapDataType,
+                  this.data as STMapDataType,
                   options
               ) as any)
-            : (this.getChartOptions(
-                  this.props.data as MapDataType,
-                  options
-              ) as any);
+            : (this.getChartOptions(this.data as MapDataType, options) as any);
 
         chart.setOption(options);
     };
 
     getChartOptions = (data: MapDataType, options?: any) => {
-        options =
-            options || this.baseOptions(this.props.name, this.props.breaks);
+        options ||= this.baseOptions(this.name, this.breaks);
 
         const extra = this.overrides(data);
 
@@ -254,8 +238,7 @@ export class VirusMap extends mixin<Props, {}>() {
     };
 
     getSTChartOptions = (data: STMapDataType, options?: any) => {
-        options =
-            options || this.baseOptions(this.props.name, this.props.breaks);
+        options ||= this.baseOptions(this.name, this.breaks);
 
         options['timeline'] = {
             axisType: 'time',
@@ -287,24 +270,17 @@ export class VirusMap extends mixin<Props, {}>() {
         };
     };
 
-    private isTimelineData(data: MapDataType | STMapDataType): boolean {
-        return (data as STMapDataType).timeline !== undefined;
+    private isTimelineData(data: MapDataType | STMapDataType) {
+        return (data as STMapDataType).timeline != null;
     }
 
     connectedCallback() {
         this.classList.add(style.box);
-
-        super.connectedCallback();
     }
 
-    render({
-        name,
-        data,
-        chartOnClickCallBack,
-        currentChartArea,
-        chartData,
-        chartPath
-    }: Props) {
+    render() {
+        const { name, data, currentChartArea, chartData, chartPath } = this;
+
         return (
             <>
                 <EChartsMap
@@ -316,8 +292,7 @@ export class VirusMap extends mixin<Props, {}>() {
                             ? this.getSTChartOptions(data as STMapDataType)
                             : this.getChartOptions(data as MapDataType)
                     }
-                    chartAdjustLabel={this.chartAdjustLabel}
-                    chartOnClickCallBack={chartOnClickCallBack}
+                    onChartLabelAdjust={this.handleChartLabelAdjust}
                 />
                 <VirusChart
                     className={style.chart}

@@ -6,30 +6,33 @@
  * 传入props说明:
  * chartOptions: ECharts 中的所有 options。
  */
-import { WebCellProps, component, mixin, watch } from 'web-cell';
-import { observer } from 'mobx-web-cell';
-import { init } from 'echarts';
+import { WebCell, component, observer } from 'web-cell';
+import { observable } from 'mobx';
+import { EChartsType, EChartsOption, init } from 'echarts';
 
-interface CellChartsProp extends WebCellProps {
-    chartOptions?: Record<string, any>;
+export interface CellChartsProps {
+    chartOptions?: EChartsOption;
 }
 
-@observer
-@component({
-    tagName: 'cell-charts',
-    renderTarget: 'children'
-})
-export class CellCharts extends mixin<CellChartsProp>() {
-    @watch
-    chartOptions = {};
+export interface CellCharts extends WebCell<CellChartsProps> {}
 
-    chart: any;
+@component({ tagName: 'cell-charts' })
+@observer
+export class CellCharts
+    extends HTMLElement
+    implements WebCell<CellChartsProps>
+{
+    @observable
+    accessor chartOptions = {};
+
+    chart: EChartsType;
 
     connectedCallback() {
         this.classList.add('w-100', 'h-100');
-        // @ts-ignore
-        this.chart = init(this).setOption(this.chartOptions, false, false);
 
-        self.addEventListener('resize', () => this.chart?.resize());
+        this.chart = init(this);
+        this.chart.setOption(this.chartOptions, false, false);
+
+        self.addEventListener('resize', () => this.chart.resize());
     }
 }

@@ -1,4 +1,4 @@
-import { FC } from 'web-cell';
+import { FC, lazy } from 'web-cell';
 import { createRouter } from 'cell-router';
 import {
     Container,
@@ -30,12 +30,8 @@ import { UserAdmin } from './Admin/User';
 import { CommunityPage } from './Community';
 import Disclaimer from '../../Disclaimer.md';
 
-// const routes = [
-//         {
-//             paths: [RouteRoot.Maps],
-//             component: async () => (await import('./Map')).MapsPage
-//         },
-//     ],
+const MapsPage = lazy(() => import('./Map'));
+
 const userMenu = [
     {
         title: '管理',
@@ -118,6 +114,7 @@ export const PageFrame: FC = () => (
             />
             <Route path={RouteRoot.Clinic} component={ClinicList} />
             <Route path={RouteRoot.Clinic + '/edit'} component={ClinicEdit} />
+            <Route path={RouteRoot.Maps} component={MapsPage} />
             <Route path={RouteRoot.Admin} component={UserAdmin} />
             <Route path={RouteRoot.Community} component={CommunityPage} />
             <Route

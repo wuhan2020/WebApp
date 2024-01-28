@@ -22,14 +22,12 @@ export function autoBreaks(values: number[]) {
 
 const pair = (s: any[]) => s.slice(0, -1).map((item, i) => [item, s[i + 1]]);
 
-export function createPieces(breaks: number[], palette) {
-    return [
-        { min: 0, max: 0, color: palette[0] },
-        ...pair(breaks).map(([b1, b2], i) => ({
-            gte: b1,
-            lt: b2,
-            color: palette[i + 1]
-        })),
-        { gte: breaks[breaks.length - 1], color: palette[breaks.length] }
-    ];
-}
+export const createPieces = (breaks: number[], palette: string[]) => [
+    { min: 0, max: 0, color: palette[0] },
+    ...pair(breaks).map(([b1, b2], i) => ({
+        gte: b1,
+        lt: b2,
+        color: palette[i + 1]
+    })),
+    { gte: breaks[breaks.length - 1], color: palette[breaks.length] }
+];

@@ -180,11 +180,10 @@ export class FactoryEdit
                         label="备注"
                         defaultValue={remark}
                     />
-                    <div className="form-group mt-3">
+                    <div className="form-group mt-3 d-flex flex-column">
                         <Button
                             type="submit"
                             variant="primary"
-                            className="d-block"
                             disabled={factory.loading}
                         >
                             提交
@@ -192,7 +191,6 @@ export class FactoryEdit
                         <Button
                             type="reset"
                             variant="danger"
-                            className="d-block"
                             onClick={() => (location.hash = RouteRoot.Factory)}
                         >
                             取消
