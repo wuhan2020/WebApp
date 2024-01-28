@@ -69,7 +69,6 @@ export class SessionBox extends HTMLElement implements WebCell {
 
                 <InputGroup size="lg" className="mb-3">
                     <FormControl
-                        as="input"
                         type="tel"
                         name="phone"
                         maxLength={11}
@@ -80,7 +79,6 @@ export class SessionBox extends HTMLElement implements WebCell {
 
                 <InputGroup size="lg" className="mb-3">
                     <FormControl
-                        as="input"
                         name="code"
                         required
                         placeholder="短信验证码"

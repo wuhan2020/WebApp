@@ -121,14 +121,12 @@ export class DonationEdit
                 {/* @ts-ignore */}
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
                     <FormField
-                        as="input"
                         name="name"
                         required
                         defaultValue={name}
                         label="机构名称"
                     />
                     <FormField
-                        as="input"
                         name="url"
                         required
                         defaultValue={url}
@@ -146,21 +144,18 @@ export class DonationEdit
                                 }
                             >
                                 <FormControl
-                                    as="input"
                                     name="name"
                                     required
                                     defaultValue={name}
                                     placeholder="户名"
                                 />
                                 <FormControl
-                                    as="input"
                                     name="number"
                                     required
                                     defaultValue={number}
                                     placeholder="账号"
                                 />
                                 <FormControl
-                                    as="input"
                                     name="bank"
                                     required
                                     defaultValue={bank}

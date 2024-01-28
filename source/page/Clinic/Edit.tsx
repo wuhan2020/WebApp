@@ -6,7 +6,7 @@ import {
     FormGroup,
     FormLabel,
     FormControl,
-    Button,
+    Button
 } from 'boot-cell';
 
 import { Clinic, clinic } from '../../model';
@@ -85,14 +85,12 @@ export class ClinicEdit
                 {/* @ts-ignore */}
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
                     <FormField
-                        as="input"
                         name="name"
                         required
                         defaultValue={name}
                         label="机构/个人名"
                     />
                     <FormField
-                        as="input"
                         type="url"
                         name="url"
                         required
@@ -105,7 +103,6 @@ export class ClinicEdit
                         <FormLabel>每日接诊起止时间</FormLabel>
                         <InputGroup>
                             <FormControl
-                                as="input"
                                 type="time"
                                 name="startTime"
                                 required
@@ -113,7 +110,6 @@ export class ClinicEdit
                                 placeholder="开始"
                             />
                             <FormControl
-                                as="input"
                                 type="time"
                                 name="endTime"
                                 required

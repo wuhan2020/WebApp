@@ -53,8 +53,11 @@ export interface Organization {
 
 export type GeoCoord = Record<'latitude' | 'longitude', number>;
 
-export interface Place
-    extends Organization,
-        Partial<Record<'province' | 'city' | 'district' | 'address', string>> {
+export type Address = Record<
+    'province' | 'city' | 'district' | 'address',
+    string
+>;
+
+export interface Place extends Organization, Partial<Address> {
     coords?: GeoCoord;
 }

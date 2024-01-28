@@ -69,13 +69,11 @@ export class ContactField
                         }
                     >
                         <FormControl
-                            as="input"
                             name="name"
                             value={name}
                             placeholder="姓名"
                         />
                         <FormControl
-                            as="input"
                             type="tel"
                             name="phone"
                             value={phone}

@@ -1,10 +1,10 @@
-import { component, mixin, watch, createCell, WebCellProps } from 'web-cell';
-import { FormField } from 'boot-cell/source/Form/FormField';
-import { Button } from 'boot-cell/source/Form/Button';
+import { component, attribute, observer, WebCell } from 'web-cell';
+import { FormField, FormGroup, FormLabel, Button } from 'boot-cell';
+import { observable } from 'mobx';
 
 import { mergeList } from '../../utility';
 import { GeoCoord, Contact } from '../../service';
-import { history, Supplies, factory, Factory } from '../../model';
+import { Supplies, factory, Factory } from '../../model';
 import { RouteRoot } from '../data/menu';
 import CommonSupplies from '../data/Supplies';
 import {
@@ -14,19 +14,24 @@ import {
     ContactField
 } from '../../component';
 
-export interface FactoryEditProps extends WebCellProps {
+export interface FactoryEditProps {
     dataId: string;
 }
 
-@component({
-    tagName: 'factory-edit',
-    renderTarget: 'children'
-})
-export class FactoryEdit extends mixin<FactoryEditProps, Factory>() {
-    @watch
-    dataId = '';
+export interface FactoryEdit extends WebCell<FactoryEditProps> {}
 
-    state = {
+@component({ tagName: 'factory-edit' })
+@observer
+export class FactoryEdit
+    extends HTMLElement
+    implements WebCell<FactoryEditProps>
+{
+    @attribute
+    @observable
+    accessor dataId = '';
+
+    @observable
+    accessor state = {
         name: '',
         province: '',
         city: '',
@@ -38,11 +43,9 @@ export class FactoryEdit extends mixin<FactoryEditProps, Factory>() {
         supplies: CommonSupplies as Supplies[],
         contacts: [{} as Contact],
         remark: ''
-    };
+    } as Factory;
 
     async connectedCallback() {
-        super.connectedCallback();
-
         if (!this.dataId) return;
 
         const {
@@ -59,7 +62,7 @@ export class FactoryEdit extends mixin<FactoryEditProps, Factory>() {
             remark
         } = await factory.getOne(this.dataId);
 
-        this.setState({
+        this.state = {
             name,
             qualification,
             province,
@@ -75,21 +78,13 @@ export class FactoryEdit extends mixin<FactoryEditProps, Factory>() {
             ),
             contacts,
             remark
-        });
+        } as Factory;
     }
 
     changeText = ({ target }: Event) => {
         const { name, value } = target as HTMLInputElement;
 
-        this.state[name] = value;
-    };
-
-    updateText = ({ target }: Event) => {
-        const { name, value } = target as HTMLInputElement;
-
-        event.stopPropagation();
-
-        this.setState({ [name]: value });
+        this.state = { ...this.state, [name]: value };
     };
 
     changeAddress = ({
@@ -117,12 +112,11 @@ export class FactoryEdit extends mixin<FactoryEditProps, Factory>() {
         );
         self.alert('提交成功，工作人员审核后即可查看');
 
-        history.push(RouteRoot.Factory);
+        location.hash = RouteRoot.Factory;
     };
 
-    render(
-        _,
-        {
+    render() {
+        const {
             name,
             qualification,
             province,
@@ -133,27 +127,27 @@ export class FactoryEdit extends mixin<FactoryEditProps, Factory>() {
             supplies,
             contacts,
             remark
-        }: Factory
-    ) {
+        } = this.state;
+
         return (
             <SessionBox>
                 <h2>生产厂商发布</h2>
-
+                {/* @ts-ignore */}
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
                     <FormField
                         name="name"
                         required
                         defaultValue={name}
                         label="厂商名字"
-                        onChange={this.updateText}
                     />
-                    <FormField label="机构地址">
+                    <FormGroup>
+                        <FormLabel>机构地址</FormLabel>
                         <AddressField
                             place={name}
                             {...{ province, city, district, address }}
                             onChange={this.changeAddress}
                         />
-                    </FormField>
+                    </FormGroup>
 
                     <FormField
                         type="url"
@@ -181,7 +175,7 @@ export class FactoryEdit extends mixin<FactoryEditProps, Factory>() {
                         }
                     />
                     <FormField
-                        is="textarea"
+                        as="textarea"
                         name="remark"
                         label="备注"
                         defaultValue={remark}
@@ -189,17 +183,17 @@ export class FactoryEdit extends mixin<FactoryEditProps, Factory>() {
                     <div className="form-group mt-3">
                         <Button
                             type="submit"
-                            color="primary"
-                            block
+                            variant="primary"
+                            className="d-block"
                             disabled={factory.loading}
                         >
                             提交
                         </Button>
                         <Button
                             type="reset"
-                            color="danger"
-                            block
-                            onClick={() => history.push(RouteRoot.Factory)}
+                            variant="danger"
+                            className="d-block"
+                            onClick={() => (location.hash = RouteRoot.Factory)}
                         >
                             取消
                         </Button>

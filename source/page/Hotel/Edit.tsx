@@ -1,25 +1,27 @@
-import { WebCellProps, component, mixin, watch, createCell } from 'web-cell';
-import { FormField } from 'boot-cell/source/Form/FormField';
-import { Button } from 'boot-cell/source/Form/Button';
+import { WebCell, component, attribute, observer } from 'web-cell';
+import { FormGroup, FormLabel, FormField, Button } from 'boot-cell';
+import { observable } from 'mobx';
 
 import { RouteRoot } from '../data/menu';
-import { Hotel, hotel, history } from '../../model';
+import { Hotel, hotel } from '../../model';
 import { GeoCoord, Contact } from '../../service';
 import { SessionBox, AddressField, ContactField } from '../../component';
 
-export interface HotelEditProps extends WebCellProps {
+export interface HotelEditProps {
     dataId: string;
 }
 
-@component({
-    tagName: 'hotel-edit',
-    renderTarget: 'children'
-})
-export class HotelEdit extends mixin<HotelEditProps, Hotel>() {
-    @watch
-    dataId = '';
+export interface HotelEdit extends WebCell<HotelEditProps> {}
 
-    state = {
+@component({ tagName: 'hotel-edit' })
+@observer
+export class HotelEdit extends HTMLElement implements WebCell<HotelEditProps> {
+    @attribute
+    @observable
+    accessor dataId = '';
+
+    @observable
+    accessor state = {
         name: '',
         capacity: 0,
         province: '',
@@ -30,11 +32,9 @@ export class HotelEdit extends mixin<HotelEditProps, Hotel>() {
         url: '',
         contacts: [{} as Contact],
         remark: ''
-    };
+    } as Hotel;
 
     async connectedCallback() {
-        super.connectedCallback();
-
         if (!this.dataId) return;
 
         const {
@@ -50,7 +50,7 @@ export class HotelEdit extends mixin<HotelEditProps, Hotel>() {
             remark
         } = await hotel.getOne(this.dataId);
 
-        this.setState({
+        this.state = {
             name,
             capacity,
             province,
@@ -61,21 +61,13 @@ export class HotelEdit extends mixin<HotelEditProps, Hotel>() {
             url,
             contacts,
             remark
-        });
+        };
     }
 
     changeText = ({ target }: Event) => {
         const { name, value } = target as HTMLInputElement;
 
-        this.state[name] = value;
-    };
-
-    updateText = ({ target }: Event) => {
-        const { name, value } = target as HTMLInputElement;
-
-        event.stopPropagation();
-
-        this.setState({ [name]: value });
+        this.state = { ...this.state, [name]: value };
     };
 
     changeAddress = ({
@@ -104,12 +96,11 @@ export class HotelEdit extends mixin<HotelEditProps, Hotel>() {
 
         self.alert('提交成功，工作人员审核后即可查看');
 
-        history.push(RouteRoot.Hotel);
+        location.hash = RouteRoot.Hotel;
     };
 
-    render(
-        _,
-        {
+    render() {
+        const {
             name,
             province,
             city,
@@ -119,11 +110,12 @@ export class HotelEdit extends mixin<HotelEditProps, Hotel>() {
             contacts,
             url,
             remark
-        }: Hotel
-    ) {
+        } = this.state;
+
         return (
             <SessionBox>
-                <h2>发布住宿信息</h2>
+                <h1>发布住宿信息</h1>
+                {/* @ts-ignore */}
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
                     <FormField
                         name="name"
@@ -131,15 +123,15 @@ export class HotelEdit extends mixin<HotelEditProps, Hotel>() {
                         defaultValue={name}
                         label="酒店"
                         placeholder="酒店名称"
-                        onChange={this.updateText}
                     />
-                    <FormField label="酒店地址">
+                    <FormGroup>
+                        <FormLabel>酒店地址</FormLabel>
                         <AddressField
                             place={name}
                             {...{ province, city, district, address }}
                             onChange={this.changeAddress}
                         />
-                    </FormField>
+                    </FormGroup>
 
                     <FormField
                         type="number"
@@ -162,7 +154,7 @@ export class HotelEdit extends mixin<HotelEditProps, Hotel>() {
                         }
                     />
                     <FormField
-                        is="textarea"
+                        as="textarea"
                         name="remark"
                         defaultValue={remark}
                         label="备注"
@@ -170,17 +162,17 @@ export class HotelEdit extends mixin<HotelEditProps, Hotel>() {
                     <div className="form-group mt-3">
                         <Button
                             type="submit"
-                            color="primary"
-                            block
+                            variant="primary"
+                            className="d-block"
                             disabled={hotel.loading}
                         >
                             提交
                         </Button>
                         <Button
                             type="reset"
-                            color="danger"
-                            block
-                            onClick={() => history.push(RouteRoot.Hotel)}
+                            variant="danger"
+                            className="d-block"
+                            onClick={() => (location.hash = RouteRoot.Hotel)}
                         >
                             取消
                         </Button>

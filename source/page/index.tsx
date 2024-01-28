@@ -31,17 +31,10 @@ import { CommunityPage } from './Community';
 import Disclaimer from '../../Disclaimer.md';
 
 // const routes = [
-//         { paths: [RouteRoot.Hospital + '/edit'], component: HospitalEdit },
-//         { paths: [RouteRoot.Hotel + '/edit'], component: HotelEdit },
-//         { paths: [RouteRoot.Factory + '/edit'], component: FactoryEdit },
 //         {
 //             paths: [RouteRoot.Maps],
 //             component: async () => (await import('./Map')).MapsPage
 //         },
-//         {
-//             paths: [RouteRoot.Admin, RouteRoot.Admin + '/user'],
-//             component: UserAdmin
-//         }
 //     ],
 const userMenu = [
     {
@@ -105,13 +98,19 @@ export const PageFrame: FC = () => (
         <Container className="flex-fill overflow-auto scrollbar-none">
             <Route path="" component={HomePage} />
             <Route path={RouteRoot.Hospital} component={HospitalPage} />
+            <Route
+                path={RouteRoot.Hospital + '/edit'}
+                component={HospitalEdit}
+            />
             <Route path={RouteRoot.Logistics} component={LogisticsPage} />
             <Route
                 path={RouteRoot.Logistics + '/edit'}
                 component={LogisticsEdit}
             />
             <Route path={RouteRoot.Hotel} component={HotelPage} />
+            <Route path={RouteRoot.Hotel + '/edit'} component={HotelEdit} />
             <Route path={RouteRoot.Factory} component={FactoryPage} />
+            <Route path={RouteRoot.Factory + '/edit'} component={FactoryEdit} />
             <Route path={RouteRoot.Donation} component={DonationPage} />
             <Route
                 path={RouteRoot.Donation + '/edit'}
@@ -119,6 +118,7 @@ export const PageFrame: FC = () => (
             />
             <Route path={RouteRoot.Clinic} component={ClinicList} />
             <Route path={RouteRoot.Clinic + '/edit'} component={ClinicEdit} />
+            <Route path={RouteRoot.Admin} component={UserAdmin} />
             <Route path={RouteRoot.Community} component={CommunityPage} />
             <Route
                 path="disclaimer"

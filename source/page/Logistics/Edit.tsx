@@ -115,7 +115,6 @@ export class LogisticsEdit
                 {/* @ts-ignore */}
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
                     <FormField
-                        as="input"
                         name="name"
                         required
                         defaultValue={name}
@@ -123,7 +122,6 @@ export class LogisticsEdit
                         placeholder="请填写物流公司名称"
                     />
                     <FormField
-                        as="input"
                         name="url"
                         required
                         defaultValue={url}
@@ -142,7 +140,6 @@ export class LogisticsEdit
                                     }
                                 >
                                     <FormControl
-                                        as="input"
                                         name="city"
                                         value={city}
                                         placeholder="请输入寄送城市"

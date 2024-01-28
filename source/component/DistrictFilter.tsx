@@ -74,7 +74,7 @@ export class DistrictFilter
         return (
             <>
                 <DropdownButton
-                    className="mr-3 mb-3"
+                    className="me-3 mb-3"
                     variant="primary"
                     caption={`省 | ${province || '全部'}`}
                 >
@@ -87,7 +87,7 @@ export class DistrictFilter
                     ))}
                 </DropdownButton>
                 <DropdownButton
-                    className="mr-3 mb-3"
+                    className="me-3 mb-3"
                     variant="primary"
                     caption={`市 | ${city || '全部'}`}
                 >
@@ -98,7 +98,7 @@ export class DistrictFilter
                     ))}
                 </DropdownButton>
                 <DropdownButton
-                    className="mr-3 mb-3"
+                    className="me-3 mb-3"
                     variant="primary"
                     caption={`区 | ${district || '全部'}`}
                 >

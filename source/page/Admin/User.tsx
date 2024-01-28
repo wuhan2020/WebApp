@@ -1,31 +1,32 @@
-import { component, mixin, createCell } from 'web-cell';
-import { observer } from 'mobx-web-cell';
-import { SpinnerBox } from 'boot-cell/source/Prompt/Spinner';
-import { ToggleField } from 'boot-cell/source/Form/ToggleField';
-import { Button } from 'boot-cell/source/Form/Button';
-import { EdgeEvent, EdgeDetector } from 'boot-cell/source/Content/EdgeDetector';
-import { Table, TableRow } from 'boot-cell/source/Content/Table';
+import { component, observer } from 'web-cell';
+import {
+    FormCheck,
+    Button,
+    ScrollBoundary,
+    TouchHandler,
+    Table,
+    FormControl
+} from 'boot-cell';
+import { CustomElement } from 'web-utility';
 
+import { SessionBox } from '../../component';
 import { User } from '../../service';
 import { user } from '../../model';
 
+@component({ tagName: 'user-admin' })
 @observer
-@component({
-    tagName: 'user-admin',
-    renderTarget: 'children'
-})
-export class UserAdmin extends mixin() {
+export class UserAdmin extends HTMLElement implements CustomElement {
     filter: { phone?: string } = {};
 
     connectedCallback() {
         user.getRoles();
     }
 
-    loadMore = ({ detail }: EdgeEvent) => {
+    loadMore: TouchHandler = detail => {
         if (detail === 'bottom') return user.getNextPage(this.filter);
     };
 
-    search = async (event: Event) => {
+    search = (event: Event) => {
         event.preventDefault();
 
         const { elements } = event.target as HTMLFormElement;
@@ -49,59 +50,64 @@ export class UserAdmin extends mixin() {
         roles,
         objectId: uid
     }: User) => (
-        <TableRow>
+        <tr key={uid}>
             <td>{mobilePhoneNumber}</td>
             <td>{new Date(createdAt).toLocaleString()}</td>
             <td>
                 {user.roles?.map(({ objectId, name }) => (
-                    <ToggleField
-                        type="checkbox"
-                        switch
+                    <FormCheck
+                        type="switch"
+                        label={<>{name}</>}
                         value={objectId}
                         checked={roles.includes(name)}
                         onClick={event => this.toggleRole(uid, objectId, event)}
-                    >
-                        {name}
-                    </ToggleField>
+                    />
                 ))}
             </td>
-        </TableRow>
+        </tr>
     );
 
     render() {
         const { loading, list, noMore } = user;
 
         return (
-            <SpinnerBox cover={loading}>
+            <SessionBox>
                 <header className="d-flex justify-content-between">
-                    <h2>用户管理</h2>
-                    <form className="form-inline" onSubmit={this.search}>
-                        <input
+                    <h1>用户管理</h1>
+                    {/* @ts-ignore */}
+                    <form className="d-flex" onSubmit={this.search}>
+                        <FormControl
                             type="search"
-                            className="form-control mr-3"
+                            className="me-3"
                             name="phone"
                         />
-                        <Button type="submit" color="primary">
+                        <Button
+                            className="text-nowrap"
+                            type="submit"
+                            variant="primary"
+                        >
                             搜索
                         </Button>
                     </form>
                 </header>
 
-                <EdgeDetector onTouchEdge={this.loadMore}>
-                    <Table center striped hover>
-                        <TableRow type="head">
-                            <th>手机号</th>
-                            <th>注册时间</th>
-                            <th>角色</th>
-                        </TableRow>
-                        {list.map(this.renderItem)}
+                <ScrollBoundary onTouch={this.loadMore}>
+                    <Table className="text-center" striped hover>
+                        <thead>
+                            <tr>
+                                <th>手机号</th>
+                                <th>注册时间</th>
+                                <th>角色</th>
+                            </tr>
+                        </thead>
+                        <tbody>{list.map(this.renderItem)}</tbody>
                     </Table>
 
                     <p slot="bottom" className="text-center mt-2">
                         {noMore ? '没有更多数据了' : '加载更多...'}
                     </p>
-                </EdgeDetector>
-            </SpinnerBox>
+                </ScrollBoundary>
+            </SessionBox>
         );
     }
 }
