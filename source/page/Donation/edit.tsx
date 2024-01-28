@@ -1,45 +1,46 @@
-import { WebCellProps, component, mixin, watch, createCell } from 'web-cell';
-import { FormField } from 'boot-cell/source/Form/FormField';
-import { InputGroup } from 'boot-cell/source/Form/InputGroup';
-import { Field } from 'boot-cell/source/Form/Field';
-import { Button } from 'boot-cell/source/Form/Button';
+import { WebCell, component, attribute, observer } from 'web-cell';
+import { observable } from 'mobx';
+import {
+    FormField,
+    InputGroup,
+    FormGroup,
+    FormLabel,
+    FormControl,
+    Button
+} from 'boot-cell';
 
 import { RouteRoot } from '../data/menu';
-import {
-    donationRecipient,
-    DonationRecipient,
-    history,
-    BankAccount
-} from '../../model';
+import { donationRecipient, DonationRecipient, BankAccount } from '../../model';
 import { Contact } from '../../service';
-import { SessionBox, ContactField } from '../../component';
+import { SessionBox } from '../../component/SessionBox';
+import { ContactField } from '../../component/ContactField';
 
-export interface DonationEditProps extends WebCellProps {
+export interface DonationEditProps {
     dataId: string;
 }
 
-@component({
-    tagName: 'donation-edit',
-    renderTarget: 'children'
-})
-export class DonationEdit extends mixin<
-    DonationEditProps,
-    DonationRecipient
->() {
-    @watch
-    dataId = '';
+export interface DonationEdit extends WebCell<DonationEditProps> {}
 
-    state = {
+@component({ tagName: 'donation-edit' })
+@observer
+export class DonationEdit
+    extends HTMLElement
+    implements WebCell<DonationEditProps>
+{
+    @attribute
+    @observable
+    accessor dataId = '';
+
+    @observable
+    accessor state = {
         name: '', //机构名
         contacts: [{} as Contact],
         accounts: [{} as BankAccount],
         url: '', //官方网址
         remark: '' //备注
-    };
+    } as DonationRecipient;
 
     async connectedCallback() {
-        super.connectedCallback();
-
         if (!this.dataId) return;
 
         const {
@@ -50,40 +51,41 @@ export class DonationEdit extends mixin<
             remark //备注
         } = await donationRecipient.getOne(this.dataId);
 
-        this.setState({
-            name, //机构名
-            url, //官方网址
-            accounts, //银行相关信息
-            contacts, //联系人（姓名、电话）
-            remark //备注
-        });
+        this.state = { name, url, accounts, contacts, remark };
     }
 
     changeText = ({ target }: Event) => {
         const { name, value } = target as HTMLInputElement;
 
-        this.state[name] = value;
+        this.state = { ...this.state, [name]: value };
     };
 
     changeAccount(index: number, event: Event) {
         event.stopPropagation();
 
-        const { name, value } = event.target as HTMLInputElement;
+        const { name, value } = event.target as HTMLInputElement,
+            { accounts } = this.state;
 
-        this.state.accounts[index][name] = value;
+        this.state.accounts = [
+            ...accounts.slice(0, index),
+            { ...accounts[index], [name]: value },
+            ...accounts.slice(index + 1)
+        ];
     }
 
     addAccount = () =>
-        this.setState({
+        (this.state = {
+            ...this.state,
             accounts: [...this.state.accounts, {} as BankAccount]
         });
 
     deleteAccount(index: number) {
         const { accounts } = this.state;
 
-        accounts.splice(index, 1);
-
-        return this.setState({ accounts });
+        this.state.accounts = [
+            ...accounts.slice(0, index),
+            ...accounts.slice(index + 1)
+        ];
     }
 
     handleSubmit = async (event: Event) => {
@@ -107,23 +109,16 @@ export class DonationEdit extends mixin<
 
         self.alert('提交成功，工作人员审核后即可查看');
 
-        history.push(RouteRoot.Donation);
+        location.hash = RouteRoot.Donation;
     };
 
-    render(
-        _,
-        {
-            name, //机构名
-            url, //官方网址
-            accounts, //银行相关信息
-            contacts, //联系人（姓名、电话）
-            remark //备注
-        }: DonationRecipient
-    ) {
+    render() {
+        const { name, url, accounts, contacts, remark } = this.state;
+
         return (
             <SessionBox>
                 <h2>捐赠信息发布</h2>
-
+                {/* @ts-ignore */}
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
                     <FormField
                         name="name"
@@ -138,7 +133,9 @@ export class DonationEdit extends mixin<
                         label="官方网址"
                         placeholder="信息发布源链接"
                     />
-                    <FormField label="银行账户信息">
+                    <FormGroup>
+                        <FormLabel>银行账户信息</FormLabel>
+
                         {accounts.map(({ name, number, bank }, index) => (
                             <InputGroup
                                 className="my-1"
@@ -146,32 +143,32 @@ export class DonationEdit extends mixin<
                                     this.changeAccount(index, event)
                                 }
                             >
-                                <Field
+                                <FormControl
                                     name="name"
                                     required
                                     defaultValue={name}
                                     placeholder="户名"
                                 />
-                                <Field
+                                <FormControl
                                     name="number"
                                     required
                                     defaultValue={number}
                                     placeholder="账号"
                                 />
-                                <Field
+                                <FormControl
                                     name="bank"
                                     required
                                     defaultValue={bank}
                                     placeholder="开户行"
                                 />
                                 <Button
-                                    color="primary"
+                                    variant="primary"
                                     onClick={this.addAccount}
                                 >
                                     +
                                 </Button>
                                 <Button
-                                    color="danger"
+                                    variant="danger"
                                     disabled={!accounts[1]}
                                     onClick={() => this.deleteAccount(index)}
                                 >
@@ -179,7 +176,7 @@ export class DonationEdit extends mixin<
                                 </Button>
                             </InputGroup>
                         ))}
-                    </FormField>
+                    </FormGroup>
 
                     <ContactField
                         list={contacts}
@@ -188,25 +185,23 @@ export class DonationEdit extends mixin<
                         }
                     />
                     <FormField
-                        is="textarea"
+                        as="textarea"
                         name="remark"
                         label="备注"
                         defaultValue={remark}
                     />
-                    <div className="form-group mt-3">
+                    <div className="form-group mt-3 d-flex flex-column">
                         <Button
                             type="submit"
-                            color="primary"
-                            block
+                            variant="primary"
                             disabled={donationRecipient.loading}
                         >
                             提交
                         </Button>
                         <Button
                             type="reset"
-                            color="danger"
-                            block
-                            onClick={() => history.push(RouteRoot.Donation)}
+                            variant="danger"
+                            onClick={() => (location.hash = RouteRoot.Donation)}
                         >
                             取消
                         </Button>

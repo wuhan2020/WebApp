@@ -1,3 +1,4 @@
+import { Hour } from 'web-utility';
 import {
     CountryOverviewData,
     CountryData,
@@ -7,30 +8,28 @@ import {
     Series
 } from './patientStatInterface';
 import { long2short } from './long2short'; // some city names are NOT short names so we also convert them here
-import { City, Province } from '../../../service/Epidemic';
+import { City, Province, StatisticData } from '../../../service/Epidemic';
 
-function convertStat(source): PatientStatData {
-    return {
-        confirmed: source.confirmedCount,
-        suspected: source.suspectedCount,
-        cured: source.curedCount,
-        dead: source.deadCount
-    };
-}
+const convertStat = (source: StatisticData): PatientStatData => ({
+    confirmed: source.confirmedCount,
+    suspected: source.suspectedCount,
+    cured: source.curedCount,
+    dead: source.deadCount
+});
 
-export function convertCountry(source: Province[]): CountryData {
-    // currently we only support china
-    return {
-        name: '中国',
-        confirmed: 0,
-        suspected: 0,
-        cured: 0,
-        dead: 0,
-        provinces: Object.fromEntries(
-            source.map(item => [item.provinceShortName, convertProvince(item)])
-        )
-    };
-}
+/**
+ * currently we only support china
+ */
+export const convertCountry = (source: Province[]): CountryData => ({
+    name: '中国',
+    confirmed: 0,
+    suspected: 0,
+    cured: 0,
+    dead: 0,
+    provinces: Object.fromEntries(
+        source.map(item => [item.provinceShortName, convertProvince(item)])
+    )
+});
 
 export function convertProvince(province: Province): ProvinceData {
     const { provinceShortName: name, updateTime, cities } = province;
@@ -50,16 +49,17 @@ export function convertProvince(province: Province): ProvinceData {
     };
 }
 
-export function convertCity(source: City, updateTime: number): CityData {
-    return {
-        name: long2short(source.cityName),
-        timestamp: updateTime, // 使用传入的省级数据更新时间
-        ...convertStat(source)
-    };
-}
+/**
+ * @param timestamp 使用传入的省级数据更新时间
+ */
+export const convertCity = (source: City, timestamp: number): CityData => ({
+    name: long2short(source.cityName),
+    timestamp,
+    ...convertStat(source)
+});
 
 function roundTime(t: number, resolution: number) {
-    const offset = resolution >= 24 * 3600000 ? 8 * 3600000 : 0; // consider locale if resolution > 1 day
+    const offset = resolution >= 24 * Hour ? 8 * Hour : 0; // consider locale if resolution > 1 day
 
     return Math.floor((t + offset) / resolution) * resolution - offset;
 }
@@ -69,7 +69,7 @@ function fillForward<T extends ProvinceData | CityData | CountryData>(
 ) {
     const all_ts = Object.keys(series).sort();
 
-    all_ts.forEach((t, i) => {
+    for (const [i, t] of all_ts.entries())
         if (i < all_ts.length - 1)
             for (const name of Object.keys(series[t])) {
                 const next_t = parseInt(all_ts[i + 1], 10);
@@ -77,15 +77,17 @@ function fillForward<T extends ProvinceData | CityData | CountryData>(
                 if (series[next_t][name] === undefined)
                     series[next_t][name] = series[t][name];
             }
-    });
 }
 
+/**
+ * @param resolution in ms
+ */
 export function convertProvincesSeries(
     source: Province[],
-    resolution: number, // in ms
+    resolution: number,
     shouldFillForward = false
-): Series<ProvinceData> {
-    let res: Series<ProvinceData> = {};
+) {
+    const res: Series<ProvinceData> = {};
 
     source.sort(item => item.updateTime);
 
@@ -109,7 +111,7 @@ export function extractCitiesSeries(
     name: string,
     resolution: number,
     shouldFillForward = false
-): Series<CityData> {
+) {
     const res: Series<CityData> = Object.fromEntries(
         Object.values(series)
             .map(provs => {
@@ -126,11 +128,13 @@ export function extractCitiesSeries(
     return res;
 }
 
-export function convertCountrySeries(
+/**
+ * @param resolution // in ms
+ */
+export const convertCountrySeries = (
     source: any[],
-    resolution: number // in ms
-): Series<CountryOverviewData> {
-    return Object.fromEntries(
+    resolution: number
+): Series<CountryOverviewData> =>
+    Object.fromEntries(
         source.map(item => [roundTime(item.updateTime, resolution), item])
     );
-}

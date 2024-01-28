@@ -1,26 +1,10 @@
-/**
- * WebCell分层疫情地图组件
- * 在 VirusMap 基础上，增加聚焦到省显示市级数据与回到省级的功能
- * @author: yarray, shadowingszy
- *
- * 传入参数说明:
- * data: 地图数据
- * resolution: 时间精度
- */
-import {
-    WebCellProps,
-    component,
-    mixin,
-    attribute,
-    watch,
-    createCell,
-    Fragment
-} from 'web-cell';
-import { observer } from 'mobx-web-cell';
-import { BGIcon } from 'boot-cell/source/Reminder/FAIcon';
+import { WebCell, component, attribute, observer } from 'web-cell';
+import { observable } from 'mobx';
+import { BGIcon } from 'boot-cell';
+import { Hour } from 'web-utility';
 import classNames from 'classnames';
 
-// eslint-disable-next-line no-unused-vars
+import { EChartsMapProps } from './EChartsMap';
 import { VirusMap, STMapDataType } from './VirusMap';
 
 import { autoBreaks } from '../utility';
@@ -33,8 +17,14 @@ import {
 
 import style from './HierarchicalVirusMap.module.css';
 
-interface Props extends WebCellProps {
+export interface HierarchicalVirusMapProps {
+    /**
+     * 地图数据
+     */
     data: OverallCountryData;
+    /**
+     * 时间精度
+     */
     resolution: number;
 }
 
@@ -43,30 +33,39 @@ interface State {
     currentChartArea: string;
 }
 
+export interface HierarchicalVirusMap
+    extends WebCell<HierarchicalVirusMapProps> {}
+
+/**
+ * WebCell 分层疫情地图组件
+ *
+ * 在 VirusMap 基础上，增加聚焦到省显示市级数据与回到省级的功能
+ *
+ * @author yarray, shadowingszy
+ */
+@component({ tagName: 'hierarchical-virus-map' })
 @observer
-@component({
-    tagName: 'hierarchical-virus-map',
-    renderTarget: 'children'
-})
-export class HierarchicalVirusMap extends mixin<Props, State>() {
-    @watch
-    public data: OverallCountryData = {
+export class HierarchicalVirusMap
+    extends HTMLElement
+    implements WebCell<HierarchicalVirusMapProps>
+{
+    @observable
+    accessor data: OverallCountryData = {
         provincesSeries: {},
         countrySeries: {}
     };
 
     @attribute
-    @watch
-    public resolution: number = 3600000;
+    @observable
+    accessor resolution = Hour;
 
-    state = {
+    @observable
+    accessor state = {
         path: [],
         currentChartArea: '中国'
     };
 
     connectedCallback() {
-        super.connectedCallback();
-
         this.classList.add('position-relative');
     }
 
@@ -108,23 +107,25 @@ export class HierarchicalVirusMap extends mixin<Props, State>() {
         const { path } = this.state;
         // back to country view
         if (path.length)
-            this.setState({
+            this.state = {
                 path: path.slice(0, -1),
                 currentChartArea: '中国'
-            });
+            };
     };
 
-    navigateDown = params => {
+    navigateDown: EChartsMapProps['onSeriesClick'] = ({ detail: { name } }) => {
         const { path } = this.state;
         // if has name and path length < max length
         // TODO: check the data to see whether we can navigate down
-        this.setState({
-            path: params.name && !path.length ? [...path, params.name] : path,
-            currentChartArea: params.name
-        });
+        this.state = {
+            path: name && !path.length ? [...path, name] : path,
+            currentChartArea: name
+        };
     };
 
-    render({ data, resolution }: Props, { path, currentChartArea }: State) {
+    render() {
+        const { data, resolution } = this,
+            { path, currentChartArea } = this.state;
         const config = this.getVirusMapConfig(
                 path,
                 data.provincesSeries,
@@ -145,12 +146,12 @@ export class HierarchicalVirusMap extends mixin<Props, State>() {
                     name={config.name}
                     data={config.data}
                     breaks={autoBreaks(
-                        Object.values(current).map(prov => prov.confirmed)
+                        Object.values(current).map(({ confirmed }) => confirmed)
                     )} // use current province values to calculate viable mapping breaks
                     chartData={data}
                     chartPath={path}
                     currentChartArea={currentChartArea}
-                    chartOnClickCallBack={this.navigateDown}
+                    onSeriesClick={this.navigateDown}
                     onDblClick={this.navigateUp}
                 />
 

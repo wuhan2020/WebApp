@@ -22,14 +22,14 @@ export class ClinicList extends CardsPage<Clinic> {
         remark,
         ...rest
     }: Clinic) => (
-        <Card
-            className="mx-auto mb-4 mx-sm-1"
-            style={{ minWidth: '20rem', maxWidth: '20rem' }}
-            body
-        >
+        <Card body>
             <CardTitle>
                 {url ? (
-                    <a target="_blank" href={url}>
+                    <a
+                        className="text-decoration-none"
+                        target="_blank"
+                        href={url}
+                    >
                         {name}
                     </a>
                 ) : (
@@ -49,7 +49,10 @@ export class ClinicList extends CardsPage<Clinic> {
                 <ol className="list-unstyled">
                     {contacts.map(({ name, phone }) => (
                         <li key={name}>
-                            <a href={'tel:' + phone}>
+                            <a
+                                className="text-decoration-none"
+                                href={'tel:' + phone}
+                            >
                                 <BGIcon name="phone" /> {name}：{phone}
                             </a>
                         </li>

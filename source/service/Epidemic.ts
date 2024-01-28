@@ -1,5 +1,6 @@
 // 疫情数据调用封装
 // NOTE: 访问接口地址并不是和系统对应的接口是同一服务
+import { DataObject } from 'dom-renderer';
 import { HTTPClient } from 'koajax';
 
 // @credit: https://lab.ahusmart.com/nCoV/api/ 提供了丁香园的疫情数据
@@ -10,15 +11,19 @@ export const epidemic = new HTTPClient({
     responseType: 'json'
 });
 
-interface MapData<T = {}> {
+interface MapData<T = DataObject> {
     results: T[];
 }
 
-export interface City {
+export type StatisticType = 'confirmed' | 'suspected' | 'cured' | 'dead';
+
+export type StatisticData = Record<`${StatisticType}Count`, number>;
+
+export interface City extends StatisticData {
     cityName: string;
 }
 
-export interface Province {
+export interface Province extends StatisticData {
     provinceShortName: string;
     cities?: City[];
     updateTime: number;

@@ -1,67 +1,62 @@
-/**
- * WebCell Echarts热力图-地图可视化通用组件
- * 本地图组件为热力图-地图定制化开发提供了最高的自由度
- * @author: shadowingszy
- *
- * 传入props说明:
- * mapUrl: 地图json文件地址。
- * chartOptions: echarts中的所有options，注意，地图的map项值为'map'。
- * chartOnClickCallBack: 点击地图后的回调函数。
- * chartGeoRoamCallBack: 地图缩放事件回调函数。
- */
-// eslint-disable-next-line no-unused-vars
-import { WebCellProps, component, mixin, attribute, watch } from 'web-cell';
-import { observer } from 'mobx-web-cell';
-import { init, registerMap } from 'echarts';
+import { DataObject } from 'dom-renderer';
+import { WebCell, component, attribute, observer } from 'web-cell';
+import { observable } from 'mobx';
+import { EChartsOption, EChartsType, init, registerMap } from 'echarts';
 
 import { long2short } from '../adapter';
 
-export interface EChartsMapProps extends WebCellProps {
+export interface EChartsMapProps {
+    /**
+     * 地图 JSON 文件地址
+     */
     mapUrl?: string;
-    chartOptions?: any;
+    /**
+     * Echarts 中的所有 options（注意：地图的 map 项值为 'map'）
+     */
+    chartOptions?: EChartsOption;
     mapName?: string;
-    chartOnClickCallBack?: (param: any, chart: any) => void;
-    chartGeoRoamCallBack?: (param: any, chart: any) => void;
-    chartAdjustLabel?: (param: any, chart: any) => void;
+    /**
+     * 点击地图后的回调函数
+     */
+    onSeriesClick?: (event: CustomEvent<DataObject>) => any;
+    /**
+     * 地图缩放事件回调函数
+     */
+    onChartGeoRoam?: (event: CustomEvent<DataObject>) => any;
+    onChartLabelAdjust?: (event: CustomEvent<EChartsType>) => any;
 }
 
+export interface EChartsMap extends WebCell<EChartsMapProps> {}
+
+/**
+ * WebCell ECharts 热力图-地图可视化通用组件
+ *
+ * 本地图组件为热力图-地图定制化开发提供了最高的自由度
+ *
+ * @author shadowingszy
+ */
+@component({ tagName: 'echarts-map' })
 @observer
-@component({
-    tagName: 'echarts-map',
-    renderTarget: 'children'
-})
-export class EChartsMap extends mixin<EChartsMapProps>() {
+export class EChartsMap
+    extends HTMLElement
+    implements WebCell<EChartsMapProps>
+{
     @attribute
-    @watch
-    public mapUrl: string = '';
+    @observable
+    accessor mapUrl = '';
 
     @attribute
-    @watch
-    public mapName: string = 'map';
+    @observable
+    accessor mapName = 'map';
 
-    @watch
-    public chartOptions: any = {};
+    @observable
+    accessor chartOptions: EChartsOption = {};
 
-    @watch
-    public chartOnClickCallBack = (param, chart: any) => {
-        console.log('click', param, chart);
-    };
-
-    @watch
-    public chartGeoRoamCallBack = (param, chart) => {
-        console.log('roam', param, chart);
-    };
-
-    @watch
-    public chartAdjustLabel = (param, chart) => {
-        console.log('adjust-label', param, chart);
-    };
-
-    chart: any;
+    chart: EChartsType;
 
     connectedCallback() {
         this.classList.add('w-100', 'h-100');
-        // @ts-ignore
+
         this.chart = init(this);
 
         this.listen(), this.loadData();
@@ -74,35 +69,36 @@ export class EChartsMap extends mixin<EChartsMapProps>() {
     }
 
     adjustLabel() {
-        this.props.chartAdjustLabel(null, this.chart);
+        this.emit('chartlabeladjust', this.chart);
     }
 
     listen() {
-        const { chart, chartOnClickCallBack, chartOptions } = this;
+        const { chart, chartOptions } = this;
+        const { data } = chartOptions.baseOption.timeline;
         // implement hover-then-click on mobile devices
-        var hovered = '';
+        let hovered = '';
 
-        chart.on('mouseover', 'series', ({ name }) =>
-            // prevent click event to trigger immediately
-            setTimeout(() => (hovered = name))
-        );
-        chart.on('mouseout', 'series', () => (hovered = ''));
-
-        chart.on('click', 'series', params => {
-            if (hovered.length > 0) {
-                chartOnClickCallBack(params, chart);
-                hovered = '';
-            }
-        });
-        chart.on('click', 'timeline', ({ dataIndex }) =>
-            chart.dispatchAction({
-                type: 'timelineChange',
-                // index of time point
-                currentIndex: chartOptions.baseOption.timeline.data.findIndex(
-                    d => d === dataIndex
-                )
+        chart
+            .on('mouseover', 'series', ({ name }) => {
+                // prevent click event to trigger immediately
+                setTimeout(() => (hovered = name));
             })
-        );
+            .on('mouseout', 'series', () => {
+                hovered = '';
+            })
+            .on('click', 'series', params => {
+                if (hovered) {
+                    this.emit('seriesclick', params);
+                    hovered = '';
+                }
+            })
+            .on('click', 'timeline', ({ dataIndex }) =>
+                chart.dispatchAction({
+                    type: 'timelineChange',
+                    // index of time point
+                    currentIndex: data.findIndex(d => d === dataIndex)
+                })
+            );
     }
 
     async loadData() {

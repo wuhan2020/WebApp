@@ -1,6 +1,6 @@
-import { WebCellProps, component, mixin, watch, createCell } from 'web-cell';
-import { FormField } from 'boot-cell/source/Form/FormField';
-import { Button } from 'boot-cell/source/Form/Button';
+import { WebCell, component, attribute, observer } from 'web-cell';
+import { FormField, Button } from 'boot-cell';
+import { observable } from 'mobx';
 
 import { mergeList } from '../../utility';
 import { RouteRoot } from '../data/menu';
@@ -8,8 +8,7 @@ import CommonSupplies from '../data/Supplies';
 import {
     SuppliesRequirement,
     Supplies,
-    suppliesRequirement,
-    history
+    suppliesRequirement
 } from '../../model';
 import { GeoCoord, Contact } from '../../service';
 import {
@@ -19,22 +18,24 @@ import {
     SuppliesField
 } from '../../component';
 
-export interface HospitalEditProps extends WebCellProps {
+export interface HospitalEditProps {
     dataId: string;
 }
 
-@component({
-    tagName: 'hospital-edit',
-    renderTarget: 'children'
-})
-export class HospitalEdit extends mixin<
-    HospitalEditProps,
-    SuppliesRequirement
->() {
-    @watch
-    dataId = '';
+export interface HospitalEdit extends WebCell<HospitalEditProps> {}
 
-    state = {
+@component({ tagName: 'hospital-edit' })
+@observer
+export class HospitalEdit
+    extends HTMLElement
+    implements WebCell<HospitalEditProps>
+{
+    @attribute
+    @observable
+    accessor dataId = '';
+
+    @observable
+    accessor state = {
         hospital: '',
         province: '',
         city: '',
@@ -45,11 +46,9 @@ export class HospitalEdit extends mixin<
         supplies: CommonSupplies as Supplies[],
         contacts: [{} as Contact],
         remark: ''
-    };
+    } as SuppliesRequirement;
 
     async connectedCallback() {
-        super.connectedCallback();
-
         if (!this.dataId) return;
 
         const {
@@ -65,7 +64,7 @@ export class HospitalEdit extends mixin<
             remark
         } = await suppliesRequirement.getOne(this.dataId);
 
-        this.setState({
+        this.state = {
             hospital,
             province,
             city,
@@ -80,21 +79,13 @@ export class HospitalEdit extends mixin<
             ),
             contacts,
             remark
-        });
+        };
     }
 
     changeText = ({ target }: Event) => {
         const { name, value } = target as HTMLInputElement;
 
-        this.state[name] = value;
-    };
-
-    updateText = ({ target }: Event) => {
-        const { name, value } = target as HTMLInputElement;
-
-        event.stopPropagation();
-
-        this.setState({ [name]: value });
+        this.state = { ...this.state, [name]: value };
     };
 
     changeAddress = ({
@@ -122,12 +113,11 @@ export class HospitalEdit extends mixin<
         );
         self.alert('提交成功，工作人员审核后即可查看');
 
-        history.push(RouteRoot.Hospital);
+        location.hash = RouteRoot.Hospital;
     };
 
-    render(
-        _,
-        {
+    render() {
+        const {
             hospital,
             province,
             city,
@@ -137,12 +127,12 @@ export class HospitalEdit extends mixin<
             supplies,
             contacts,
             remark
-        }: SuppliesRequirement
-    ) {
+        } = this.state;
+
         return (
             <SessionBox>
-                <h2>医用物资需求发布</h2>
-
+                <h1>医用物资需求发布</h1>
+                {/* @ts-ignore */}
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
                     <FormField
                         name="hospital"
@@ -150,7 +140,6 @@ export class HospitalEdit extends mixin<
                         defaultValue={hospital}
                         label="医疗机构"
                         placeholder="可详细至分院、院区、科室"
-                        onChange={this.updateText}
                     />
                     <FormField label="机构地址">
                         <AddressField
@@ -185,20 +174,18 @@ export class HospitalEdit extends mixin<
                         label="备注"
                         defaultValue={remark}
                     />
-                    <div className="form-group mt-3">
+                    <div className="form-group mt-3 d-flex flex-column">
                         <Button
                             type="submit"
-                            color="primary"
-                            block
+                            variant="primary"
                             disabled={suppliesRequirement.loading}
                         >
                             提交
                         </Button>
                         <Button
                             type="reset"
-                            color="danger"
-                            block
-                            onClick={() => history.push(RouteRoot.Hospital)}
+                            variant="danger"
+                            onClick={() => (location.hash = RouteRoot.Hospital)}
                         >
                             取消
                         </Button>

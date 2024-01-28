@@ -6,11 +6,15 @@ import {
     ScrollBoundary,
     TouchHandler
 } from 'boot-cell';
+import { CustomElement } from 'web-utility';
 
 import { DistrictEvent, DistrictFilter, District } from './DistrictFilter';
 import { VerifiableModel, session } from '../model';
 
-export abstract class CardsPage<T> extends HTMLElement {
+export abstract class CardsPage<T>
+    extends HTMLElement
+    implements CustomElement
+{
     abstract scope: string;
     abstract model: VerifiableModel;
     abstract name: string;
@@ -19,6 +23,10 @@ export abstract class CardsPage<T> extends HTMLElement {
     filter: District & { verified?: boolean } = {
         verified: !session.hasRole('Admin')
     };
+
+    connectedCallback() {
+        this.model.getNextPage(this.filter);
+    }
 
     loadMore: TouchHandler = detail => {
         if (detail === 'bottom') return this.model.getNextPage(this.filter);
@@ -56,7 +64,7 @@ export abstract class CardsPage<T> extends HTMLElement {
                 <header className="d-flex justify-content-between align-items-center my-3">
                     <h2 className="m-0">{title}</h2>
                     <span>
-                        <Button variant="warning" href={scope + '/edit'}>
+                        <Button variant="warning" href={`#${scope}/edit`}>
                             发布
                         </Button>
                     </span>
@@ -74,11 +82,15 @@ export abstract class CardsPage<T> extends HTMLElement {
                 <ScrollBoundary onTouch={this.loadMore}>
                     <SpinnerBox
                         cover={loading}
-                        className="card-deck justify-content-around"
+                        className="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3"
                     >
-                        {list.map(this.renderItem)}
+                        {list.map(item => (
+                            <div className="col">
+                                {this.renderItem(item as T)}
+                            </div>
+                        ))}
                     </SpinnerBox>
-                    <p slot="bottom" className="text-center mt-2">
+                    <p className="text-center mt-2">
                         {noMore ? '没有更多数据了' : '加载更多...'}
                     </p>
                 </ScrollBoundary>

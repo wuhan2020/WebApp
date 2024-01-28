@@ -1,70 +1,75 @@
 import {
     WebCellProps,
     component,
-    mixin,
+    WebCell,
     attribute,
-    watch,
-    createCell,
-    Fragment
+    observer,
+    reaction
 } from 'web-cell';
-import type { HTMLFieldProps } from 'web-utility';
-import { Field } from 'boot-cell/source/Form/Field';
+import { observable } from 'mobx';
+import { FormControl } from 'boot-cell';
 
-import { searchAddress, coordsOf } from '../service';
+import { Address, GeoCoord, searchAddress, coordsOf } from '../service';
 
-export interface AddressFieldProps extends HTMLFieldProps, WebCellProps {
+export interface AddressFieldProps
+    extends Address,
+        Partial<GeoCoord>,
+        WebCellProps<HTMLInputElement> {
     place?: string;
-    province: string;
-    city: string;
-    district: string;
-    address: string;
-    latitude?: number;
-    longitude?: number;
 }
 
-interface AddressFieldState {
-    loading?: boolean;
-}
+export interface AddressField extends WebCell<AddressFieldProps> {}
 
-@component({
-    tagName: 'address-field',
-    renderTarget: 'children'
-})
-export class AddressField extends mixin<
-    AddressFieldProps,
-    AddressFieldState
->() {
+@component({ tagName: 'address-field' })
+@observer
+export class AddressField
+    extends HTMLElement
+    implements WebCell<AddressFieldProps>
+{
     @attribute
-    set place(value: string) {
-        if ((this.props.place = value)) this.search(value);
+    @observable
+    accessor place: string;
+
+    @reaction(({ place }) => place)
+    handlePlace(value: string) {
+        if (value) this.search(value);
     }
 
     @attribute
-    @watch
-    province = '';
+    @observable
+    accessor province = '';
 
     @attribute
-    @watch
-    city = '';
+    @observable
+    accessor city = '';
 
     @attribute
-    @watch
-    district = '';
+    @observable
+    accessor district = '';
 
     @attribute
-    @watch
-    address = '';
+    @observable
+    accessor address = '';
 
-    state = { loading: false };
+    @attribute
+    @observable
+    accessor latitude: number;
+
+    @attribute
+    @observable
+    accessor longitude: number;
+
+    @observable
+    accessor loading = false;
 
     emitData() {
-        const { defaultSlot, ...data } = this.props;
+        const { place, province, city, district, address } = this;
 
-        this.emit('change', data);
+        this.emit('change', { place, province, city, district, address });
     }
 
     search = async (place: string) => {
-        await this.setState({ loading: true });
+        this.loading = true;
 
         try {
             const list = await searchAddress(place);
@@ -75,7 +80,7 @@ export class AddressField extends mixin<
 
             const [longitude, latitude] = location.split(',').map(Number);
 
-            await this.setProps({
+            Object.assign(this, {
                 province: pname,
                 city: cityname,
                 district: adname,
@@ -86,7 +91,7 @@ export class AddressField extends mixin<
 
             this.emitData();
         } finally {
-            await this.setState({ loading: false });
+            this.loading = false;
         }
     };
 
@@ -97,29 +102,27 @@ export class AddressField extends mixin<
     emitChange = async (event: Event) => {
         event.stopPropagation();
 
-        const { name, value } = event.target as HTMLInputElement,
-            { props } = this;
+        const { name, value } = event.target as HTMLInputElement;
 
-        props[name] = value;
+        this[name] = value;
 
         const { province, city, district, address } = this;
 
         const [{ latitude, longitude }] = await coordsOf(
             province + city + district + address
         );
-
-        (props.latitude = latitude), (props.longitude = longitude);
+        this.latitude = latitude;
+        this.longitude = longitude;
 
         this.emitData();
     };
 
-    render(
-        { province, city, district, address }: AddressFieldProps,
-        { loading }: AddressFieldState
-    ) {
+    render() {
+        const { province, city, district, address, loading } = this;
+
         return (
             <>
-                <Field
+                <FormControl
                     name="province"
                     required
                     defaultValue={province}
@@ -127,7 +130,7 @@ export class AddressField extends mixin<
                     disabled={loading}
                     onChange={this.emitChange}
                 />
-                <Field
+                <FormControl
                     name="city"
                     required
                     defaultValue={city}
@@ -135,7 +138,7 @@ export class AddressField extends mixin<
                     disabled={loading}
                     onChange={this.emitChange}
                 />
-                <Field
+                <FormControl
                     name="district"
                     required
                     defaultValue={district}
@@ -143,7 +146,7 @@ export class AddressField extends mixin<
                     disabled={loading}
                     onChange={this.emitChange}
                 />
-                <Field
+                <FormControl
                     name="address"
                     required
                     defaultValue={address}
