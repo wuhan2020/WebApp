@@ -14,7 +14,7 @@ import {
     convertCountrySeries
 } from './adapter';
 import { getHistory, getCurrent, getOverall } from '../../service';
-import style from './index.module.css';
+import * as style from './index.module.css';
 
 const resolution = Hour * 24;
 

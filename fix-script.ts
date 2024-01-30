@@ -1,8 +1,8 @@
 import { promises } from 'fs';
 
 const title = 'fix Parcel bundle',
-    filePattern = /^index\..+\.js$/i,
-    bugPattern = /\$\w+?\$import\$\w+?;/g;
+    filePattern = /\.js$/i,
+    bugPattern = /\$\w+?\$import\$\w+/g;
 
 console.time(title);
 
@@ -17,7 +17,7 @@ console.time(title);
 
             if (!bugPattern.test(source)) continue;
 
-            await promises.writeFile(file, source.replace(bugPattern, ''));
+            await promises.writeFile(file, source.replace(bugPattern, 'void 0'));
 
             console.log(`[fixed] ${file}`);
         }

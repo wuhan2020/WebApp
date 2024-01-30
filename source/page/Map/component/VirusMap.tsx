@@ -8,7 +8,7 @@ import { PatientStatData, OverallCountryData } from '../adapter';
 
 import { createPieces } from '../utility';
 import MapUrls from '../data/province';
-import style from './VirusMap.module.css';
+import * as style from './VirusMap.module.css';
 
 export type MapDataType = Record<string, PatientStatData>;
 

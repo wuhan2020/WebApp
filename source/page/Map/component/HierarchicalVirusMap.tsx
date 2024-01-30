@@ -15,7 +15,7 @@ import {
     extractCitiesSeries
 } from '../adapter';
 
-import style from './HierarchicalVirusMap.module.css';
+import * as style from './HierarchicalVirusMap.module.css';
 
 export interface HierarchicalVirusMapProps {
     /**
