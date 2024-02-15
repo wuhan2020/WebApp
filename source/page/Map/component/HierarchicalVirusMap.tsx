@@ -28,11 +28,6 @@ export interface HierarchicalVirusMapProps {
     resolution: number;
 }
 
-interface State {
-    path: string[];
-    currentChartArea: string;
-}
-
 export interface HierarchicalVirusMap
     extends WebCell<HierarchicalVirusMapProps> {}
 
@@ -65,7 +60,7 @@ export class HierarchicalVirusMap
         currentChartArea: '中国'
     };
 
-    connectedCallback() {
+    mountedCallback() {
         this.classList.add('position-relative');
     }
 

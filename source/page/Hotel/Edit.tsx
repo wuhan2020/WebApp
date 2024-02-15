@@ -34,7 +34,7 @@ export class HotelEdit extends HTMLElement implements WebCell<HotelEditProps> {
         remark: ''
     } as Hotel;
 
-    async connectedCallback() {
+    async mountedCallback() {
         if (!this.dataId) return;
 
         const {

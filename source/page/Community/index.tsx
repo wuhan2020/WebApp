@@ -15,7 +15,7 @@ export class CommunityPage extends HTMLElement {
     @observable
     accessor list: Contributor[] = [];
 
-    async connectedCallback() {
+    async mountedCallback() {
         this.loading = true;
 
         this.list = await repository.getContributors();

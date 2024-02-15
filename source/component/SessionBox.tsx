@@ -19,7 +19,7 @@ export class SessionBox extends HTMLElement implements WebCell {
 
     emitSignIn = (user: User) => this.emit('signin', user, {});
 
-    connectedCallback() {
+    mountedCallback() {
         if (session.user) this.emitSignIn(session.user);
         else session.getProfile().then(this.emitSignIn);
     }

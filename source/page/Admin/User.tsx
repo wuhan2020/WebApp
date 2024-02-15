@@ -18,7 +18,7 @@ import { user } from '../../model';
 export class UserAdmin extends HTMLElement implements CustomElement {
     filter: { phone?: string } = {};
 
-    connectedCallback() {
+    mountedCallback() {
         user.getRoles();
     }
 

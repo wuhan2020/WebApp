@@ -40,7 +40,7 @@ export class ClinicEdit
         remark: ''
     } as Clinic;
 
-    async connectedCallback() {
+    async mountedCallback() {
         if (!this.dataId) return;
 
         const { name, url, contacts, startTime, endTime, remark } =

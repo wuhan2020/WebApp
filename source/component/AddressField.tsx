@@ -95,7 +95,7 @@ export class AddressField
         }
     };
 
-    connectedCallback() {
+    mountedCallback() {
         this.classList.add('input-group');
     }
 

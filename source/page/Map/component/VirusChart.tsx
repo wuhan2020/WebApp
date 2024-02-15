@@ -298,7 +298,7 @@ export class VirusChart
         } as EChartsOption;
     }
 
-    connectedCallback() {
+    mountedCallback() {
         this.classList.add('d-flex', 'flex-column');
     }
 

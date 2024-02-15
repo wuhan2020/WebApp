@@ -3,6 +3,7 @@ import { observable } from 'mobx';
 import { SpinnerBox } from 'boot-cell';
 import { CustomElement, Hour } from 'web-utility';
 
+import '../../component/ECharts';
 import { HierarchicalVirusMap } from './component';
 import {
     Series,
@@ -32,10 +33,10 @@ export default class MapsPage extends HTMLElement implements CustomElement {
         countryData?: CountryData;
     };
 
-    connectedCallback() {
+    mountedCallback() {
         this.classList.add(style.box);
 
-        this.loadMapData();
+        // this.loadMapData();
     }
 
     async loadMapData() {
@@ -57,14 +58,9 @@ export default class MapsPage extends HTMLElement implements CustomElement {
         const { loading, virusData } = this;
 
         return (
-            <SpinnerBox cover={loading}>
-                {virusData && (
-                    <HierarchicalVirusMap
-                        data={virusData}
-                        resolution={resolution}
-                    />
-                )}
-            </SpinnerBox>
+            <ec-chart style={{ height: '75vh' }}>
+                <ec-title text="test" />
+            </ec-chart>
         );
     }
 }

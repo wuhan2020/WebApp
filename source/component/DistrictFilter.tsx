@@ -33,7 +33,7 @@ export class DistrictFilter
     @observable
     accessor district = '';
 
-    connectedCallback() {
+    mountedCallback() {
         this.classList.add('d-flex', 'flex-wrap', 'gap-2');
     }
 

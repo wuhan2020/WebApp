@@ -24,7 +24,7 @@ export abstract class CardsPage<T>
         verified: !session.hasRole('Admin')
     };
 
-    connectedCallback() {
+    mountedCallback() {
         this.model.getNextPage(this.filter);
     }
 
