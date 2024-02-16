@@ -1,17 +1,23 @@
+import { JsxProps } from 'dom-renderer';
+import { EChartsOption } from 'echarts';
 import { CustomElement, toCamelCase, toHyphenCase } from 'web-utility';
 import {
     BUILTIN_CHARTS_MAP,
     BUITIN_COMPONENTS_MAP,
+    ECChartOptionName,
     ECComponentOptionName,
-    loadChart,
-    loadComponent
+    proxyPrototype
 } from './utility';
 
 export abstract class ECOptionElement
     extends HTMLElement
     implements CustomElement
 {
-    #data = {};
+    #data: EChartsOption = {};
+
+    toJSON() {
+        return this.#data;
+    }
 
     get chartTagName() {
         return toCamelCase(this.tagName.split('-')[1].toLowerCase());
@@ -24,28 +30,12 @@ export abstract class ECOptionElement
     constructor() {
         super();
 
-        const prototype = Object.getPrototypeOf(this);
-
-        const prototypeProxy = new Proxy(prototype, {
-            set: (_, key, value) => {
-                if (typeof key === 'string') this.setProperty(key, value);
-                else this[key] = value;
-
-                return true;
-            },
-            get: (prototype, key, receiver) =>
-                key in this.#data
-                    ? this.#data[key]
-                    : Reflect.get(prototype, key, receiver)
-        });
-
-        Object.setPrototypeOf(this, prototypeProxy);
+        proxyPrototype(this, this.#data, (key, value) =>
+            this.setProperty(key.toString(), value)
+        );
     }
 
     connectedCallback() {
-        if (!this.isSeries)
-            loadComponent(this.chartTagName as ECComponentOptionName);
-
         this.update();
     }
 
@@ -64,10 +54,6 @@ export abstract class ECOptionElement
                     super.setAttribute(key, value + '');
             }
         else super.removeAttribute(key);
-
-        const { isSeries } = this;
-
-        if (isSeries && key === 'type' && value) return loadChart(value);
 
         if (this.isConnected) this.update();
     }
@@ -103,7 +89,17 @@ for (const name of Object.keys({
         class extends ECOptionElement {}
     );
 
+type PickSingle<T> = T extends infer S | (infer S)[] ? S : T;
+
+type ECOptionElements = {
+    [K in
+        | ECComponentOptionName
+        | ECChartOptionName as `ec-${K}`]: JsxProps<ECOptionElement> &
+        PickSingle<EChartsOption[K]>;
+};
+
 declare global {
-    interface HTMLElementTagNameMap
-        extends Record<`ec-${ECComponentOptionName}`, ECOptionElement> {}
+    namespace JSX {
+        interface IntrinsicElements extends ECOptionElements {}
+    }
 }

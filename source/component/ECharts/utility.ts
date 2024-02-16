@@ -1,4 +1,31 @@
 import { use } from 'echarts/core';
+import memoize from 'lodash.memoize';
+import { IndexKey } from 'web-utility';
+
+export function proxyPrototype<T extends object>(
+    target: T,
+    dataStore: Record<IndexKey, any>,
+    setter?: (key: IndexKey, value: any) => any
+) {
+    const prototype = Object.getPrototypeOf(target);
+
+    const prototypeProxy = new Proxy(prototype, {
+        set: (_, key, value, receiver) => {
+            if (key in receiver) Reflect.set(prototype, key, value, receiver);
+            else dataStore[key] = value;
+
+            setter?.(key, value);
+
+            return true;
+        },
+        get: (prototype, key, receiver) =>
+            key in dataStore
+                ? dataStore[key]
+                : Reflect.get(prototype, key, receiver)
+    });
+
+    Object.setPrototypeOf(target, prototypeProxy);
+}
 
 /**
  * @see {@link https://github.com/apache/echarts/blob/031a908fafaa57e2277b2f720087195925ec38cf/src/model/Global.ts#L83-L111}
@@ -35,12 +62,12 @@ export const BUITIN_COMPONENTS_MAP = {
 
 export type ECComponentOptionName = keyof typeof BUITIN_COMPONENTS_MAP;
 
-export async function loadComponent(name: ECComponentOptionName) {
+export const loadComponent = memoize(async (name: ECComponentOptionName) => {
     const componentName = BUITIN_COMPONENTS_MAP[name];
     const { [componentName]: component } = await import('echarts/components');
 
     use(component);
-}
+});
 
 /**
  * @see {@link https://github.com/apache/echarts/blob/031a908fafaa57e2277b2f720087195925ec38cf/src/model/Global.ts#L113-L136}
@@ -70,17 +97,19 @@ export const BUILTIN_CHARTS_MAP = {
     custom: 'CustomChart'
 } as const;
 
-export async function loadChart(name: keyof typeof BUILTIN_CHARTS_MAP) {
+export type ECChartOptionName = keyof typeof BUILTIN_CHARTS_MAP;
+
+export const loadChart = memoize(async (name: ECChartOptionName) => {
     const chartName = BUILTIN_CHARTS_MAP[name];
     const { [chartName]: chart } = await import('echarts/charts');
 
     use(chart);
-}
+});
 
 export type ChartType = 'svg' | 'canvas';
 
-export async function loadRenderer(type: ChartType) {
+export const loadRenderer = memoize(async (type: ChartType) => {
     const { SVGRenderer, CanvasRenderer } = await import('echarts/renderers');
 
     use(type === 'svg' ? SVGRenderer : CanvasRenderer);
-}
+});
