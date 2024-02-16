@@ -9,6 +9,8 @@ import {
     ChartType,
     ECChartOptionName,
     ECComponentOptionName,
+    ZRElementEventHandler,
+    ZRElementEventName,
     loadChart,
     loadComponent,
     loadRenderer,
@@ -19,7 +21,9 @@ export class EChartsElement extends HTMLElement implements CustomElement {
     #data: EChartsOption = {};
     #type: ChartType;
     #core?: ECharts;
-    #buffer = [];
+    #eventHandlerBuffer: [ZRElementEventName, string, ZRElementEventHandler][] =
+        [];
+    #eventDataBuffer = [];
 
     toJSON() {
         return this.#core?.getOption();
@@ -60,14 +64,19 @@ export class EChartsElement extends HTMLElement implements CustomElement {
 
         this.setOption(this.#data);
 
-        for (const option of this.#buffer) this.setOption(option);
+        for (const [event, selector, handler] of this.#eventHandlerBuffer)
+            this.onChild(event, selector, handler);
 
-        this.#buffer.length = 0;
+        this.#eventHandlerBuffer.length = 0;
+
+        for (const option of this.#eventDataBuffer) this.setOption(option);
+
+        this.#eventDataBuffer.length = 0;
     }
 
     async setOption(data: EChartsOption) {
         if (!this.#core) {
-            this.#buffer.push(data);
+            this.#eventDataBuffer.push(data);
             return;
         }
 
@@ -97,6 +106,15 @@ export class EChartsElement extends HTMLElement implements CustomElement {
         else super.removeAttribute(key);
 
         this.setOption(this.#data);
+    }
+
+    onChild(
+        event: ZRElementEventName,
+        selector: string,
+        handler: ZRElementEventHandler
+    ) {
+        if (this.#core) this.#core.on(event, selector, handler);
+        else this.#eventHandlerBuffer.push([event, selector, handler]);
     }
 }
 

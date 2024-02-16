@@ -1,4 +1,4 @@
-import { use } from 'echarts/core';
+import { ECElementEvent, use } from 'echarts/core';
 import memoize from 'lodash.memoize';
 import { IndexKey } from 'web-utility';
 
@@ -26,6 +26,11 @@ export function proxyPrototype<T extends object>(
 
     Object.setPrototypeOf(target, prototypeProxy);
 }
+
+export const EventKeyPattern = /^on(\w+)/;
+
+export type ZRElementEventName = ECElementEvent['type'];
+export type ZRElementEventHandler = (event: ECElementEvent) => boolean | void;
 
 /**
  * @see {@link https://github.com/apache/echarts/blob/031a908fafaa57e2277b2f720087195925ec38cf/src/model/Global.ts#L83-L111}

@@ -58,8 +58,8 @@ export default class MapsPage extends HTMLElement implements CustomElement {
         const { loading, virusData } = this;
 
         return (
-            <ec-chart style={{ height: '75vh' }}>
-                <ec-title text="test" />
+            <ec-chart style={{ height: '75vh' }} useUTC>
+                <ec-title text="test" triggerEvent onClick={console.log} />
             </ec-chart>
         );
     }

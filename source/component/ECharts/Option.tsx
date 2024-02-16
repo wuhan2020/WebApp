@@ -1,11 +1,17 @@
 import { JsxProps } from 'dom-renderer';
 import { EChartsOption } from 'echarts';
+import { ECElementEvent } from 'echarts/core';
 import { CustomElement, toCamelCase, toHyphenCase } from 'web-utility';
+
+import { EChartsElement } from './Chart';
 import {
     BUILTIN_CHARTS_MAP,
     BUITIN_COMPONENTS_MAP,
     ECChartOptionName,
     ECComponentOptionName,
+    EventKeyPattern,
+    ZRElementEventHandler,
+    ZRElementEventName,
     proxyPrototype
 } from './utility';
 
@@ -36,6 +42,12 @@ export abstract class ECOptionElement
     }
 
     connectedCallback() {
+        for (const [key, value] of Object.entries(this.#data))
+            if (EventKeyPattern.test(key) && typeof value === 'function')
+                this.on(
+                    key.slice(2) as ZRElementEventName,
+                    value as ZRElementEventHandler
+                );
         this.update();
     }
 
@@ -49,6 +61,10 @@ export abstract class ECOptionElement
                 case 'boolean':
                     if (value) super.setAttribute(key, key + '');
                     else super.removeAttribute(key);
+                    break;
+                case 'function':
+                    if (EventKeyPattern.test(key))
+                        this.on(key.slice(2) as ECElementEvent['type'], value);
                     break;
                 default:
                     super.setAttribute(key, value + '');
@@ -71,6 +87,15 @@ export abstract class ECOptionElement
         );
     }
 
+    on(event: ZRElementEventName, handler: ZRElementEventHandler) {
+        if (this.isConnected)
+            this.closest<EChartsElement>('ec-chart')?.onChild(
+                event,
+                [this.chartTagName, this['type']].filter(Boolean).join('.'),
+                handler
+            );
+    }
+
     setAttribute(key: string, value: string) {
         super.setAttribute(key, value);
 
@@ -89,12 +114,15 @@ for (const name of Object.keys({
         class extends ECOptionElement {}
     );
 
+type HyphenCase<T> = T extends `${infer L}${infer R}`
+    ? `${L extends Uppercase<L> ? `-${Lowercase<L>}` : L}${HyphenCase<R>}`
+    : T;
 type PickSingle<T> = T extends infer S | (infer S)[] ? S : T;
 
 type ECOptionElements = {
     [K in
         | ECComponentOptionName
-        | ECChartOptionName as `ec-${K}`]: JsxProps<ECOptionElement> &
+        | ECChartOptionName as `ec-${HyphenCase<K>}`]: JsxProps<ECOptionElement> &
         PickSingle<EChartsOption[K]>;
 };
 
