@@ -1,12 +1,9 @@
 import { ECElementEvent } from 'echarts';
-import { CustomElement, proxyPrototype, toHyphenCase } from 'web-utility';
+import { proxyPrototype, toHyphenCase } from 'web-utility';
 
 import { EventKeyPattern } from './utility';
 
-export abstract class ProxyElement<T extends object>
-    extends HTMLElement
-    implements CustomElement
-{
+export abstract class ProxyElement<T extends object> extends HTMLElement {
     #data = {} as T;
 
     toJSON() {

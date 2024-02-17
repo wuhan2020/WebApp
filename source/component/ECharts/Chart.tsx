@@ -1,8 +1,9 @@
 import { JsxProps } from 'dom-renderer';
-import { EChartsOption } from 'echarts';
+import { EChartsOption, ResizeOpts } from 'echarts';
 import { ECharts, init } from 'echarts/core';
 import { ECBasicOption } from 'echarts/types/dist/shared';
-import { parseDOM } from 'web-utility';
+import debounce from 'lodash.debounce';
+import { CustomElement, parseDOM } from 'web-utility';
 
 import { ProxyElement } from './Proxy';
 import {
@@ -26,11 +27,15 @@ export interface EChartsElementProps
         EChartsElementEventHandler {
     theme?: Parameters<typeof init>[1];
     initOptions?: Parameters<typeof init>[2];
+    resizeOptions?: ResizeOpts;
 }
 
 export type EChartsElementState = EChartsElementProps & EChartsOption;
 
-export class EChartsElement extends ProxyElement<EChartsElementState> {
+export class EChartsElement
+    extends ProxyElement<EChartsElementState>
+    implements CustomElement
+{
     #type: ChartType;
     #core?: ECharts;
     #eventHandlers: [ZRElementEventName, ZRElementEventHandler, string?][] = [];
@@ -59,6 +64,14 @@ export class EChartsElement extends ProxyElement<EChartsElementState> {
 
     connectedCallback() {
         this.type ||= 'svg';
+
+        globalThis.addEventListener?.('resize', this.handleResize);
+    }
+
+    disconnectedCallback() {
+        globalThis.removeEventListener?.('resize', this.handleResize);
+
+        this.#core.dispose();
     }
 
     async #init(type: ChartType) {
@@ -145,6 +158,10 @@ export class EChartsElement extends ProxyElement<EChartsElementState> {
             if (index > -1) this.#eventHandlers.splice(index, 1);
         }
     }
+
+    handleResize = debounce(() =>
+        this.#core.resize(this.toJSON().resizeOptions)
+    );
 }
 
 customElements.define('ec-chart', EChartsElement);

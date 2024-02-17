@@ -1,6 +1,12 @@
 import { JsxProps } from 'dom-renderer';
 import { EChartsOption } from 'echarts';
-import { HyphenCase, PickSingle, toCamelCase, toHyphenCase } from 'web-utility';
+import {
+    CustomElement,
+    HyphenCase,
+    PickSingle,
+    toCamelCase,
+    toHyphenCase
+} from 'web-utility';
 
 import { EChartsElement } from './Chart';
 import { ProxyElement } from './Proxy';
@@ -14,7 +20,10 @@ import {
     ZRElementEventName
 } from './utility';
 
-export abstract class ECOptionElement extends ProxyElement<EChartsOption> {
+export abstract class ECOptionElement
+    extends ProxyElement<EChartsOption>
+    implements CustomElement
+{
     get chartTagName() {
         return toCamelCase(this.tagName.split('-')[1].toLowerCase());
     }
@@ -85,19 +94,21 @@ export abstract class ECOptionElement extends ProxyElement<EChartsOption> {
     }
 }
 
-for (const name of Object.keys({
-    ...BUITIN_COMPONENTS_MAP,
-    ...BUILTIN_CHARTS_MAP
-}))
+const ECOptionNames = [
+    ...Object.keys({ ...BUITIN_COMPONENTS_MAP, ...BUILTIN_CHARTS_MAP }),
+    'series'
+];
+
+for (const name of ECOptionNames)
     customElements.define(
         `ec-${toHyphenCase(name)}`,
         class extends ECOptionElement {}
     );
 
+type ECOptionName = ECComponentOptionName | ECChartOptionName | 'series';
+
 type ECOptionElements = {
-    [K in
-        | ECComponentOptionName
-        | ECChartOptionName as `ec-${HyphenCase<K>}`]: JsxProps<ECOptionElement> &
+    [K in ECOptionName as `ec-${HyphenCase<K>}`]: JsxProps<ECOptionElement> &
         PickSingle<EChartsOption[K]>;
 };
 

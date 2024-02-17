@@ -3,8 +3,7 @@ import { observable } from 'mobx';
 import { SpinnerBox } from 'boot-cell';
 import { CustomElement, Hour } from 'web-utility';
 
-import '../../component/ECharts';
-import { HierarchicalVirusMap } from './component';
+import { HierarchicalVirusMap, VirusChart } from './component';
 import {
     Series,
     ProvinceData,
@@ -58,15 +57,15 @@ export default class MapsPage extends HTMLElement implements CustomElement {
         const { loading, virusData } = this;
 
         return (
-            <ec-chart
-                style={{ height: '75vh' }}
-                useUTC
-                onClick={({ target }) =>
-                    !target && console.log('Empty clicked!')
-                }
-            >
-                <ec-title text="test" triggerEvent onClick={console.log} />
-            </ec-chart>
+            <SpinnerBox cover={loading}>
+                {virusData && (
+                    <HierarchicalVirusMap
+                        data={virusData}
+                        resolution={resolution}
+                    />
+                )}
+                <VirusChart />
+            </SpinnerBox>
         );
     }
 }

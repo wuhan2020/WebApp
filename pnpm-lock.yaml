@@ -32,6 +32,9 @@ dependencies:
   koajax:
     specifier: ^0.9.6
     version: 0.9.6(typescript@5.3.3)
+  lodash.debounce:
+    specifier: ^4.0.8
+    version: 4.0.8
   lodash.memoize:
     specifier: ^4.1.2
     version: 4.1.2
@@ -70,6 +73,9 @@ devDependencies:
   '@parcel/transformer-webmanifest':
     specifier: ~2.11.0
     version: 2.11.0
+  '@types/lodash.debounce':
+    specifier: ^4.0.9
+    version: 4.0.9
   '@types/lodash.memoize':
     specifier: ^4.1.9
     version: 4.1.9
@@ -2847,6 +2853,12 @@ packages:
       '@types/node': 18.19.17
     dev: true
 
+  /@types/lodash.debounce@4.0.9:
+    resolution: {integrity: sha512-Ma5JcgTREwpLRwMM+XwBR7DaWe96nC38uCBDFKZWbNKD+osjVzdpnUSwBcqCptrp16sSOLBAUb50Car5I0TCsQ==}
+    dependencies:
+      '@types/lodash': 4.14.202
+    dev: true
+
   /@types/lodash.memoize@4.1.9:
     resolution: {integrity: sha512-glY1nQuoqX4Ft8Uk+KfJudOD7DQbbEDF6k9XpGncaohW3RW4eSWBlx6AA0fZCrh40tZcQNH4jS/Oc59J6Eq+aw==}
     dependencies:
@@ -5256,7 +5268,6 @@ packages:
 
   /lodash.debounce@4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
-    dev: true
 
   /lodash.memoize@4.1.2:
     resolution: {integrity: sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==}
