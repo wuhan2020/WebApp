@@ -18,8 +18,8 @@ export abstract class ProxyElement<T extends object> extends HTMLElement {
         );
     }
 
-    abstract on(event: string, handler: (event: any) => any): any;
-    abstract off(event: string, handler: (event: any) => any): any;
+    abstract listen(event: string, handler: (event: any) => any): any;
+    abstract forget(event: string, handler: (event: any) => any): any;
 
     setProperty(key: string, value: any) {
         const oldValue = this.#data[key],
@@ -36,7 +36,7 @@ export abstract class ProxyElement<T extends object> extends HTMLElement {
                 else super.removeAttribute(name);
                 break;
             case 'function':
-                if (EventKeyPattern.test(key)) this.on(eventName, value);
+                if (EventKeyPattern.test(key)) this.listen(eventName, value);
                 break;
             default:
                 if (value != null) super.setAttribute(name, value + '');
@@ -44,7 +44,7 @@ export abstract class ProxyElement<T extends object> extends HTMLElement {
                     EventKeyPattern.test(key) &&
                     typeof oldValue === 'function'
                 )
-                    this.off(eventName, value);
+                    this.forget(eventName, value);
                 else super.removeAttribute(name);
         }
     }

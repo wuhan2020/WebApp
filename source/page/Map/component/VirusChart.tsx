@@ -260,6 +260,33 @@ export class VirusChart
 
         return (
             <>
+                <ec-chart className="w-100 h-50" theme="dark">
+                    <ec-title text="ECharts Getting Started Example" />
+
+                    <ec-legend data={['sales']} />
+
+                    <ec-tooltip />
+
+                    <ec-x-axis
+                        data={[
+                            'Shirts',
+                            'Cardigans',
+                            'Chiffons',
+                            'Pants',
+                            'Heels',
+                            'Socks'
+                        ]}
+                    />
+                    <ec-y-axis />
+
+                    <ec-series
+                        type="bar"
+                        name="sales"
+                        data={[5, 20, 36, 10, 10, 20]}
+                        onClick={console.log}
+                    />
+                </ec-chart>
+
                 <ec-chart className="w-100 h-50" color={['#c22b49', '#cca42d']}>
                     <ec-title text="确诊/疑似患者人数" top="5%" x="center" />
                     <ec-legend

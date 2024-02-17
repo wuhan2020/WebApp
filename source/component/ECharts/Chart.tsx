@@ -2,8 +2,9 @@ import { JsxProps } from 'dom-renderer';
 import { EChartsOption, ResizeOpts } from 'echarts';
 import { ECharts, init } from 'echarts/core';
 import { ECBasicOption } from 'echarts/types/dist/shared';
+import { Observable } from 'iterable-observer';
 import debounce from 'lodash.debounce';
-import { CustomElement, parseDOM } from 'web-utility';
+import { CustomElement, parseDOM, sleep } from 'web-utility';
 
 import { ProxyElement } from './Proxy';
 import {
@@ -32,6 +33,10 @@ export interface EChartsElementProps
 
 export type EChartsElementState = EChartsElementProps & EChartsOption;
 
+const DefaultOptions: EChartsOption = {
+    grid: {}
+};
+
 export class EChartsElement
     extends ProxyElement<EChartsElementState>
     implements CustomElement
@@ -51,15 +56,17 @@ export class EChartsElement
         return this.#type;
     }
 
+    get options() {
+        return this.#core.getOption();
+    }
+
     constructor() {
         super();
 
         this.attachShadow({ mode: 'open' }).append(
             parseDOM('<div style="height: 100%" />')[0]
         );
-        this.addEventListener('optionchange', ({ detail }: CustomEvent) =>
-            this.setOption(detail)
-        );
+        this.#boot();
     }
 
     connectedCallback() {
@@ -71,7 +78,7 @@ export class EChartsElement
     disconnectedCallback() {
         globalThis.removeEventListener?.('resize', this.handleResize);
 
-        this.#core.dispose();
+        this.#core?.dispose();
     }
 
     async #init(type: ChartType) {
@@ -88,13 +95,23 @@ export class EChartsElement
 
         for (const [event, handler, selector] of this.#eventHandlers)
             if (selector) this.onChild(event, selector, handler);
-            else this.on(event, handler);
+            else this.listen(event, handler);
 
         this.#eventHandlers.length = 0;
 
         for (const option of this.#eventData) this.setOption(option);
 
         this.#eventData.length = 0;
+    }
+
+    async #boot() {
+        for await (const { detail } of Observable.fromEvent<CustomEvent>(
+            this,
+            'optionchange'
+        )) {
+            this.setOption(detail);
+            await sleep(0.5);
+        }
     }
 
     async setOption(data: EChartsOption) {
@@ -109,7 +126,7 @@ export class EChartsElement
             else if (key in BUILTIN_CHARTS_MAP)
                 await loadChart(key as ECChartOptionName);
 
-        this.#core.setOption(data, false, true);
+        this.#core.setOption({ ...DefaultOptions, ...data }, false, true);
     }
 
     setProperty(key: string, value: any) {
@@ -118,7 +135,7 @@ export class EChartsElement
         this.setOption(this.toJSON());
     }
 
-    on(event: ZRElementEventName, handler: ZRElementEventHandler) {
+    listen(event: ZRElementEventName, handler: ZRElementEventHandler) {
         if (this.#core) this.#core.getZr().on(event, handler);
         else this.#eventHandlers.push([event, handler]);
     }
@@ -132,7 +149,7 @@ export class EChartsElement
         else this.#eventHandlers.push([event, handler, selector]);
     }
 
-    off(event: ZRElementEventName, handler: ZRElementEventHandler) {
+    forget(event: ZRElementEventName, handler: ZRElementEventHandler) {
         if (this.#core) this.#core.getZr().off(event, handler);
         else {
             const index = this.#eventHandlers.findIndex(

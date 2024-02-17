@@ -64,7 +64,7 @@ export default class MapsPage extends HTMLElement implements CustomElement {
                         resolution={resolution}
                     />
                 )}
-                <VirusChart />
+                <VirusChart className="vh-100" />
             </SpinnerBox>
         );
     }

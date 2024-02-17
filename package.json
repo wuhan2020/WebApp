@@ -20,6 +20,7 @@
         "dom-renderer": "^2.1.4",
         "echarts": "^5.4.3",
         "github-web-widget": "^4.0.0-rc.2",
+        "iterable-observer": "^1.0.1",
         "js-base64": "^3.7.6",
         "koajax": "^0.9.6",
         "lodash.debounce": "^4.0.8",

@@ -25,7 +25,7 @@ export abstract class ECOptionElement
     implements CustomElement
 {
     get chartTagName() {
-        return toCamelCase(this.tagName.split('-')[1].toLowerCase());
+        return toCamelCase(this.tagName.replace(/^ec-/i, '').toLowerCase());
     }
 
     get isSeries() {
@@ -39,7 +39,7 @@ export abstract class ECOptionElement
     connectedCallback() {
         for (const [key, value] of Object.entries(this.toJSON()))
             if (EventKeyPattern.test(key) && typeof value === 'function')
-                this.on(
+                this.listen(
                     key.slice(2) as ZRElementEventName,
                     value as ZRElementEventHandler
                 );
@@ -65,7 +65,7 @@ export abstract class ECOptionElement
         );
     }
 
-    on(event: ZRElementEventName, handler: ZRElementEventHandler) {
+    listen(event: ZRElementEventName, handler: ZRElementEventHandler) {
         if (this.isConnected)
             this.closest<EChartsElement>('ec-chart')?.onChild(
                 event,
@@ -74,7 +74,7 @@ export abstract class ECOptionElement
             );
     }
 
-    off(event: ZRElementEventName, handler: ZRElementEventHandler) {
+    forget(event: ZRElementEventName, handler: ZRElementEventHandler) {
         if (this.isConnected)
             this.closest<EChartsElement>('ec-chart')?.offChild(
                 event,

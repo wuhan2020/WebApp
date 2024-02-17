@@ -7,7 +7,7 @@ settings:
 dependencies:
   boot-cell:
     specifier: ^2.0.0-beta.20
-    version: 2.0.0-beta.20(typescript@5.3.3)
+    version: 2.0.0-beta.20(iterable-observer@1.0.1)(typescript@5.3.3)
   browser-unhandled-rejection:
     specifier: ^1.0.2
     version: 1.0.2
@@ -26,6 +26,9 @@ dependencies:
   github-web-widget:
     specifier: ^4.0.0-rc.2
     version: 4.0.0-rc.2(typescript@5.3.3)
+  iterable-observer:
+    specifier: ^1.0.1
+    version: 1.0.1
   js-base64:
     specifier: ^3.7.6
     version: 3.7.6
@@ -3253,7 +3256,7 @@ packages:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
     dev: true
 
-  /boot-cell@2.0.0-beta.20(typescript@5.3.3):
+  /boot-cell@2.0.0-beta.20(iterable-observer@1.0.1)(typescript@5.3.3):
     resolution: {integrity: sha512-WToNDj7UZN0/CTruXW30RMfoOgyLEbOVP4Y8EMlX0obGQkSTvYef//EYv8Pvg9KH2p1srQNtjGDK6Oe1vT2IEg==}
     peerDependencies:
       '@fortawesome/fontawesome-free': ^6
@@ -3267,6 +3270,7 @@ packages:
       '@swc/helpers': 0.5.6
       classnames: 2.5.1
       dom-renderer: 2.1.4(typescript@5.3.3)
+      iterable-observer: 1.0.1
       mobx: 6.12.0
       regenerator-runtime: 0.14.1
       web-cell: 3.0.0-rc.15(typescript@5.3.3)
