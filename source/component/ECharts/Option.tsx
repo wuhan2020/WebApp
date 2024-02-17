@@ -1,7 +1,14 @@
 import { JsxProps } from 'dom-renderer';
 import { EChartsOption } from 'echarts';
 import { ECElementEvent } from 'echarts/core';
-import { CustomElement, toCamelCase, toHyphenCase } from 'web-utility';
+import {
+    CustomElement,
+    HyphenCase,
+    PickSingle,
+    proxyPrototype,
+    toCamelCase,
+    toHyphenCase
+} from 'web-utility';
 
 import { EChartsElement } from './Chart';
 import {
@@ -11,8 +18,7 @@ import {
     ECComponentOptionName,
     EventKeyPattern,
     ZRElementEventHandler,
-    ZRElementEventName,
-    proxyPrototype
+    ZRElementEventName
 } from './utility';
 
 export abstract class ECOptionElement
@@ -31,6 +37,10 @@ export abstract class ECOptionElement
 
     get isSeries() {
         return this.chartTagName === 'series';
+    }
+
+    get eventSelector() {
+        return [this.chartTagName, this['type']].filter(Boolean).join('.');
     }
 
     constructor() {
@@ -52,25 +62,31 @@ export abstract class ECOptionElement
     }
 
     setProperty(key: string, value: any) {
+        const oldValue = this.#data[key],
+            name = toHyphenCase(key),
+            eventName = key.slice(2) as ECElementEvent['type'];
         this.#data[key] = value;
 
-        if (value != null)
-            switch (typeof value) {
-                case 'object':
-                    break;
-                case 'boolean':
-                    if (value) super.setAttribute(key, key + '');
-                    else super.removeAttribute(key);
-                    break;
-                case 'function':
-                    if (EventKeyPattern.test(key))
-                        this.on(key.slice(2) as ECElementEvent['type'], value);
-                    break;
-                default:
-                    super.setAttribute(key, value + '');
-            }
-        else super.removeAttribute(key);
-
+        switch (typeof value) {
+            case 'object':
+                if (!value) this.removeAttribute(name);
+                break;
+            case 'boolean':
+                if (value) super.setAttribute(name, name + '');
+                else super.removeAttribute(name);
+                break;
+            case 'function':
+                if (EventKeyPattern.test(key)) this.on(eventName, value);
+                break;
+            default:
+                if (value != null) super.setAttribute(name, value + '');
+                else if (
+                    EventKeyPattern.test(key) &&
+                    typeof oldValue === 'function'
+                )
+                    this.off(eventName, value);
+                else super.removeAttribute(name);
+        }
         if (this.isConnected) this.update();
     }
 
@@ -91,17 +107,28 @@ export abstract class ECOptionElement
         if (this.isConnected)
             this.closest<EChartsElement>('ec-chart')?.onChild(
                 event,
-                [this.chartTagName, this['type']].filter(Boolean).join('.'),
+                this.eventSelector,
                 handler
             );
     }
 
-    setAttribute(key: string, value: string) {
-        super.setAttribute(key, value);
+    off(event: ZRElementEventName, handler: ZRElementEventHandler) {
+        if (this.isConnected)
+            this.closest<EChartsElement>('ec-chart')?.offChild(
+                event,
+                this.eventSelector,
+                handler
+            );
+    }
+
+    setAttribute(name: string, value: string) {
+        super.setAttribute(name, value);
+
+        const key = toCamelCase(name);
 
         if (key in Object.getPrototypeOf(this)) return;
 
-        this[key] = key === value || value;
+        this[key] = name === value || value;
     }
 }
 
@@ -113,11 +140,6 @@ for (const name of Object.keys({
         `ec-${toHyphenCase(name)}`,
         class extends ECOptionElement {}
     );
-
-type HyphenCase<T> = T extends `${infer L}${infer R}`
-    ? `${L extends Uppercase<L> ? `-${Lowercase<L>}` : L}${HyphenCase<R>}`
-    : T;
-type PickSingle<T> = T extends infer S | (infer S)[] ? S : T;
 
 type ECOptionElements = {
     [K in

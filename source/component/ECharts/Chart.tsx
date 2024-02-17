@@ -1,29 +1,44 @@
 import { JsxProps } from 'dom-renderer';
-import { EChartsOption } from 'echarts';
+import { ECElementEvent, EChartsOption } from 'echarts';
 import { ECharts, init } from 'echarts/core';
 import { ECBasicOption } from 'echarts/types/dist/shared';
-import { CustomElement, parseDOM } from 'web-utility';
+import {
+    CustomElement,
+    parseDOM,
+    proxyPrototype,
+    toHyphenCase
+} from 'web-utility';
+
 import {
     BUILTIN_CHARTS_MAP,
     BUITIN_COMPONENTS_MAP,
     ChartType,
     ECChartOptionName,
     ECComponentOptionName,
+    EventKeyPattern,
     ZRElementEventHandler,
     ZRElementEventName,
     loadChart,
     loadComponent,
-    loadRenderer,
-    proxyPrototype
+    loadRenderer
 } from './utility';
 
+export type EChartsElementEventHandler = Partial<
+    Record<`on${Capitalize<ZRElementEventName>}`, ZRElementEventHandler>
+>;
+export interface EChartsElementProps
+    extends ECBasicOption,
+        EChartsElementEventHandler {
+    theme?: Parameters<typeof init>[1];
+    initOptions?: Parameters<typeof init>[2];
+}
+
 export class EChartsElement extends HTMLElement implements CustomElement {
-    #data: EChartsOption = {};
+    #props: EChartsElementProps & EChartsOption = {};
     #type: ChartType;
     #core?: ECharts;
-    #eventHandlerBuffer: [ZRElementEventName, string, ZRElementEventHandler][] =
-        [];
-    #eventDataBuffer = [];
+    #eventHandlers: [ZRElementEventName, ZRElementEventHandler, string?][] = [];
+    #eventData = [];
 
     toJSON() {
         return this.#core?.getOption();
@@ -42,7 +57,7 @@ export class EChartsElement extends HTMLElement implements CustomElement {
     constructor() {
         super();
 
-        proxyPrototype(this, this.#data, (key, value) =>
+        proxyPrototype(this, this.#props, (key, value) =>
             this.setProperty(key.toString(), value)
         );
         this.attachShadow({ mode: 'open' }).append(
@@ -60,23 +75,29 @@ export class EChartsElement extends HTMLElement implements CustomElement {
     async #init(type: ChartType) {
         await loadRenderer(type);
 
-        this.#core = init(this.shadowRoot.firstElementChild as HTMLDivElement);
+        const { theme, initOptions } = this.#props;
 
-        this.setOption(this.#data);
+        this.#core = init(
+            this.shadowRoot.firstElementChild as HTMLDivElement,
+            theme,
+            initOptions
+        );
+        this.setOption(this.#props);
 
-        for (const [event, selector, handler] of this.#eventHandlerBuffer)
-            this.onChild(event, selector, handler);
+        for (const [event, handler, selector] of this.#eventHandlers)
+            if (selector) this.onChild(event, selector, handler);
+            else this.on(event, handler);
 
-        this.#eventHandlerBuffer.length = 0;
+        this.#eventHandlers.length = 0;
 
-        for (const option of this.#eventDataBuffer) this.setOption(option);
+        for (const option of this.#eventData) this.setOption(option);
 
-        this.#eventDataBuffer.length = 0;
+        this.#eventData.length = 0;
     }
 
     async setOption(data: EChartsOption) {
         if (!this.#core) {
-            this.#eventDataBuffer.push(data);
+            this.#eventData.push(data);
             return;
         }
 
@@ -90,22 +111,37 @@ export class EChartsElement extends HTMLElement implements CustomElement {
     }
 
     setProperty(key: string, value: any) {
-        this.#data[key] = value;
+        const oldValue = this.#props[key],
+            name = toHyphenCase(key),
+            eventName = key.slice(2) as ECElementEvent['type'];
+        this.#props[key] = value;
 
-        if (value != null)
-            switch (typeof value) {
-                case 'object':
-                    break;
-                case 'boolean':
-                    if (value) super.setAttribute(key, key + '');
-                    else super.removeAttribute(key);
-                    break;
-                default:
-                    super.setAttribute(key, value + '');
-            }
-        else super.removeAttribute(key);
+        switch (typeof value) {
+            case 'object':
+                if (!value) this.removeAttribute(name);
+                break;
+            case 'boolean':
+                if (value) super.setAttribute(name, name + '');
+                else super.removeAttribute(name);
+                break;
+            case 'function':
+                if (EventKeyPattern.test(key)) this.on(eventName, value);
+                break;
+            default:
+                if (value != null) super.setAttribute(name, value + '');
+                else if (
+                    EventKeyPattern.test(key) &&
+                    typeof oldValue === 'function'
+                )
+                    this.off(eventName, value);
+                else super.removeAttribute(name);
+        }
+        this.setOption(this.#props);
+    }
 
-        this.setOption(this.#data);
+    on(event: ZRElementEventName, handler: ZRElementEventHandler) {
+        if (this.#core) this.#core.getZr().on(event, handler);
+        else this.#eventHandlers.push([event, handler]);
     }
 
     onChild(
@@ -114,7 +150,34 @@ export class EChartsElement extends HTMLElement implements CustomElement {
         handler: ZRElementEventHandler
     ) {
         if (this.#core) this.#core.on(event, selector, handler);
-        else this.#eventHandlerBuffer.push([event, selector, handler]);
+        else this.#eventHandlers.push([event, handler, selector]);
+    }
+
+    off(event: ZRElementEventName, handler: ZRElementEventHandler) {
+        if (this.#core) this.#core.getZr().off(event, handler);
+        else {
+            const index = this.#eventHandlers.findIndex(
+                item => item[0] === event && item[1] === handler && !item[2]
+            );
+            if (index > -1) this.#eventHandlers.splice(index, 1);
+        }
+    }
+
+    offChild(
+        event: ZRElementEventName,
+        selector: string,
+        handler: ZRElementEventHandler
+    ) {
+        if (this.#core) this.#core.off(event, handler);
+        else {
+            const index = this.#eventHandlers.findIndex(
+                item =>
+                    item[0] === event &&
+                    item[1] === handler &&
+                    item[2] === selector
+            );
+            if (index > -1) this.#eventHandlers.splice(index, 1);
+        }
     }
 }
 
@@ -123,7 +186,11 @@ customElements.define('ec-chart', EChartsElement);
 declare global {
     namespace JSX {
         interface IntrinsicElements {
-            'ec-chart': JsxProps<EChartsElement> & ECBasicOption;
+            'ec-chart': Omit<
+                JsxProps<EChartsElement>,
+                keyof EChartsElementEventHandler
+            > &
+                EChartsElementProps;
         }
     }
 }

@@ -7,7 +7,7 @@ import menu from './data/menu';
 export const HomePage: FC<PageProps> = props => (
     <main {...props}>
         <Jumbotron
-            className="my-5"
+            className="my-5 p-5"
             title="新冠战疫信息平台"
             description="新冠病毒疫情中的武汉援助信息网站"
         />

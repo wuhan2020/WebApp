@@ -1,31 +1,5 @@
 import { ECElementEvent, use } from 'echarts/core';
 import memoize from 'lodash.memoize';
-import { IndexKey } from 'web-utility';
-
-export function proxyPrototype<T extends object>(
-    target: T,
-    dataStore: Record<IndexKey, any>,
-    setter?: (key: IndexKey, value: any) => any
-) {
-    const prototype = Object.getPrototypeOf(target);
-
-    const prototypeProxy = new Proxy(prototype, {
-        set: (_, key, value, receiver) => {
-            if (key in receiver) Reflect.set(prototype, key, value, receiver);
-            else dataStore[key] = value;
-
-            setter?.(key, value);
-
-            return true;
-        },
-        get: (prototype, key, receiver) =>
-            key in dataStore
-                ? dataStore[key]
-                : Reflect.get(prototype, key, receiver)
-    });
-
-    Object.setPrototypeOf(target, prototypeProxy);
-}
 
 export const EventKeyPattern = /^on(\w+)/;
 
