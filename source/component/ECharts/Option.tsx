@@ -1,16 +1,9 @@
 import { JsxProps } from 'dom-renderer';
 import { EChartsOption } from 'echarts';
-import { ECElementEvent } from 'echarts/core';
-import {
-    CustomElement,
-    HyphenCase,
-    PickSingle,
-    proxyPrototype,
-    toCamelCase,
-    toHyphenCase
-} from 'web-utility';
+import { HyphenCase, PickSingle, toCamelCase, toHyphenCase } from 'web-utility';
 
 import { EChartsElement } from './Chart';
+import { ProxyElement } from './Proxy';
 import {
     BUILTIN_CHARTS_MAP,
     BUITIN_COMPONENTS_MAP,
@@ -21,16 +14,7 @@ import {
     ZRElementEventName
 } from './utility';
 
-export abstract class ECOptionElement
-    extends HTMLElement
-    implements CustomElement
-{
-    #data: EChartsOption = {};
-
-    toJSON() {
-        return this.#data;
-    }
-
+export abstract class ECOptionElement extends ProxyElement<EChartsOption> {
     get chartTagName() {
         return toCamelCase(this.tagName.split('-')[1].toLowerCase());
     }
@@ -43,16 +27,8 @@ export abstract class ECOptionElement
         return [this.chartTagName, this['type']].filter(Boolean).join('.');
     }
 
-    constructor() {
-        super();
-
-        proxyPrototype(this, this.#data, (key, value) =>
-            this.setProperty(key.toString(), value)
-        );
-    }
-
     connectedCallback() {
-        for (const [key, value] of Object.entries(this.#data))
+        for (const [key, value] of Object.entries(this.toJSON()))
             if (EventKeyPattern.test(key) && typeof value === 'function')
                 this.on(
                     key.slice(2) as ZRElementEventName,
@@ -62,42 +38,19 @@ export abstract class ECOptionElement
     }
 
     setProperty(key: string, value: any) {
-        const oldValue = this.#data[key],
-            name = toHyphenCase(key),
-            eventName = key.slice(2) as ECElementEvent['type'];
-        this.#data[key] = value;
+        super.setProperty(key, value);
 
-        switch (typeof value) {
-            case 'object':
-                if (!value) this.removeAttribute(name);
-                break;
-            case 'boolean':
-                if (value) super.setAttribute(name, name + '');
-                else super.removeAttribute(name);
-                break;
-            case 'function':
-                if (EventKeyPattern.test(key)) this.on(eventName, value);
-                break;
-            default:
-                if (value != null) super.setAttribute(name, value + '');
-                else if (
-                    EventKeyPattern.test(key) &&
-                    typeof oldValue === 'function'
-                )
-                    this.off(eventName, value);
-                else super.removeAttribute(name);
-        }
         if (this.isConnected) this.update();
     }
 
     update() {
+        const data = this.toJSON();
+
         this.dispatchEvent(
             new CustomEvent('optionchange', {
                 bubbles: true,
                 detail: {
-                    [this.chartTagName]: this.isSeries
-                        ? [this.#data]
-                        : this.#data
+                    [this.chartTagName]: this.isSeries ? [data] : data
                 }
             })
         );

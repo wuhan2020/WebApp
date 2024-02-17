@@ -1,21 +1,16 @@
 import { JsxProps } from 'dom-renderer';
-import { ECElementEvent, EChartsOption } from 'echarts';
+import { EChartsOption } from 'echarts';
 import { ECharts, init } from 'echarts/core';
 import { ECBasicOption } from 'echarts/types/dist/shared';
-import {
-    CustomElement,
-    parseDOM,
-    proxyPrototype,
-    toHyphenCase
-} from 'web-utility';
+import { parseDOM } from 'web-utility';
 
+import { ProxyElement } from './Proxy';
 import {
     BUILTIN_CHARTS_MAP,
     BUITIN_COMPONENTS_MAP,
     ChartType,
     ECChartOptionName,
     ECComponentOptionName,
-    EventKeyPattern,
     ZRElementEventHandler,
     ZRElementEventName,
     loadChart,
@@ -33,16 +28,13 @@ export interface EChartsElementProps
     initOptions?: Parameters<typeof init>[2];
 }
 
-export class EChartsElement extends HTMLElement implements CustomElement {
-    #props: EChartsElementProps & EChartsOption = {};
+export type EChartsElementState = EChartsElementProps & EChartsOption;
+
+export class EChartsElement extends ProxyElement<EChartsElementState> {
     #type: ChartType;
     #core?: ECharts;
     #eventHandlers: [ZRElementEventName, ZRElementEventHandler, string?][] = [];
     #eventData = [];
-
-    toJSON() {
-        return this.#core?.getOption();
-    }
 
     set type(value: ChartType) {
         this.#type = value;
@@ -57,9 +49,6 @@ export class EChartsElement extends HTMLElement implements CustomElement {
     constructor() {
         super();
 
-        proxyPrototype(this, this.#props, (key, value) =>
-            this.setProperty(key.toString(), value)
-        );
         this.attachShadow({ mode: 'open' }).append(
             parseDOM('<div style="height: 100%" />')[0]
         );
@@ -75,14 +64,14 @@ export class EChartsElement extends HTMLElement implements CustomElement {
     async #init(type: ChartType) {
         await loadRenderer(type);
 
-        const { theme, initOptions } = this.#props;
+        const { theme, initOptions, ...props } = this.toJSON();
 
         this.#core = init(
             this.shadowRoot.firstElementChild as HTMLDivElement,
             theme,
             initOptions
         );
-        this.setOption(this.#props);
+        this.setOption(props);
 
         for (const [event, handler, selector] of this.#eventHandlers)
             if (selector) this.onChild(event, selector, handler);
@@ -111,32 +100,9 @@ export class EChartsElement extends HTMLElement implements CustomElement {
     }
 
     setProperty(key: string, value: any) {
-        const oldValue = this.#props[key],
-            name = toHyphenCase(key),
-            eventName = key.slice(2) as ECElementEvent['type'];
-        this.#props[key] = value;
+        super.setProperty(key, value);
 
-        switch (typeof value) {
-            case 'object':
-                if (!value) this.removeAttribute(name);
-                break;
-            case 'boolean':
-                if (value) super.setAttribute(name, name + '');
-                else super.removeAttribute(name);
-                break;
-            case 'function':
-                if (EventKeyPattern.test(key)) this.on(eventName, value);
-                break;
-            default:
-                if (value != null) super.setAttribute(name, value + '');
-                else if (
-                    EventKeyPattern.test(key) &&
-                    typeof oldValue === 'function'
-                )
-                    this.off(eventName, value);
-                else super.removeAttribute(name);
-        }
-        this.setOption(this.#props);
+        this.setOption(this.toJSON());
     }
 
     on(event: ZRElementEventName, handler: ZRElementEventHandler) {
