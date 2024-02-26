@@ -11,7 +11,8 @@ import {
     CountryData,
     convertCountry,
     convertProvincesSeries,
-    convertCountrySeries
+    convertCountrySeries,
+    convertStat
 } from './adapter';
 import { getHistory, getCurrent, getOverall } from '../../service';
 import * as style from './index.module.css';
@@ -35,7 +36,7 @@ export default class MapsPage extends HTMLElement implements CustomElement {
     mountedCallback() {
         this.classList.add(style.box);
 
-        // this.loadMapData();
+        this.loadMapData();
     }
 
     async loadMapData() {
@@ -47,7 +48,7 @@ export default class MapsPage extends HTMLElement implements CustomElement {
 
         this.virusData = {
             provincesSeries: convertProvincesSeries(rawData, resolution, true),
-            countrySeries: convertCountrySeries(overviewData, resolution),
+            countrySeries: convertCountrySeries(overviewData.map(convertStat), resolution),
             countryData: convertCountry(rawCurrentData)
         };
         this.loading = false;
