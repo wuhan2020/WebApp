@@ -274,7 +274,7 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
         return (data as STMapDataType).timeline != null;
     }
 
-    connectedCallback() {
+    mountedCallback() {
         this.classList.add(style.box);
     }
 

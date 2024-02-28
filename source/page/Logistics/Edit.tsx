@@ -45,7 +45,7 @@ export class LogisticsEdit
         contacts: [{ name: '', phone: '' }]
     } as Logistics;
 
-    async connectedCallback() {
+    async mountedCallback() {
         if (!this.dataId) return;
 
         const { name, url, serviceArea, remark, contacts } =

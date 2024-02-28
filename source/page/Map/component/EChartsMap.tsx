@@ -54,7 +54,7 @@ export class EChartsMap
 
     chart: EChartsType;
 
-    connectedCallback() {
+    mountedCallback() {
         this.classList.add('w-100', 'h-100');
 
         this.chart = init(this);

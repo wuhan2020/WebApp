@@ -48,7 +48,7 @@ export class HospitalEdit
         remark: ''
     } as SuppliesRequirement;
 
-    async connectedCallback() {
+    async mountedCallback() {
         if (!this.dataId) return;
 
         const {

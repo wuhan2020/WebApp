@@ -45,7 +45,7 @@ export class FactoryEdit
         remark: ''
     } as Factory;
 
-    async connectedCallback() {
+    async mountedCallback() {
         if (!this.dataId) return;
 
         const {

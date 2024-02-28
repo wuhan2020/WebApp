@@ -40,7 +40,7 @@ export class DonationEdit
         remark: '' //备注
     } as DonationRecipient;
 
-    async connectedCallback() {
+    async mountedCallback() {
         if (!this.dataId) return;
 
         const {

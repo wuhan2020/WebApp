@@ -3,7 +3,7 @@ import { observable } from 'mobx';
 import { SpinnerBox } from 'boot-cell';
 import { CustomElement, Hour } from 'web-utility';
 
-import { HierarchicalVirusMap } from './component';
+import { HierarchicalVirusMap, VirusChart } from './component';
 import {
     Series,
     ProvinceData,
@@ -11,7 +11,8 @@ import {
     CountryData,
     convertCountry,
     convertProvincesSeries,
-    convertCountrySeries
+    convertCountrySeries,
+    convertStat
 } from './adapter';
 import { getHistory, getCurrent, getOverall } from '../../service';
 import * as style from './index.module.css';
@@ -32,7 +33,7 @@ export default class MapsPage extends HTMLElement implements CustomElement {
         countryData?: CountryData;
     };
 
-    connectedCallback() {
+    mountedCallback() {
         this.classList.add(style.box);
 
         this.loadMapData();
@@ -47,7 +48,7 @@ export default class MapsPage extends HTMLElement implements CustomElement {
 
         this.virusData = {
             provincesSeries: convertProvincesSeries(rawData, resolution, true),
-            countrySeries: convertCountrySeries(overviewData, resolution),
+            countrySeries: convertCountrySeries(overviewData.map(convertStat), resolution),
             countryData: convertCountry(rawCurrentData)
         };
         this.loading = false;
@@ -64,6 +65,7 @@ export default class MapsPage extends HTMLElement implements CustomElement {
                         resolution={resolution}
                     />
                 )}
+                <VirusChart className="vh-100" />
             </SpinnerBox>
         );
     }

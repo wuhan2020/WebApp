@@ -8,11 +8,18 @@ import {
     Series
 } from './patientStatInterface';
 import { long2short } from './long2short'; // some city names are NOT short names so we also convert them here
-import { City, Province, StatisticData } from '../../../service/Epidemic';
+import { Base, City, Province, StatisticData } from '../../../service/Epidemic';
 
-const convertStat = (source: StatisticData): PatientStatData => ({
-    confirmed: source.confirmedCount,
+export const convertStat = ({
+    id,
+    updateTime,
+    ...source
+}: Base & StatisticData): Base & PatientStatData => ({
+    id,
+    updateTime,
     suspected: source.suspectedCount,
+    confirmed: source.confirmedCount,
+    serious: source.seriousCount,
     cured: source.curedCount,
     dead: source.deadCount
 });
@@ -22,8 +29,9 @@ const convertStat = (source: StatisticData): PatientStatData => ({
  */
 export const convertCountry = (source: Province[]): CountryData => ({
     name: '中国',
-    confirmed: 0,
     suspected: 0,
+    confirmed: 0,
+    serious: 0,
     cured: 0,
     dead: 0,
     provinces: Object.fromEntries(
@@ -36,13 +44,13 @@ export function convertProvince(province: Province): ProvinceData {
 
     return {
         name,
-        timestamp: updateTime,
+        timestamp: +updateTime,
         cities:
             cities &&
             Object.fromEntries(
                 cities.map(item => [
                     long2short(item.cityName),
-                    convertCity(item, updateTime)
+                    convertCity(item, +updateTime)
                 ])
             ),
         ...convertStat(province)
@@ -89,10 +97,12 @@ export function convertProvincesSeries(
 ) {
     const res: Series<ProvinceData> = {};
 
-    source.sort(item => item.updateTime);
+    source = [...source].sort(
+        ({ updateTime: a }, { updateTime: b }) => +b - +a
+    );
 
     for (const item of source) {
-        const t = roundTime(item.updateTime, resolution);
+        const t = roundTime(+item.updateTime, resolution);
 
         if (res[t] === undefined) res[t] = {};
 
@@ -136,5 +146,5 @@ export const convertCountrySeries = (
     resolution: number
 ): Series<CountryOverviewData> =>
     Object.fromEntries(
-        source.map(item => [roundTime(item.updateTime, resolution), item])
+        source.map(item => [roundTime(+item.updateTime, resolution), item])
     );
