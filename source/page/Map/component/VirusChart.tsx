@@ -1,7 +1,7 @@
 import { WebCell, component, attribute, observer } from 'web-cell';
 import { observable } from 'mobx';
 import { EChartsOption } from 'echarts';
-import '../../../component/ECharts';
+import 'echarts-jsx/grid';
 
 import { isLandscape } from '../utility';
 import {
