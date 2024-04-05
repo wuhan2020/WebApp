@@ -1,7 +1,14 @@
 import { WebCell, component, attribute, observer } from 'web-cell';
 import { observable } from 'mobx';
 import { EChartsOption } from 'echarts';
-import 'echarts-jsx/grid';
+import 'echarts-jsx/dist/renderers/SVG';
+import 'echarts-jsx/dist/components/title';
+import 'echarts-jsx/dist/components/legend';
+import 'echarts-jsx/dist/components/tooltip';
+import 'echarts-jsx/dist/components/grid';
+import 'echarts-jsx/dist/components/x-axis';
+import 'echarts-jsx/dist/components/y-axis';
+import 'echarts-jsx/dist/charts/line';
 
 import { isLandscape } from '../utility';
 import {
@@ -260,34 +267,10 @@ export class VirusChart
 
         return (
             <>
-                <ec-chart className="w-100 h-50" theme="dark">
-                    <ec-title text="ECharts Getting Started Example" />
-
-                    <ec-legend data={['sales']} />
-
-                    <ec-tooltip />
-
-                    <ec-x-axis
-                        data={[
-                            'Shirts',
-                            'Cardigans',
-                            'Chiffons',
-                            'Pants',
-                            'Heels',
-                            'Socks'
-                        ]}
-                    />
-                    <ec-y-axis />
-
-                    <ec-series
-                        type="bar"
-                        name="sales"
-                        data={[5, 20, 36, 10, 10, 20]}
-                        onClick={console.log}
-                    />
-                </ec-chart>
-
-                <ec-chart className="w-100 h-50" color={['#c22b49', '#cca42d']}>
+                <ec-svg-chart
+                    className="w-100 h-50"
+                    color={['#c22b49', '#cca42d']}
+                >
                     <ec-title text="确诊/疑似患者人数" top="5%" x="center" />
                     <ec-legend
                         orient="horizontal"
@@ -297,22 +280,23 @@ export class VirusChart
                     <ec-grid bottom="25%" left={60} />
                     <ec-x-axis name="日期" type="time" nameGap={5} />
                     <ec-y-axis name="人数" nameGap={10} />
-                    {/* <ec-series
-                        type="line"
+                    <ec-line-chart
                         name="确诊"
                         stack="总量"
                         areaStyle={{ color: '#f6bdcd' }}
                     />
-                    <ec-series
-                        type="line"
+                    <ec-line-chart
                         name="疑似"
                         stack="总量"
                         areaStyle={{ color: '#f9e4ba' }}
-                    /> */}
+                    />
                     <ec-tooltip trigger="axis" />
-                </ec-chart>
+                </ec-svg-chart>
 
-                <ec-chart className="w-100 h-50" color={['#2dce89', '#86868d']}>
+                <ec-svg-chart
+                    className="w-100 h-50"
+                    color={['#2dce89', '#86868d']}
+                >
                     <ec-title text="治愈/死亡患者人数" top="5%" x="center" />
                     <ec-legend
                         orient="horizontal"
@@ -322,10 +306,10 @@ export class VirusChart
                     <ec-grid bottom="25%" left={60} />
                     <ec-x-axis name="日期" type="time" nameGap={5} />
                     <ec-y-axis name="人数" nameGap={10} />
-                    {/* <ec-series type="line" name="治愈" />
-                    <ec-series type="line" name="死亡" /> */}
+                    <ec-line-chart name="治愈" />
+                    <ec-line-chart name="死亡" />
                     <ec-tooltip trigger="axis" />
-                </ec-chart>
+                </ec-svg-chart>
             </>
         );
     }
