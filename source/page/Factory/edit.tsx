@@ -18,11 +18,11 @@ export interface FactoryEditProps {
     dataId: string;
 }
 
-export interface FactoryEdit extends WebCell<FactoryEditProps> {}
+export default interface FactoryEdit extends WebCell<FactoryEditProps> {}
 
 @component({ tagName: 'factory-edit' })
 @observer
-export class FactoryEdit
+export default class FactoryEdit
     extends HTMLElement
     implements WebCell<FactoryEditProps>
 {
@@ -132,7 +132,7 @@ export class FactoryEdit
         return (
             <SessionBox>
                 <h2>生产厂商发布</h2>
-                {/* @ts-ignore */}
+
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
                     <FormField
                         name="name"
@@ -180,7 +180,7 @@ export class FactoryEdit
                         label="备注"
                         defaultValue={remark}
                     />
-                    <div className="form-group mt-3 d-flex flex-column">
+                    <FormGroup className="mt-3 d-flex flex-column">
                         <Button
                             type="submit"
                             variant="primary"
@@ -195,7 +195,7 @@ export class FactoryEdit
                         >
                             取消
                         </Button>
-                    </div>
+                    </FormGroup>
                 </form>
             </SessionBox>
         );

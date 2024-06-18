@@ -24,11 +24,11 @@ export interface LogisticsEditProps {
     dataId: string;
 }
 
-export interface LogisticsEdit extends WebCell<LogisticsEditProps> {}
+export default interface LogisticsEdit extends WebCell<LogisticsEditProps> {}
 
 @component({ tagName: 'logistics-edit' })
 @observer
-export class LogisticsEdit
+export default class LogisticsEdit
     extends HTMLElement
     implements WebCell<LogisticsEditProps>
 {
@@ -112,7 +112,7 @@ export class LogisticsEdit
         return (
             <SessionBox>
                 <h2>物流信息发布</h2>
-                {/* @ts-ignore */}
+
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
                     <FormField
                         name="name"
@@ -204,7 +204,7 @@ export class LogisticsEdit
                         defaultValue={remark}
                         label="备注"
                     />
-                    <div className="form-group mt-3 d-flex flex-column">
+                    <FormGroup className="mt-3 d-flex flex-column">
                         <Button
                             type="submit"
                             variant="primary"
@@ -221,7 +221,7 @@ export class LogisticsEdit
                         >
                             取消
                         </Button>
-                    </div>
+                    </FormGroup>
                 </form>
             </SessionBox>
         );

@@ -8,7 +8,7 @@ import { getIsLive } from './time';
 
 @component({ tagName: 'clinic-list' })
 @observer
-export class ClinicList extends CardsPage<Clinic> {
+export default class ClinicList extends CardsPage<Clinic> {
     scope = 'clinic';
     model = clinic;
     name = '义诊服务';
@@ -22,7 +22,7 @@ export class ClinicList extends CardsPage<Clinic> {
         remark,
         ...rest
     }: Clinic) => (
-        <Card body>
+        <Card body key={name}>
             <CardTitle>
                 {url ? (
                     <a

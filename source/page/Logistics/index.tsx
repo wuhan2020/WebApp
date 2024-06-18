@@ -21,7 +21,7 @@ const DIREACTION = {
 
 @component({ tagName: 'logistics-page' })
 @observer
-export class LogisticsPage extends CardsPage<Logistics> {
+export default class LogisticsPage extends CardsPage<Logistics> {
     scope = 'logistics';
     model = logistics;
     name = '物流公司';
@@ -34,7 +34,7 @@ export class LogisticsPage extends CardsPage<Logistics> {
         remark,
         ...rest
     }: Logistics) => (
-        <Card>
+        <Card key={name}>
             <CardBody>
                 <CardTitle>
                     {url ? (
@@ -63,7 +63,7 @@ export class LogisticsPage extends CardsPage<Logistics> {
     );
 
     renderServiceArea = ({ city, direction, personal }: ServiceArea) => (
-        <dl>
+        <dl key={city}>
             <dt>地区：</dt>
             <dd>{city}</dd>
             <dt>方向：</dt>
@@ -77,7 +77,7 @@ export class LogisticsPage extends CardsPage<Logistics> {
     );
 
     renderContact = ({ name, phone }: Contact) => (
-        <p className="mb-1">
+        <p className="mb-1" key={name}>
             <a
                 className="text-center text-decoration-none"
                 href={'tel:' + phone}

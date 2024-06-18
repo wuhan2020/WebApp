@@ -16,7 +16,7 @@ import { CardsPage } from '../../component/CardsPage';
 
 @component({ tagName: 'hotel-page' })
 @observer
-export class HotelPage extends CardsPage<Hotel> {
+export default class HotelPage extends CardsPage<Hotel> {
     scope = 'hotel';
     model = hotel;
     name = '湖北同胞住宿指南';
@@ -35,7 +35,7 @@ export class HotelPage extends CardsPage<Hotel> {
         contacts,
         ...rest
     }: Hotel) => (
-        <Card>
+        <Card key={name}>
             <CardBody>
                 <CardTitle>
                     {url ? (

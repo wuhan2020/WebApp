@@ -60,7 +60,6 @@ export class SessionBox extends HTMLElement implements WebCell {
 
         return (
             <form
-                // @ts-ignore
                 className="mx-auto my-3 p-3 border rounded"
                 style={{ maxWidth: '20rem' }}
                 onSubmit={this.handleSignIn}
@@ -110,7 +109,7 @@ export class SessionBox extends HTMLElement implements WebCell {
             <>
                 <link
                     rel="stylesheet"
-                    href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+                    href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css"
                 />
                 {session.user ? <slot /> : this.renderForm()}
             </>

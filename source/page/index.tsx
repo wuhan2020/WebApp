@@ -14,23 +14,23 @@ import menu, { RouteRoot } from './data/menu';
 import logo from '../image/wuhan2020.png';
 
 import { HomePage } from './Home';
-import { HospitalPage } from './Hospital';
-import { HospitalEdit } from './Hospital/Edit';
-import { LogisticsPage } from './Logistics';
-import { LogisticsEdit } from './Logistics/Edit';
-import { HotelPage } from './Hotel';
-import { HotelEdit } from './Hotel/Edit';
-import { FactoryPage } from './Factory';
-import { FactoryEdit } from './Factory/edit';
-import { DonationPage } from './Donation/index';
-import { DonationEdit } from './Donation/edit';
-import { ClinicList } from './Clinic';
-import { ClinicEdit } from './Clinic/Edit';
-import { UserAdmin } from './Admin/User';
-import { CommunityPage } from './Community';
 import Disclaimer from '../../Disclaimer.md';
 
-const MapsPage = lazy(() => import('./Map'));
+const HospitalPage = lazy(() => import('./Hospital')),
+    HospitalEdit = lazy(() => import('./Hospital/Edit')),
+    LogisticsPage = lazy(() => import('./Logistics')),
+    LogisticsEdit = lazy(() => import('./Logistics/Edit')),
+    HotelPage = lazy(() => import('./Hotel')),
+    HotelEdit = lazy(() => import('./Hotel/Edit')),
+    FactoryPage = lazy(() => import('./Factory')),
+    FactoryEdit = lazy(() => import('./Factory/edit')),
+    DonationPage = lazy(() => import('./Donation')),
+    DonationEdit = lazy(() => import('./Donation/edit')),
+    ClinicList = lazy(() => import('./Clinic')),
+    ClinicEdit = lazy(() => import('./Clinic/Edit')),
+    UserAdmin = lazy(() => import('./Admin/User')),
+    CommunityPage = lazy(() => import('./Community')),
+    MapsPage = lazy(() => import('./Map'));
 
 const userMenu = [
     {
@@ -48,7 +48,7 @@ const { location } = globalThis,
     { Route } = createRouter();
 
 export const PageFrame: FC = () => (
-    <div className="d-flex flex-column" style={{ height: '200vh' }}>
+    <>
         <OffcanvasNavbar
             variant="light"
             expand="md"
@@ -91,7 +91,7 @@ export const PageFrame: FC = () => (
             )}
         </OffcanvasNavbar>
 
-        <Container className="flex-fill overflow-auto scrollbar-none">
+        <Container>
             <Route path="" component={HomePage} />
             <Route path={RouteRoot.Hospital} component={HospitalPage} />
             <Route
@@ -150,5 +150,5 @@ export const PageFrame: FC = () => (
             </p>
             <a href="#disclaimer">免责声明</a>
         </footer>
-    </div>
+    </>
 );

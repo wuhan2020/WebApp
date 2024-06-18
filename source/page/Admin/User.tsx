@@ -15,7 +15,7 @@ import { user } from '../../model';
 
 @component({ tagName: 'user-admin' })
 @observer
-export class UserAdmin extends HTMLElement implements CustomElement {
+export default class UserAdmin extends HTMLElement implements CustomElement {
     filter: { phone?: string } = {};
 
     mountedCallback() {
@@ -74,7 +74,7 @@ export class UserAdmin extends HTMLElement implements CustomElement {
             <SessionBox>
                 <header className="d-flex justify-content-between">
                     <h1>用户管理</h1>
-                    {/* @ts-ignore */}
+
                     <form className="d-flex" onSubmit={this.search}>
                         <FormControl
                             type="search"

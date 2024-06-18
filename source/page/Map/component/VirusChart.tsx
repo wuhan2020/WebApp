@@ -267,7 +267,7 @@ export class VirusChart
 
         return (
             <>
-                <ec-svg-chart
+                <ec-svg-renderer
                     className="w-100 h-50"
                     color={['#c22b49', '#cca42d']}
                 >
@@ -291,9 +291,9 @@ export class VirusChart
                         areaStyle={{ color: '#f9e4ba' }}
                     />
                     <ec-tooltip trigger="axis" />
-                </ec-svg-chart>
+                </ec-svg-renderer>
 
-                <ec-svg-chart
+                <ec-svg-renderer
                     className="w-100 h-50"
                     color={['#2dce89', '#86868d']}
                 >
@@ -309,7 +309,7 @@ export class VirusChart
                     <ec-line-chart name="治愈" />
                     <ec-line-chart name="死亡" />
                     <ec-tooltip trigger="axis" />
-                </ec-svg-chart>
+                </ec-svg-renderer>
             </>
         );
     }

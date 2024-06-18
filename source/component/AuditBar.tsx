@@ -1,6 +1,6 @@
 import { FC, observer } from 'web-cell';
 import { diffTime } from 'web-utility';
-import { Button } from 'boot-cell';
+import { Button, ButtonGroup } from 'boot-cell';
 
 import { TimeUnitName } from '../utility';
 import { DataItem, Organization } from '../service';
@@ -55,7 +55,7 @@ export const AuditBar: FC<AuditBarProps> = observer(props => {
                 />
             )}
             {authorized && (
-                <div className="btn-group d-flex mt-2">
+                <ButtonGroup className="d-flex mt-2">
                     <Button
                         variant="warning"
                         size="sm"
@@ -81,7 +81,7 @@ export const AuditBar: FC<AuditBarProps> = observer(props => {
                     >
                         删除
                     </Button>
-                </div>
+                </ButtonGroup>
             )}
         </>
     );

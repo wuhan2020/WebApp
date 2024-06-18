@@ -19,11 +19,11 @@ export interface DonationEditProps {
     dataId: string;
 }
 
-export interface DonationEdit extends WebCell<DonationEditProps> {}
+export default interface DonationEdit extends WebCell<DonationEditProps> {}
 
 @component({ tagName: 'donation-edit' })
 @observer
-export class DonationEdit
+export default class DonationEdit
     extends HTMLElement
     implements WebCell<DonationEditProps>
 {
@@ -118,7 +118,7 @@ export class DonationEdit
         return (
             <SessionBox>
                 <h2>捐赠信息发布</h2>
-                {/* @ts-ignore */}
+
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
                     <FormField
                         name="name"
@@ -190,7 +190,7 @@ export class DonationEdit
                         label="备注"
                         defaultValue={remark}
                     />
-                    <div className="form-group mt-3 d-flex flex-column">
+                    <FormGroup className="mt-3 d-flex flex-column">
                         <Button
                             type="submit"
                             variant="primary"
@@ -205,7 +205,7 @@ export class DonationEdit
                         >
                             取消
                         </Button>
-                    </div>
+                    </FormGroup>
                 </form>
             </SessionBox>
         );

@@ -14,13 +14,13 @@ import { donationRecipient, BankAccount, DonationRecipient } from '../../model';
 
 @component({ tagName: 'donation-page' })
 @observer
-export class DonationPage extends CardsPage<DonationRecipient> {
+export default class DonationPage extends CardsPage<DonationRecipient> {
     scope = 'donation';
     model = donationRecipient;
     name = '❤️爱心捐赠';
 
     renderAccount = ({ name, number, bank }: BankAccount) => (
-        <li>
+        <li key={name}>
             <dl className="mb-2">
                 <dt>户名</dt>
                 <dd>
@@ -61,7 +61,7 @@ export class DonationPage extends CardsPage<DonationRecipient> {
         contacts,
         ...rest
     }: DonationRecipient) => (
-        <Card>
+        <Card key={name}>
             <CardBody>
                 <CardTitle>
                     {url ? (

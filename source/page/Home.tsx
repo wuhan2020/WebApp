@@ -1,11 +1,10 @@
 import { FC } from 'web-cell';
 import { Card, CardBody, CardTitle, Jumbotron, Icon } from 'boot-cell';
-import { PageProps } from 'cell-router';
 
 import menu from './data/menu';
 
-export const HomePage: FC<PageProps> = props => (
-    <main {...props}>
+export const HomePage: FC = () => (
+    <main>
         <Jumbotron
             className="my-5 p-5"
             title="新冠战疫信息平台"

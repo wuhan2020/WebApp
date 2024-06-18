@@ -1,5 +1,5 @@
 import { WebCell, component, attribute, observer } from 'web-cell';
-import { FormField, Button } from 'boot-cell';
+import { FormField, Button, FormGroup } from 'boot-cell';
 import { observable } from 'mobx';
 
 import { mergeList } from '../../utility';
@@ -22,11 +22,11 @@ export interface HospitalEditProps {
     dataId: string;
 }
 
-export interface HospitalEdit extends WebCell<HospitalEditProps> {}
+export default interface HospitalEdit extends WebCell<HospitalEditProps> {}
 
 @component({ tagName: 'hospital-edit' })
 @observer
-export class HospitalEdit
+export default class HospitalEdit
     extends HTMLElement
     implements WebCell<HospitalEditProps>
 {
@@ -132,7 +132,7 @@ export class HospitalEdit
         return (
             <SessionBox>
                 <h1>医用物资需求发布</h1>
-                {/* @ts-ignore */}
+
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
                     <FormField
                         name="hospital"
@@ -174,7 +174,7 @@ export class HospitalEdit
                         label="备注"
                         defaultValue={remark}
                     />
-                    <div className="form-group mt-3 d-flex flex-column">
+                    <FormGroup className="mt-3 d-flex flex-column">
                         <Button
                             type="submit"
                             variant="primary"
@@ -189,7 +189,7 @@ export class HospitalEdit
                         >
                             取消
                         </Button>
-                    </div>
+                    </FormGroup>
                 </form>
             </SessionBox>
         );

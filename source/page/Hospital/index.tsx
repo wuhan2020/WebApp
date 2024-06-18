@@ -16,7 +16,7 @@ import { CardsPage } from '../../component/CardsPage';
 
 @component({ tagName: 'hospital-page' })
 @observer
-export class HospitalPage extends CardsPage<SuppliesRequirement> {
+export default class HospitalPage extends CardsPage<SuppliesRequirement> {
     scope = 'hospital';
     model = suppliesRequirement;
     name = '医疗物资需求';
@@ -32,7 +32,7 @@ export class HospitalPage extends CardsPage<SuppliesRequirement> {
         contacts,
         ...rest
     }: SuppliesRequirement) => (
-        <Card>
+        <Card key={hospital}>
             <CardBody>
                 <CardTitle>{hospital}</CardTitle>
                 <ol>

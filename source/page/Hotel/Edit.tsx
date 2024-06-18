@@ -11,11 +11,11 @@ export interface HotelEditProps {
     dataId: string;
 }
 
-export interface HotelEdit extends WebCell<HotelEditProps> {}
+export default interface HotelEdit extends WebCell<HotelEditProps> {}
 
 @component({ tagName: 'hotel-edit' })
 @observer
-export class HotelEdit extends HTMLElement implements WebCell<HotelEditProps> {
+export default class HotelEdit extends HTMLElement implements WebCell<HotelEditProps> {
     @attribute
     @observable
     accessor dataId = '';
@@ -115,7 +115,7 @@ export class HotelEdit extends HTMLElement implements WebCell<HotelEditProps> {
         return (
             <SessionBox>
                 <h1>发布住宿信息</h1>
-                {/* @ts-ignore */}
+
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
                     <FormField
                         name="name"
@@ -159,7 +159,7 @@ export class HotelEdit extends HTMLElement implements WebCell<HotelEditProps> {
                         defaultValue={remark}
                         label="备注"
                     />
-                    <div className="form-group mt-3 d-flex flex-column">
+                    <FormGroup className="mt-3 d-flex flex-column">
                         <Button
                             type="submit"
                             variant="primary"
@@ -174,7 +174,7 @@ export class HotelEdit extends HTMLElement implements WebCell<HotelEditProps> {
                         >
                             取消
                         </Button>
-                    </div>
+                    </FormGroup>
                 </form>
             </SessionBox>
         );

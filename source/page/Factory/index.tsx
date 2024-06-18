@@ -16,7 +16,7 @@ import { CardsPage } from '../../component/CardsPage';
 
 @component({ tagName: 'factory-page' })
 @observer
-export class FactoryPage extends CardsPage<Factory> {
+export default class FactoryPage extends CardsPage<Factory> {
     scope = 'factory';
     model = factory;
     name = '生产厂商';
@@ -35,7 +35,7 @@ export class FactoryPage extends CardsPage<Factory> {
         remark,
         ...rest
     }: Factory) => (
-        <Card>
+        <Card key={name}>
             <CardBody>
                 <CardTitle>
                     {url ? (
