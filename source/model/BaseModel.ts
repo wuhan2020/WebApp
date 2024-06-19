@@ -1,99 +1,27 @@
-import { observable } from 'mobx';
+import { Filter, ListModel, toggle } from 'mobx-restful';
+import { buildURLData } from 'web-utility';
 
 import { DataItem, service, PageData, User } from '../service';
 import { session } from '.';
 
-export abstract class BaseModel<T extends DataItem = {}, F = {}> {
-    @observable
-    accessor loading = false;
+export abstract class BaseModel<
+    T extends DataItem = DataItem,
+    F extends Filter<T> = Filter<T>
+> extends ListModel<T, F> {
+    client = service;
+    indexKey = 'objectId' as const;
 
-    @observable
-    accessor noMore = false;
-
-    pageIndex = 0;
-
-    pageSize = 10;
-
-    totalCount = 0;
-
-    @observable
-    accessor list: T[] = [];
-
-    abstract baseURI: string;
-
-    reset() {
-        this.loading = this.noMore = false;
-
-        this.list.length = this.pageIndex = this.totalCount = 0;
-    }
-
-    async getNextPage(filter: F, reset?: boolean) {
-        if (reset) this.reset();
-
-        if (this.loading || this.noMore) return;
-
-        if (this.pageIndex && this.list.length === this.totalCount) {
-            this.noMore = true;
-            return;
-        }
-
-        this.loading = true;
-
+    async loadPage(pageIndex: number, pageSize: number, filter: F) {
         const {
             body: { count, data }
-        } = await service.get<PageData<T>>(
-            `${this.baseURI}?${new URLSearchParams({
+        } = await this.client.get<PageData<T>>(
+            `${this.baseURI}?${buildURLData({
                 ...filter,
-                pageIndex: this.pageIndex + 1 + '',
-                pageSize: this.pageSize + ''
+                pageIndex,
+                pageSize
             })}`
         );
-        this.pageIndex++, (this.totalCount = count);
-
-        this.list = this.list.concat(data);
-
-        this.loading = false;
-
-        if (data[0]) return data;
-
-        this.noMore = true;
-    }
-
-    async update(data: T, id?: string) {
-        this.loading = true;
-
-        if (!id) {
-            const { body } = await service.post<T>(this.baseURI, data);
-
-            this.list = [body].concat(this.list);
-        } else {
-            const { body } = await service.put<T>(this.baseURI + id, data),
-                index = this.list.findIndex(({ objectId }) => objectId === id);
-
-            this.list[index] = body;
-        }
-
-        this.loading = false;
-    }
-
-    async getOne(id: string) {
-        this.loading = true;
-
-        const { body } = await service.get<T>(this.baseURI + id);
-
-        this.loading = false;
-
-        return body;
-    }
-
-    async delete(id: string) {
-        this.loading = true;
-
-        await service.delete(this.baseURI + id);
-
-        this.list = this.list.filter(({ objectId }) => objectId !== id);
-
-        this.loading = false;
+        return { pageData: data, totalCount: count };
     }
 }
 
@@ -103,18 +31,17 @@ export interface VerifiableData extends DataItem {
 }
 
 export abstract class VerifiableModel<
-    T extends VerifiableData = {},
-    F = {}
-> extends BaseModel<T, F & { verified?: boolean }> {
+    T extends VerifiableData = VerifiableData,
+    F extends Filter<T> = Filter<T>
+> extends BaseModel<T, F> {
+    @toggle('uploading')
     async verify(id: string) {
-        this.loading = true;
+        await this.client.patch(this.baseURI + id, { verified: true });
 
-        await service.patch(this.baseURI + id, { verified: true });
-
-        const item = this.list.find(({ objectId }) => objectId === id);
-
-        (item.verified = true), (item.verifier = session.user);
-
-        this.loading = false;
+        this.changeOne(
+            { verified: true, verifier: session.user } as Partial<T>,
+            id,
+            true
+        );
     }
 }

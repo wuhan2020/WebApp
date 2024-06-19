@@ -1,50 +1,47 @@
 import { observable } from 'mobx';
+import { BaseModel, persist, restore, toggle } from 'mobx-restful';
 import { blobOf } from 'web-utility';
 
-import { User, service, RoleNames, FileData } from '../service';
+import { FileData, RoleNames, User, service } from '../service';
 
-export class Session {
+export class Session extends BaseModel {
+    @persist()
     @observable
-    accessor user: User;
+    accessor user: User | undefined;
 
     constructor() {
-        if (sessionStorage.user) this.user = JSON.parse(sessionStorage.user);
-        else this.getProfile();
+        super();
+        restore(this, 'session').then(() => this.user || this.getProfile());
     }
 
-    save(user?: User) {
-        this.user = user;
-
-        if (user != null) sessionStorage.user = JSON.stringify(user);
-        else delete sessionStorage.user;
-
-        return user;
-    }
-
+    @toggle('downloading')
     async getProfile() {
         try {
             const { body } = await service.get<User>('/session');
 
-            return this.save(body);
+            return (this.user = body);
         } catch (error) {
             if (error.status !== 401) throw error;
         }
     }
 
+    @toggle('uploading')
     sendSMSCode(phone: string) {
         return service.post('/session/smsCode', { phone });
     }
 
+    @toggle('uploading')
     async signIn(phone: string, code: string) {
         const { body } = await service.post<User>('/session', { phone, code });
 
-        return this.save(body);
+        return (this.user = body);
     }
 
+    @toggle('uploading')
     async signOut() {
         await service.delete('/session');
 
-        this.save(null);
+        this.user = undefined;
 
         location.href = '.';
     }
@@ -53,6 +50,7 @@ export class Session {
         return this.user?.roles.includes(name);
     }
 
+    @toggle('uploading')
     async upload(file: Blob | string | URL, name?: string) {
         if (!(file instanceof Blob)) file = await blobOf(file + '');
 
@@ -62,10 +60,8 @@ export class Session {
 
         data.append('file', file);
 
-        const {
-            body: { url }
-        } = await service.post<FileData>('/file', data);
+        const { body } = await service.post<FileData>('/file', data);
 
-        return url;
+        return body.url;
     }
 }

@@ -100,10 +100,12 @@ export default class FactoryEdit
 
         const { supplies, contacts, ...data } = this.state;
 
-        await factory.update(
+        await factory.updateOne(
             {
                 ...data,
+                // @ts-ignore
                 supplies: supplies.filter(({ count }) => count),
+                // @ts-ignore
                 contacts: contacts.filter(
                     ({ name, phone }) => name?.trim() && phone?.trim()
                 )
@@ -184,7 +186,7 @@ export default class FactoryEdit
                         <Button
                             type="submit"
                             variant="primary"
-                            disabled={factory.loading}
+                            disabled={factory.uploading > 0}
                         >
                             提交
                         </Button>

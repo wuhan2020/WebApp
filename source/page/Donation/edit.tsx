@@ -93,13 +93,15 @@ export default class DonationEdit
 
         const { accounts, contacts, ...data } = this.state;
 
-        await donationRecipient.update(
+        await donationRecipient.updateOne(
             {
                 ...data,
+                // @ts-ignore
                 accounts: accounts.filter(
                     ({ name, number, bank }) =>
                         name?.trim() && number?.trim() && bank?.trim()
                 ),
+                // @ts-ignore
                 contacts: contacts.filter(
                     ({ name, phone }) => name?.trim() && phone?.trim()
                 )
@@ -194,7 +196,7 @@ export default class DonationEdit
                         <Button
                             type="submit"
                             variant="primary"
-                            disabled={donationRecipient.loading}
+                            disabled={donationRecipient.uploading > 0}
                         >
                             提交
                         </Button>

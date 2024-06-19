@@ -23,7 +23,7 @@ export default class UserAdmin extends HTMLElement implements CustomElement {
     }
 
     loadMore: TouchHandler = detail => {
-        if (detail === 'bottom') return user.getNextPage(this.filter);
+        if (detail === 'bottom') return user.getList(this.filter);
     };
 
     search = (event: Event) => {
@@ -32,10 +32,7 @@ export default class UserAdmin extends HTMLElement implements CustomElement {
         const { elements } = event.target as HTMLFormElement;
         const { value } = elements.item(0) as HTMLInputElement;
 
-        return user.getNextPage(
-            (this.filter = value ? { phone: value } : {}),
-            true
-        );
+        return user.getList((this.filter = value ? { phone: value } : {}), 1);
     };
 
     toggleRole(uid: string, rid: string, { target }: MouseEvent) {
@@ -68,7 +65,7 @@ export default class UserAdmin extends HTMLElement implements CustomElement {
     );
 
     render() {
-        const { loading, list, noMore } = user;
+        const { allItems, noMore } = user;
 
         return (
             <SessionBox>
@@ -100,7 +97,7 @@ export default class UserAdmin extends HTMLElement implements CustomElement {
                                 <th>角色</th>
                             </tr>
                         </thead>
-                        <tbody>{list.map(this.renderItem)}</tbody>
+                        <tbody>{allItems.map(this.renderItem)}</tbody>
                     </Table>
 
                     <p slot="bottom" className="text-center mt-2">

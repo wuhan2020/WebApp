@@ -83,10 +83,11 @@ export default class HotelEdit extends HTMLElement implements WebCell<HotelEditP
 
         const { capacity, contacts, ...data } = this.state;
 
-        await hotel.update(
+        await hotel.updateOne(
             {
                 ...data,
                 capacity: +capacity,
+                // @ts-ignore
                 contacts: contacts.filter(
                     ({ name, phone }) => name?.trim() && phone?.trim()
                 )
@@ -163,7 +164,7 @@ export default class HotelEdit extends HTMLElement implements WebCell<HotelEditP
                         <Button
                             type="submit"
                             variant="primary"
-                            disabled={hotel.loading}
+                            disabled={hotel.downloading>0}
                         >
                             提交
                         </Button>

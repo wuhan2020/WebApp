@@ -24,6 +24,7 @@
         "koajax": "^1.1.2",
         "mobx": "^6.12.4",
         "mobx-github": "^0.3.2",
+        "mobx-restful": "^1.0.0-rc.5",
         "web-cell": "^3.0.0-rc.16",
         "web-utility": "^4.4.0"
     },

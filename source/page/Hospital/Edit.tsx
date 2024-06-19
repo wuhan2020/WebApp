@@ -101,10 +101,12 @@ export default class HospitalEdit
 
         const { supplies, contacts, ...data } = this.state;
 
-        await suppliesRequirement.update(
+        await suppliesRequirement.updateOne(
             {
                 ...data,
+                // @ts-ignore
                 supplies: supplies.filter(({ count }) => count),
+                // @ts-ignore
                 contacts: contacts.filter(
                     ({ name, phone }) => name?.trim() && phone?.trim()
                 )
@@ -178,7 +180,7 @@ export default class HospitalEdit
                         <Button
                             type="submit"
                             variant="primary"
-                            disabled={suppliesRequirement.loading}
+                            disabled={suppliesRequirement.uploading > 0}
                         >
                             提交
                         </Button>

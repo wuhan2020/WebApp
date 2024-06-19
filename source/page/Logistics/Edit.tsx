@@ -90,10 +90,12 @@ export default class LogisticsEdit
 
         const { serviceArea, contacts, ...data } = this.state;
 
-        await logistics.update(
+        await logistics.updateOne(
             {
                 ...data,
+                // @ts-ignore
                 serviceArea: serviceArea.filter(({ city }) => city?.trim()),
+                // @ts-ignore
                 contacts: contacts.filter(
                     ({ name, phone }) => name?.trim() && phone?.trim()
                 )
@@ -208,7 +210,7 @@ export default class LogisticsEdit
                         <Button
                             type="submit"
                             variant="primary"
-                            disabled={logistics.loading}
+                            disabled={logistics.uploading>0}
                         >
                             提交
                         </Button>

@@ -41,6 +41,9 @@ importers:
       mobx-github:
         specifier: ^0.3.2
         version: 0.3.2(typescript@5.4.5)
+      mobx-restful:
+        specifier: ^1.0.0-rc.5
+        version: 1.0.0-rc.5(mobx@6.12.4)(typescript@5.4.5)
       web-cell:
         specifier: ^3.0.0-rc.16
         version: 3.0.0-rc.16(element-internals-polyfill@1.3.11)(typescript@5.4.5)
@@ -2250,6 +2253,10 @@ packages:
   fastq@1.17.1:
     resolution: {integrity: sha512-sRVD3lWVIXWg6By68ZN7vho9a1pQcN/WBFaAAsDDFzlJjvoGx0P8z7V1t72grFJfJhu3YPZBuu25f7Kaw2jN1w==}
 
+  fetch-blob@3.2.0:
+    resolution: {integrity: sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==}
+    engines: {node: ^12.20 || >= 14.13}
+
   figures@3.2.0:
     resolution: {integrity: sha512-yaduQFRKLXYOGgEn6AZau90j3ggSOyiqXU0F9JZfeXYhNa+Jk4X+s45A2zg5jns87GAFa34BBm2kXw4XpNcbdg==}
     engines: {node: '>=8'}
@@ -2489,6 +2496,9 @@ packages:
   iconv-lite@0.6.3:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
     engines: {node: '>=0.10.0'}
+
+  idb-keyval@6.2.1:
+    resolution: {integrity: sha512-8Sb3veuYCyrZL+VBt9LJfZjLUPWVvqn8tG28VqYNFCo43KHcKuq+b4EiXGeuaLAQWL2YmyDgMp2aSpH9JHsEQg==}
 
   idb@7.1.1:
     resolution: {integrity: sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==}
@@ -3012,6 +3022,11 @@ packages:
     peerDependencies:
       mobx: '>=6.11'
 
+  mobx-restful@1.0.0-rc.5:
+    resolution: {integrity: sha512-7NpXLHqMXyQpIAsFb0bXM+fURhrxfO+tD5SGFElyCKvF95QoeMmhXI258SvAF9Q/5lwE2+NbI5TGEHDKqo8lAg==}
+    peerDependencies:
+      mobx: '>=6.11'
+
   mobx@6.12.4:
     resolution: {integrity: sha512-uIymg89x+HmItX1p3MG+d09irn2k63J6biftZ5Ok+UpNojS1I3NJPLfcmJT9ANnUltNlHi+HQqrVyxiAN8ISYg==}
 
@@ -3028,6 +3043,10 @@ packages:
   mute-stream@0.0.8:
     resolution: {integrity: sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==}
 
+  native-file-system-adapter@3.0.1:
+    resolution: {integrity: sha512-ocuhsYk2SY0906LPc3QIMW+rCV3MdhqGiy7wV5Bf0e8/5TsMjDdyIwhNiVPiKxzTJLDrLT6h8BoV9ERfJscKhw==}
+    engines: {node: '>=14.8.0'}
+
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
@@ -3042,6 +3061,10 @@ packages:
   node-addon-api@7.1.0:
     resolution: {integrity: sha512-mNcltoe1R8o7STTegSOHdnJNN7s5EUvhoS7ShnTHDyOSd+8H+UdWODq6qSv67PjC8Zc5JRT8+oLAMCr0SIXw7g==}
     engines: {node: ^16 || ^18 || >= 20}
+
+  node-domexception@1.0.0:
+    resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
+    engines: {node: '>=10.5.0'}
 
   node-gyp-build-optional-packages@5.0.7:
     resolution: {integrity: sha512-YlCCc6Wffkx0kHkmam79GKvDQ6x+QZkMjFGrIMxgFNILFvGSbCp2fCBC55pGTT9gVaz8Na5CLmxt/urtzRv36w==}
@@ -3785,6 +3808,10 @@ packages:
       core-js: ^3
       element-internals-polyfill: ^1
       jsdom: '>=21'
+
+  web-streams-polyfill@3.3.3:
+    resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
+    engines: {node: '>= 8'}
 
   web-streams-polyfill@4.0.0:
     resolution: {integrity: sha512-0zJXHRAYEjM2tUfZ2DiSOHAa2aw1tisnnhU3ufD57R8iefL+DcdJyRBRyJpG+NUimDgbTI/lH+gAE1PAvV3Cgw==}
@@ -5718,7 +5745,7 @@ snapshots:
 
   '@swc/helpers@0.5.6':
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.6.3
 
   '@swc/types@0.1.5': {}
 
@@ -6565,6 +6592,12 @@ snapshots:
     dependencies:
       reusify: 1.0.4
 
+  fetch-blob@3.2.0:
+    dependencies:
+      node-domexception: 1.0.0
+      web-streams-polyfill: 3.3.3
+    optional: true
+
   figures@3.2.0:
     dependencies:
       escape-string-regexp: 1.0.5
@@ -6807,6 +6840,8 @@ snapshots:
       safer-buffer: 2.1.2
     optional: true
 
+  idb-keyval@6.2.1: {}
+
   idb@7.1.1: {}
 
   ieee754@1.2.1: {}
@@ -6986,7 +7021,7 @@ snapshots:
 
   iterable-observer@1.0.1:
     dependencies:
-      '@swc/helpers': 0.5.6
+      '@swc/helpers': 0.5.11
 
   jake@10.8.7:
     dependencies:
@@ -7315,6 +7350,20 @@ snapshots:
       - jsdom
       - typescript
 
+  mobx-restful@1.0.0-rc.5(mobx@6.12.4)(typescript@5.4.5):
+    dependencies:
+      '@swc/helpers': 0.5.11
+      idb-keyval: 6.2.1
+      koajax: 1.1.2(typescript@5.4.5)
+      mobx: 6.12.4
+      native-file-system-adapter: 3.0.1
+      regenerator-runtime: 0.14.1
+      web-streams-polyfill: 4.0.0
+      web-utility: 4.4.0(typescript@5.4.5)
+    transitivePeerDependencies:
+      - jsdom
+      - typescript
+
   mobx@6.12.4: {}
 
   ms@2.1.2: {}
@@ -7337,6 +7386,10 @@ snapshots:
 
   mute-stream@0.0.8: {}
 
+  native-file-system-adapter@3.0.1:
+    optionalDependencies:
+      fetch-blob: 3.2.0
+
   natural-compare@1.4.0: {}
 
   needle@3.3.1:
@@ -7348,6 +7401,9 @@ snapshots:
   node-addon-api@6.1.0: {}
 
   node-addon-api@7.1.0: {}
+
+  node-domexception@1.0.0:
+    optional: true
 
   node-gyp-build-optional-packages@5.0.7:
     optional: true
@@ -8111,6 +8167,9 @@ snapshots:
       web-utility: 4.4.0(typescript@5.4.5)
     transitivePeerDependencies:
       - typescript
+
+  web-streams-polyfill@3.3.3:
+    optional: true
 
   web-streams-polyfill@4.0.0: {}
 

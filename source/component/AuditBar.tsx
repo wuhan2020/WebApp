@@ -77,7 +77,7 @@ export const AuditBar: FC<AuditBarProps> = observer(props => {
                     <Button
                         variant="danger"
                         size="sm"
-                        onClick={() => model.delete(objectId)}
+                        onClick={() => model.deleteOne(objectId)}
                     >
                         删除
                     </Button>

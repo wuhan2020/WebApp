@@ -60,9 +60,10 @@ export default class ClinicEdit
 
         const { contacts, ...data } = this.state;
 
-        await clinic.update(
+        await clinic.updateOne(
             {
                 ...data,
+                // @ts-ignore
                 contacts: contacts.filter(
                     ({ name, phone }) => name?.trim() && phone?.trim()
                 )
@@ -135,7 +136,7 @@ export default class ClinicEdit
                         <Button
                             type="submit"
                             variant="primary"
-                            disabled={clinic.loading}
+                            disabled={clinic.uploading > 0}
                         >
                             提交
                         </Button>
