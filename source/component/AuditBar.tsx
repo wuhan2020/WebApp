@@ -4,11 +4,11 @@ import { Button, ButtonGroup } from 'boot-cell';
 
 import { TimeUnitName } from '../utility';
 import { DataItem, Organization } from '../service';
-import { session, BaseModel, VerifiableModel } from '../model';
+import { session, VerifiableModel } from '../model';
 
-export interface AuditBarProps extends DataItem, Organization {
+export interface AuditBarProps<T> extends DataItem, Organization {
     scope: string;
-    model: BaseModel;
+    model: VerifiableModel<T>;
 }
 
 const TimeStamp: FC<Record<'date' | 'phone' | 'label', string>> = ({
@@ -26,7 +26,7 @@ const TimeStamp: FC<Record<'date' | 'phone' | 'label', string>> = ({
     );
 };
 
-export const AuditBar: FC<AuditBarProps> = observer(props => {
+export const AuditBar = observer(function <T>(props: AuditBarProps<T>) {
     const {
         createdAt,
         updatedAt,

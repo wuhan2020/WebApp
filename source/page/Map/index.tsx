@@ -3,7 +3,7 @@ import { observable } from 'mobx';
 import { SpinnerBox } from 'boot-cell';
 import { CustomElement, Hour } from 'web-utility';
 
-import { HierarchicalVirusMap, VirusChart } from './component';
+import { HierarchicalVirusMap } from './component';
 import {
     Series,
     ProvinceData,
@@ -65,7 +65,6 @@ export default class MapsPage extends HTMLElement implements CustomElement {
                         resolution={resolution}
                     />
                 )}
-                <VirusChart className="vh-100" />
             </SpinnerBox>
         );
     }

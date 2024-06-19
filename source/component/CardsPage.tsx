@@ -7,26 +7,24 @@ import {
     TouchHandler
 } from 'boot-cell';
 import { CustomElement } from 'web-utility';
+import { Filter } from 'mobx-restful';
 
 import { DistrictEvent, DistrictFilter, District } from './DistrictFilter';
 import { VerifiableModel, session } from '../model';
+import { DataItem } from '../service';
 
-export abstract class CardsPage<T>
+export abstract class CardsPage<T extends DataItem>
     extends HTMLElement
     implements CustomElement
 {
     abstract scope: string;
-    abstract model: VerifiableModel;
+    abstract model: VerifiableModel<T>;
     abstract name: string;
     districtFilter = false;
 
-    filter: District & { verified?: boolean } = {
+    filter = {
         verified: !session.hasRole('Admin')
-    };
-
-    mountedCallback() {
-        this.model.getList(this.filter);
-    }
+    } as Filter<T> & District & { verified?: boolean };
 
     disconnectedCallback() {
         this.model.clear();
@@ -37,10 +35,7 @@ export abstract class CardsPage<T>
     };
 
     changeDistrict = ({ detail }: DistrictEvent) =>
-        this.model.getList(
-            (this.filter = { ...detail, verified: this.filter.verified }),
-            1
-        );
+        this.model.getList((this.filter = { ...this.filter, ...detail }), 1);
 
     changeVerified = ({ target }: Event) => {
         const { checked } = target as HTMLInputElement;
