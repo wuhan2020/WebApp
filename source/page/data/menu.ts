@@ -7,7 +7,8 @@ export enum RouteRoot {
     Clinic = 'clinic',
     Maps = 'maps',
     Admin = 'admin',
-    Community = 'community'
+    Community = 'community',
+    Statistics = 'statistics'
 }
 
 export default [
@@ -58,5 +59,9 @@ export default [
     {
         title: '开放社区',
         href: RouteRoot.Community
+    },
+    {
+        title: '疫情统计',
+        href: RouteRoot.Statistics
     }
 ];

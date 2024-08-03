@@ -74,6 +74,12 @@ export interface Province extends Base, StatisticData {
     cities?: City[];
 }
 
+export interface AreaData extends Base,
+    Partial<Record<`${'city_' | 'province_'}${StatisticType}Count`,number>>,
+    Record<`${'city'|'continent'|'country'|'province'}EnglishName`,string>,
+    Record<`${'city'|'continent'|'country'|'province'}Name`,string>,
+    Record<`${'city_' | 'province_'}zipCode`,string>{}
+
 export async function getOverall() {
     const { body } = await epidemic.get<Overall[]>('Overall', { Range: '0-9' });
 
@@ -91,3 +97,10 @@ export async function getCurrent() {
 
     return body;
 }
+
+export async function getArea() {
+    const { body } = await epidemic.get<AreaData[]>('Area', { Range: '0-9' });
+
+    return body;
+}
+
