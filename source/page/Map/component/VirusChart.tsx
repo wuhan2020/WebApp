@@ -256,16 +256,25 @@ export class VirusChart
     mountedCallback() {
         this.classList.add('d-flex', 'flex-column');
     }
-
+    toMonth(dateString){
+        let date = new Date(dateString);
+        let year = date.getFullYear();
+        let month = date.getMonth(); 
+        return new Date(year, month);
+    }
     render() {
         const { data, area, path } = this.props;
-
+        
         const orderedProvincesData = this.getOrderedTimeData(
                 data.provincesSeries
             ),
             orderedCountryData = this.getOrderedTimeData(data.countrySeries);
-
-        return (
+            let confirmedCount =  orderedCountryData.map(item=>[this.toMonth(item.updateTime),item.confirmed])
+            let suspectedCount = orderedCountryData.map(item=>[this.toMonth(item.updateTime),item.suspected])
+            let curedCount = orderedCountryData.map(item=>[this.toMonth(item.updateTime),item.cured])
+            let deadCount = orderedCountryData.map(item=>[this.toMonth(item.updateTime),item.dead])
+           
+            return (
             <>
                 <ec-svg-renderer
                     className="w-100 h-50"
@@ -284,11 +293,13 @@ export class VirusChart
                         name="确诊"
                         stack="总量"
                         areaStyle={{ color: '#f6bdcd' }}
+                        data={confirmedCount}
                     />
                     <ec-line-chart
                         name="疑似"
                         stack="总量"
                         areaStyle={{ color: '#f9e4ba' }}
+                        data={suspectedCount}
                     />
                     <ec-tooltip trigger="axis" />
                 </ec-svg-renderer>
@@ -306,10 +317,12 @@ export class VirusChart
                     <ec-grid bottom="25%" left={60} />
                     <ec-x-axis name="日期" type="time" nameGap={5} />
                     <ec-y-axis name="人数" nameGap={10} />
-                    <ec-line-chart name="治愈" />
-                    <ec-line-chart name="死亡" />
+                    <ec-line-chart name="治愈" data={curedCount} />
+                    <ec-line-chart name="死亡" data={deadCount} />
                     <ec-tooltip trigger="axis" />
                 </ec-svg-renderer>
+
+                
             </>
         );
     }

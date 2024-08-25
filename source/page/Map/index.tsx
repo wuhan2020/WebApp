@@ -45,7 +45,7 @@ export default class MapsPage extends HTMLElement implements CustomElement {
             getCurrent(),
             getOverall()
         ]);
-
+       
         this.virusData = {
             provincesSeries: convertProvincesSeries(rawData, resolution, true),
             countrySeries: convertCountrySeries(overviewData.map(convertStat), resolution),

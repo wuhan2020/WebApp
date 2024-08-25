@@ -1,7 +1,7 @@
-const server_root = 'https://map-1252957949.cos.ap-guangzhou.myqcloud.com/';
+const server_root = 'https://geo.datav.aliyun.com/areas_v3/bound/';
 
 export default {
-    中国: server_root + 'china.json',
+    中国: server_root + '100000_full.json',
     世界: server_root + 'world.json',
     安徽: server_root + 'china/anhui.json',
     澳门: server_root + 'china/aomen.json',

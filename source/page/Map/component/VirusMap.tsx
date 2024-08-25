@@ -94,7 +94,7 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
         mapScale: 1,
         chartArea: this.name
     };
-
+   
     get basicVisualMap() {
         return {
             show: true,
@@ -194,7 +194,7 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
             isAdjustLabel = true,
             domWidth = chart.getWidth(),
             domHeight = chart.getHeight();
-
+            
         let options = this.baseOptions(this.name, this.breaks);
 
         if (isForceRatio)
@@ -222,11 +222,12 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
                   options
               ) as any)
             : (this.getChartOptions(this.data as MapDataType, options) as any);
-
+                
         chart.setOption(options);
     };
 
     getChartOptions = (data: MapDataType, options?: any) => {
+
         options ||= this.baseOptions(this.name, this.breaks);
 
         const extra = this.overrides(data);
@@ -239,7 +240,6 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
 
     getSTChartOptions = (data: STMapDataType, options?: any) => {
         options ||= this.baseOptions(this.name, this.breaks);
-
         options['timeline'] = {
             axisType: 'time',
             show: true,
@@ -264,9 +264,11 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
                 }
             }
         };
+        const sortedTimeline = data.timeline.slice().sort();
+
         return {
             baseOption: options,
-            options: data.timeline.sort().map(t => this.overrides(data.data[t]))
+            options: sortedTimeline.map(t => this.overrides(data.data[t]))
         };
     };
 
@@ -277,10 +279,10 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
     mountedCallback() {
         this.classList.add(style.box);
     }
-
+   
     render() {
         const { name, data, currentChartArea, chartData, chartPath } = this;
-
+        
         return (
             <>
                 <EChartsMap

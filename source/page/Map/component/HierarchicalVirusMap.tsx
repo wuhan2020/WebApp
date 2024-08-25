@@ -134,7 +134,7 @@ export class HierarchicalVirusMap
                         )
                     )
                 ];
-
+            
         return (
             <>
                 <VirusMap

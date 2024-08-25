@@ -31,8 +31,7 @@ const HospitalPage = lazy(() => import('./Hospital')),
     ClinicEdit = lazy(() => import('./Clinic/Edit')),
     UserAdmin = lazy(() => import('./Admin/User')),
     CommunityPage = lazy(() => import('./Community')),
-    MapsPage = lazy(() => import('./Map')),
-    StatisticsPage= lazy(() => import('./Statistics'));
+    MapsPage = lazy(() => import('./Map'))
 const userMenu = [
     {
         title: '管理',
@@ -118,7 +117,6 @@ export const PageFrame: FC = () => (
             <Route path={RouteRoot.Maps} component={MapsPage} />
             <Route path={RouteRoot.Admin} component={UserAdmin} />
             <Route path={RouteRoot.Community} component={CommunityPage} />
-            <Route path={RouteRoot.Statistics} component={StatisticsPage} />
             <Route
                 path="disclaimer"
                 component={({ className = '', ...props }) => (
