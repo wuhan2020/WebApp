@@ -1,4 +1,5 @@
 import { WebCell, component, attribute, observer } from 'web-cell';
+import { formatDate } from 'web-utility';
 import { observable } from 'mobx';
 import { EChartsOption } from 'echarts';
 import 'echarts-jsx/dist/renderers/SVG';
@@ -253,28 +254,44 @@ export class VirusChart
         } as EChartsOption;
     }
 
+    transformData(orderedCountryData: any[]) {
+        return orderedCountryData.map(
+            ({ updateTime, confirmed, suspected, cured, dead }) => ({
+                date: new Date(formatDate(updateTime, 'YYYY/MM')),
+                confirmed,
+                suspected,
+                cured,
+                dead
+            })
+        );
+    }
     mountedCallback() {
         this.classList.add('d-flex', 'flex-column');
     }
-    toMonth(dateString){
-        let date = new Date(dateString);
-        let year = date.getFullYear();
-        let month = date.getMonth(); 
-        return new Date(year, month);
-    }
     render() {
         const { data, area, path } = this.props;
-        
+
         const orderedProvincesData = this.getOrderedTimeData(
                 data.provincesSeries
             ),
             orderedCountryData = this.getOrderedTimeData(data.countrySeries);
-            let confirmedCount =  orderedCountryData.map(item=>[this.toMonth(item.updateTime),item.confirmed])
-            let suspectedCount = orderedCountryData.map(item=>[this.toMonth(item.updateTime),item.suspected])
-            let curedCount = orderedCountryData.map(item=>[this.toMonth(item.updateTime),item.cured])
-            let deadCount = orderedCountryData.map(item=>[this.toMonth(item.updateTime),item.dead])
-           
-            return (
+
+        const transformedCounts = this.transformData(orderedCountryData);
+        const confirmedCount = transformedCounts.map(item => [
+            item.date,
+            item.confirmed
+        ]);
+        const suspectedCount = transformedCounts.map(item => [
+            item.date,
+            item.suspected
+        ]);
+        const curedCount = transformedCounts.map(item => [
+            item.date,
+            item.cured
+        ]);
+        const deadCount = transformedCounts.map(item => [item.date, item.dead]);
+
+        return (
             <>
                 <ec-svg-renderer
                     className="w-100 h-50"
@@ -321,8 +338,6 @@ export class VirusChart
                     <ec-line-chart name="死亡" data={deadCount} />
                     <ec-tooltip trigger="axis" />
                 </ec-svg-renderer>
-
-                
             </>
         );
     }

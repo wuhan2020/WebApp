@@ -16,7 +16,6 @@ import logo from '../image/wuhan2020.png';
 import { HomePage } from './Home';
 import Disclaimer from '../../Disclaimer.md';
 
-
 const HospitalPage = lazy(() => import('./Hospital')),
     HospitalEdit = lazy(() => import('./Hospital/Edit')),
     LogisticsPage = lazy(() => import('./Logistics')),
@@ -31,7 +30,7 @@ const HospitalPage = lazy(() => import('./Hospital')),
     ClinicEdit = lazy(() => import('./Clinic/Edit')),
     UserAdmin = lazy(() => import('./Admin/User')),
     CommunityPage = lazy(() => import('./Community')),
-    MapsPage = lazy(() => import('./Map'))
+    MapsPage = lazy(() => import('./Map'));
 const userMenu = [
     {
         title: '管理',
@@ -127,7 +126,6 @@ export const PageFrame: FC = () => (
                     />
                 )}
             />
-            
         </Container>
 
         <footer className="d-md-flex justify-content-around text-center bg-light py-5">

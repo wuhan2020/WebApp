@@ -105,9 +105,3 @@ export async function getCurrent() {
     return body;
 }
 
-export async function getArea() {
-    const { body } = await epidemic.get<AreaData[]>('Area', { Range: '0-9' });
-
-    return body;
-}
-
