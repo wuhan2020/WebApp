@@ -87,15 +87,15 @@ export async function getOverall() {
 }
 
 export async function getHistory() {
-    const { body } = await epidemic.get<AreaData[]>('Area', { Range: '0-199' }); //
+    const { body } = await epidemic.get<AreaData[]>('Area', { Range: '0-199' });
 
-    for (const item of body) {
+    body.map(item => {
         item['provinceShortName'] = item.provinceName;
         item['confirmedCount'] = item.province_confirmedCount;
         item['suspectedCount'] = item.province_suspectedCount;
         item['curedCount'] = item.province_curedCount;
         item['deadCount'] = item.province_deadCount;
-    }
+    });
     return body as unknown as Province[];
 }
 
