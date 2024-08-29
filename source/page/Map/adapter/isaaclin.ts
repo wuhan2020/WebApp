@@ -76,7 +76,7 @@ function fillForward<T extends ProvinceData | CityData | CountryData>(
     series: Series<T>
 ) {
     const all_ts = Object.keys(series).sort();
-    
+
     for (const [i, t] of all_ts.entries())
         if (i < all_ts.length - 1)
             for (const name of Object.keys(series[t])) {
@@ -100,17 +100,15 @@ export function convertProvincesSeries(
     source = [...source].sort(
         ({ updateTime: a }, { updateTime: b }) => +b - +a
     );
-    console.log('source',source);
+
     for (const item of source) {
-        const date = new Date(item.updateTime);
-        const timestamp = date.getTime();
-        const t = roundTime(timestamp, resolution);
+        const t = roundTime(+new Date(item.updateTime), resolution);
         if (res[t] === undefined) res[t] = {};
         const prov = convertProvince(item);
 
         res[t][prov.name] = prov;
     }
-    
+
     if (shouldFillForward) fillForward(res);
 
     return res;
@@ -147,8 +145,6 @@ export const convertCountrySeries = (
 ): Series<CountryOverviewData> =>
     Object.fromEntries(
         source.map(item => {
-            const date = new Date(item.updateTime);
-            const timestamp = date.getTime();
-            return [roundTime(timestamp, resolution), item]
+            return [roundTime(+new Date(item.updateTime), resolution), item];
         })
     );

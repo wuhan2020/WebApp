@@ -74,12 +74,12 @@ export interface Province extends Base, StatisticData {
     cities?: City[];
 }
 
-export interface AreaData extends Base,
-    Partial<Record<`${'city_' | 'province_'}${StatisticType}Count`,number>>,
-    Record<`${'city'|'continent'|'country'|'province'}EnglishName`,string>,
-    Record<`${'city'|'continent'|'country'|'province'}Name`,string>,
-    Record<`${'city_' | 'province_'}zipCode`,string>{}
-
+export type Area = 'city' | 'continent' | 'country' | 'province';
+export type AreaData = Base &
+    Partial<Record<`${'city' | 'province'}_${StatisticType}Count`, number>> &
+    Record<`${Area}EnglishName`, string> &
+    Record<`${Area}Name`, string> &
+    Record<`${'city' | 'province'}_zipCode`, string>;
 export async function getOverall() {
     const { body } = await epidemic.get<Overall[]>('Overall', { Range: '0-9' });
 
@@ -87,14 +87,14 @@ export async function getOverall() {
 }
 
 export async function getHistory() {
-    const { body } = await epidemic.get<AreaData[]>('Area', { Range: '0-199' });//
-    for (const item of body) {
-        item["provinceShortName"]=item.provinceName
-        item["confirmedCount"]=item.province_confirmedCount
-        item["suspectedCount"]=item.province_suspectedCount
-        item["curedCount"]=item.province_curedCount
-        item["deadCount"]=item.province_deadCount
+    const { body } = await epidemic.get<AreaData[]>('Area', { Range: '0-199' }); //
 
+    for (const item of body) {
+        item['provinceShortName'] = item.provinceName;
+        item['confirmedCount'] = item.province_confirmedCount;
+        item['suspectedCount'] = item.province_suspectedCount;
+        item['curedCount'] = item.province_curedCount;
+        item['deadCount'] = item.province_deadCount;
     }
     return body as unknown as Province[];
 }
@@ -104,4 +104,3 @@ export async function getCurrent() {
 
     return body;
 }
-

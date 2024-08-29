@@ -38,6 +38,10 @@ const LINE_WIDTH = 5,
 
 export interface VirusChart extends WebCell<VirusChartProps> {}
 
+interface DataItem
+    extends Record<'confirmed' | 'suspected' | 'cured' | 'dead', number> {
+    updateTime: Date;
+}
 /**
  * WebCell 疫情数据折线图可视化组件
  *
@@ -254,7 +258,7 @@ export class VirusChart
         } as EChartsOption;
     }
 
-    transformData(orderedCountryData: any[]) {
+    transformData(orderedCountryData: DataItem[]) {
         return orderedCountryData.map(
             ({ updateTime, confirmed, suspected, cured, dead }) => ({
                 date: new Date(formatDate(updateTime, 'YYYY/MM')),
