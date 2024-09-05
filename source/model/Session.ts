@@ -1,3 +1,4 @@
+import { HTTPError } from 'koajax';
 import { observable } from 'mobx';
 import { BaseModel, persist, restore, toggle } from 'mobx-restful';
 import { blobOf } from 'web-utility';
@@ -21,7 +22,7 @@ export class Session extends BaseModel {
 
             return (this.user = body);
         } catch (error) {
-            if (error.status !== 401) throw error;
+            if ((error as HTTPError<User>).response.status !== 401) throw error;
         }
     }
 

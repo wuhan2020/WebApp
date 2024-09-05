@@ -10,16 +10,15 @@ auto();
 
 configure({ enforceActions: 'never' });
 
-self.addEventListener('unhandledrejection', event => {
-    if (!(event.reason instanceof URIError)) return;
+self.addEventListener('unhandledrejection', ({ reason }) => {
+    if (!(reason instanceof URIError)) return;
 
-    const { message } = (event.reason as HTTPError).body;
+    let { message, response } = reason as HTTPError;
+    const { statusText, body } = response || {};
 
-    if (!message) return;
+    message = body?.message || message || statusText;
 
-    event.preventDefault();
-
-    self.alert(message);
+    if (message) alert(message);
 });
 
 const { serviceWorker } = window.navigator;
