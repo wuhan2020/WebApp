@@ -90,14 +90,16 @@ export async function getHistory() {
     const { body } = await epidemic.get<AreaData[]>('Area', { Range: '0-199' });
 
     const updatedBody = body.map(item => ({
-        ...item,
+        id: item.id,
+        updateTime: item.updateTime,
         provinceShortName: item.provinceName,
         confirmedCount: item.province_confirmedCount,
         suspectedCount: item.province_suspectedCount,
         curedCount: item.province_curedCount,
         deadCount: item.province_deadCount
     }));
-    return updatedBody as unknown as Province[];
+
+    return updatedBody as Province[];
 }
 
 export async function getCurrent() {
