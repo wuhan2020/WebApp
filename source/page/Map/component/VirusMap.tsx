@@ -94,7 +94,7 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
         mapScale: 1,
         chartArea: this.name
     };
-   
+
     get basicVisualMap() {
         return {
             show: true,
@@ -194,7 +194,7 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
             isAdjustLabel = true,
             domWidth = chart.getWidth(),
             domHeight = chart.getHeight();
-            
+
         let options = this.baseOptions(this.name, this.breaks);
 
         if (isForceRatio)
@@ -222,12 +222,11 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
                   options
               ) as any)
             : (this.getChartOptions(this.data as MapDataType, options) as any);
-                
+
         chart.setOption(options);
     };
 
     getChartOptions = (data: MapDataType, options?: any) => {
-
         options ||= this.baseOptions(this.name, this.breaks);
 
         const extra = this.overrides(data);
@@ -238,6 +237,29 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
         return options;
     };
 
+    getTimelineData = () => {
+        // 定义开始和结束日期
+        const startDate = new Date('2022-09-01');
+        const endDate = new Date('2022-09-29');
+
+        // 计算时间间隔（以毫秒为单位）
+        const interval = 24 * 60 * 60 * 1000; // 一天的毫秒数
+        const timestampArray = Array.from(
+            {
+                length:
+                    (endDate.getTime() - startDate.getTime()) /
+                        (interval as number) +
+                    1
+            },
+            (_, i) => {
+                const date = new Date(startDate);
+                date.setDate(date.getDate() + i);
+                return date.getTime();
+            }
+        );
+
+        return timestampArray;
+    };
     getSTChartOptions = (data: STMapDataType, options?: any) => {
         options ||= this.baseOptions(this.name, this.breaks);
         options['timeline'] = {
@@ -246,7 +268,7 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
             tooltip: {},
             playInterval: 1500,
             currentIndex: data.timeline.length - 1,
-            data: data.timeline,
+            data: this.getTimelineData(), //[1668700800000, 1668787200000, 1668873600000], //data.timeline,
             left: 'left',
             right: 0,
             label: {
@@ -264,8 +286,8 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
                 }
             }
         };
-        const sortedTimeline = data.timeline.slice().sort();
 
+        const sortedTimeline = [...data.timeline].sort();
         return {
             baseOption: options,
             options: sortedTimeline.map(t => this.overrides(data.data[t]))
@@ -279,10 +301,10 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
     mountedCallback() {
         this.classList.add(style.box);
     }
-   
+
     render() {
         const { name, data, currentChartArea, chartData, chartPath } = this;
-        
+
         return (
             <>
                 <EChartsMap

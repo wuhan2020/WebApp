@@ -2,6 +2,7 @@ import { DataObject } from 'dom-renderer';
 import { WebCell, component, attribute, observer } from 'web-cell';
 import { observable } from 'mobx';
 import { EChartsOption, EChartsType, init, registerMap } from 'echarts';
+import { getHistory } from '../../../service/Epidemic';
 
 import { long2short } from '../adapter';
 
@@ -92,13 +93,22 @@ export class EChartsMap
                     hovered = '';
                 }
             })
-            .on('click', 'timeline', ({ dataIndex }) =>
+            .on('click', 'timeline', async ({ dataIndex }) => {
+                const clickedDate = new Date(dataIndex);
+                const formattedDate = clickedDate.toISOString().split('T')[0]; // 格式化日期为 YYYY-MM-DD
                 chart.dispatchAction({
                     type: 'timelineChange',
                     // index of time point
                     currentIndex: data.findIndex(d => d === dataIndex)
                 })
-            );
+                try {
+                    const newData = await getHistory(formattedDate);
+                    // 更新图表数据
+                    this.updateChartData(newData);
+                } catch (error) {
+                    console.error('Failed to fetch data:', error);
+                }
+            })
     }
 
     async loadData() {
@@ -118,5 +128,18 @@ export class EChartsMap
         this.adjustLabel();
 
         chart.hideLoading();
+    }
+
+    // 添加一个方法来更新图表数据
+    updateChartData(newData) {
+        // 根据新数据更新图表
+        this.chart.setOption({
+            series: [{
+                data: newData.map(item => ({
+                    name: item.provinceShortName,
+                    value: item.confirmedCount
+                }))
+            }]
+        });
     }
 }
