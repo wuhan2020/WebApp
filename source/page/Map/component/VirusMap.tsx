@@ -1,6 +1,6 @@
 import { WebCell, component, attribute, observer } from 'web-cell';
 import { observable } from 'mobx';
-import { Hour } from 'web-utility';
+import { Day, Hour } from 'web-utility';
 
 import { EChartsMapProps, EChartsMap } from './EChartsMap';
 import { VirusChart } from './VirusChart';
@@ -239,26 +239,12 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
 
     getTimelineData = () => {
         // 定义开始和结束日期
-        const startDate = new Date('2022-09-01');
-        const endDate = new Date('2022-09-29');
-
-        // 计算时间间隔（以毫秒为单位）
-        const interval = 24 * 60 * 60 * 1000; // 一天的毫秒数
-        const timestampArray = Array.from(
-            {
-                length:
-                    (endDate.getTime() - startDate.getTime()) /
-                        (interval as number) +
-                    1
-            },
-            (_, i) => {
-                const date = new Date(startDate);
-                date.setDate(date.getDate() + i);
-                return date.getTime();
-            }
+        const startDate = +new Date('2022-09-01');
+        const endDate = +new Date('2022-09-28');
+        return Array.from(
+            { length: (endDate - startDate) / Day + 1 },
+            (_, i) => startDate + Day * i
         );
-
-        return timestampArray;
     };
     getSTChartOptions = (data: STMapDataType, options?: any) => {
         options ||= this.baseOptions(this.name, this.breaks);
@@ -268,7 +254,7 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
             tooltip: {},
             playInterval: 1500,
             currentIndex: data.timeline.length - 1,
-            data: this.getTimelineData(), //[1668700800000, 1668787200000, 1668873600000], //data.timeline,
+            data: this.getTimelineData(),
             left: 'left',
             right: 0,
             label: {

@@ -2,9 +2,10 @@ import { DataObject } from 'dom-renderer';
 import { WebCell, component, attribute, observer } from 'web-cell';
 import { observable } from 'mobx';
 import { EChartsOption, EChartsType, init, registerMap } from 'echarts';
-import { getHistory } from '../../../service/Epidemic';
+import { getHistory, Province } from '../../../service/Epidemic';
 
 import { long2short } from '../adapter';
+import { formatDate } from 'web-utility';
 
 export interface EChartsMapProps {
     /**
@@ -94,13 +95,12 @@ export class EChartsMap
                 }
             })
             .on('click', 'timeline', async ({ dataIndex }) => {
-                const clickedDate = new Date(dataIndex);
-                const formattedDate = clickedDate.toISOString().split('T')[0]; // 格式化日期为 YYYY-MM-DD
+                const formattedDate = formatDate(dataIndex, 'YYYY-MM-DD');
                 chart.dispatchAction({
                     type: 'timelineChange',
                     // index of time point
                     currentIndex: data.findIndex(d => d === dataIndex)
-                })
+                });
                 try {
                     const newData = await getHistory(formattedDate);
                     // 更新图表数据
@@ -108,7 +108,7 @@ export class EChartsMap
                 } catch (error) {
                     console.error('Failed to fetch data:', error);
                 }
-            })
+            });
     }
 
     async loadData() {
@@ -131,15 +131,17 @@ export class EChartsMap
     }
 
     // 添加一个方法来更新图表数据
-    updateChartData(newData) {
+    updateChartData(newData: Province[]) {
         // 根据新数据更新图表
         this.chart.setOption({
-            series: [{
-                data: newData.map(item => ({
-                    name: item.provinceShortName,
-                    value: item.confirmedCount
-                }))
-            }]
+            series: [
+                {
+                    data: newData.map(item => ({
+                        name: item.provinceShortName,
+                        value: item.confirmedCount
+                    }))
+                }
+            ]
         });
     }
 }
