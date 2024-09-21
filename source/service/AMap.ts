@@ -3,6 +3,11 @@ import { buildURLData, parseURLData } from 'web-utility';
 
 const key = '8325164e247e15eea68b59e89200988b';
 
+type AMapError = Record<
+    'status' | `info${'' | 'code'}` | 'key' | `sec_code${'' | '_debug'}`,
+    string
+>;
+
 const amapClient = new HTTPClient({
     baseURI: 'https://restapi.amap.com/v3/',
     responseType: 'json'
@@ -13,15 +18,15 @@ const amapClient = new HTTPClient({
 
     await next();
 
-    const { status, info, ...rest } = response.body;
+    const { status, info, ...rest } = response.body as AMapError;
 
-    if (status !== '1') throw new HTTPError(info, response);
+    if (status !== '1') throw new HTTPError(info, request, response);
 
     response.body = rest;
 });
 
 type POI = Record<
-    'name' | 'pname' | 'cityname' | 'adname' | 'address' | 'location',
+    `${'' | 'p' | 'city' | 'ad'}name` | 'address' | 'location',
     string
 >;
 
