@@ -2,10 +2,10 @@ import { DataObject } from 'dom-renderer';
 import { WebCell, component, attribute, observer } from 'web-cell';
 import { observable } from 'mobx';
 import { EChartsOption, EChartsType, init, registerMap } from 'echarts';
-import { getHistory, Province } from '../../../service/Epidemic';
-
-import { long2short } from '../adapter';
 import { formatDate } from 'web-utility';
+
+import { getHistory, Province } from '../../../service/Epidemic';
+import { long2short } from '../adapter';
 
 export interface EChartsMapProps {
     /**
@@ -101,12 +101,9 @@ export class EChartsMap
                     // index of time point
                     currentIndex: data.findIndex(d => d === dataIndex)
                 });
-                try {
-                    const newData = await getHistory(formattedDate);
-                    this.updateChartData(newData);
-                } catch (error) {
-                    console.error('Failed to fetch data:', error);
-                }
+                const newData = await getHistory(formattedDate);
+
+                this.updateChartData(newData);
             });
     }
 
