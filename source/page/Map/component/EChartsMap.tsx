@@ -103,7 +103,6 @@ export class EChartsMap
                 });
                 try {
                     const newData = await getHistory(formattedDate);
-                    // 更新图表数据
                     this.updateChartData(newData);
                 } catch (error) {
                     console.error('Failed to fetch data:', error);
@@ -129,10 +128,7 @@ export class EChartsMap
 
         chart.hideLoading();
     }
-
-    // 添加一个方法来更新图表数据
     updateChartData(newData: Province[]) {
-        // 根据新数据更新图表
         this.chart.setOption({
             series: [
                 {

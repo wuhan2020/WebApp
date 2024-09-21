@@ -237,15 +237,14 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
         return options;
     };
 
-    getTimelineData = () => {
-        // 定义开始和结束日期
+    get timelineData() {
         const startDate = +new Date('2022-09-01');
         const endDate = +new Date('2022-09-28');
         return Array.from(
             { length: (endDate - startDate) / Day + 1 },
             (_, i) => startDate + Day * i
         );
-    };
+    }
     getSTChartOptions = (data: STMapDataType, options?: any) => {
         options ||= this.baseOptions(this.name, this.breaks);
         options['timeline'] = {
@@ -254,7 +253,7 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
             tooltip: {},
             playInterval: 1500,
             currentIndex: data.timeline.length - 1,
-            data: this.getTimelineData(),
+            data: this.timelineData,
             left: 'left',
             right: 0,
             label: {

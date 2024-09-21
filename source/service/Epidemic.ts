@@ -85,7 +85,6 @@ export async function getOverall() {
 
     return body;
 }
-//updateTime=gt.2022-01-01T10:54:11&updateTime=lt.2022-12-30T10:54:11  2022-09-29T14:14:55
 export async function getHistory(date = '2022-09-01') {
     const startOfDay = `${date}T00:00:00`;
     const endOfDay = `${date}T23:59:59`;
