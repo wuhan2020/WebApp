@@ -7,7 +7,7 @@ export enum RouteRoot {
     Clinic = 'clinic',
     Maps = 'maps',
     Admin = 'admin',
-    Community = 'community',
+    Community = 'community'
 }
 
 export default [

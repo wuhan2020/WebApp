@@ -1,7 +1,3 @@
-import { WebCell, component, attribute, observer } from 'web-cell';
-import { formatDate } from 'web-utility';
-import { observable } from 'mobx';
-import { EChartsOption } from 'echarts';
 import 'echarts-jsx/dist/renderers/SVG';
 import 'echarts-jsx/dist/components/title';
 import 'echarts-jsx/dist/components/legend';
@@ -11,15 +7,19 @@ import 'echarts-jsx/dist/components/x-axis';
 import 'echarts-jsx/dist/components/y-axis';
 import 'echarts-jsx/dist/charts/line';
 
-import { isLandscape } from '../utility';
+import { EChartsOption } from 'echarts';
+import { observable } from 'mobx';
+import { attribute, component, observer,WebCell } from 'web-cell';
+import { formatDate } from 'web-utility';
+
+import { area as areaModel } from '../../../model';
 import {
-    Series,
-    ProvinceData,
     CountryData,
     CountryOverviewData,
-    OverallCountryData
-} from '../adapter';
-import { area as areaModel } from '../../../model';
+    OverallCountryData,
+    ProvinceData,
+    Series} from '../adapter';
+import { isLandscape } from '../utility';
 
 export interface VirusChartProps {
     /**

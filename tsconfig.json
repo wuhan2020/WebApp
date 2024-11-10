@@ -7,8 +7,10 @@
         "useDefineForClassFields": true,
         "jsx": "react-jsx",
         "jsxImportSource": "dom-renderer",
+        "checkJs": true,
         "skipLibCheck": true,
-        "lib": ["ESNext", "DOM"]
+        "lib": ["ESNext", "DOM"],
+        "outDir": "dist"
     },
-    "include": ["source/**/*", "*.ts"]
+    "include": ["**/*", "*.mjs"]
 }

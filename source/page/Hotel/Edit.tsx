@@ -1,11 +1,11 @@
-import { WebCell, component, attribute, observer } from 'web-cell';
-import { FormGroup, FormLabel, FormField, Button } from 'boot-cell';
+import { Button,FormField, FormGroup, FormLabel } from 'boot-cell';
 import { observable } from 'mobx';
+import { attribute, component, observer,WebCell } from 'web-cell';
 
-import { RouteRoot } from '../data/menu';
+import { AddressField, ContactField,SessionBox } from '../../component';
 import { Hotel, hotel } from '../../model';
-import { GeoCoord, Contact } from '../../service';
-import { SessionBox, AddressField, ContactField } from '../../component';
+import { Contact,GeoCoord } from '../../service';
+import { RouteRoot } from '../data/menu';
 
 export interface HotelEditProps {
     dataId: string;
@@ -15,7 +15,10 @@ export default interface HotelEdit extends WebCell<HotelEditProps> {}
 
 @component({ tagName: 'hotel-edit' })
 @observer
-export default class HotelEdit extends HTMLElement implements WebCell<HotelEditProps> {
+export default class HotelEdit
+    extends HTMLElement
+    implements WebCell<HotelEditProps>
+{
     @attribute
     @observable
     accessor dataId = '';
@@ -87,7 +90,7 @@ export default class HotelEdit extends HTMLElement implements WebCell<HotelEditP
             {
                 ...data,
                 capacity: +capacity,
-                // @ts-ignore
+                // @ts-expect-error Back-end type error
                 contacts: contacts.filter(
                     ({ name, phone }) => name?.trim() && phone?.trim()
                 )
@@ -164,7 +167,7 @@ export default class HotelEdit extends HTMLElement implements WebCell<HotelEditP
                         <Button
                             type="submit"
                             variant="primary"
-                            disabled={hotel.downloading>0}
+                            disabled={hotel.downloading > 0}
                         >
                             提交
                         </Button>

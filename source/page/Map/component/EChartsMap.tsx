@@ -1,7 +1,7 @@
 import { DataObject } from 'dom-renderer';
-import { WebCell, component, attribute, observer } from 'web-cell';
-import { observable } from 'mobx';
 import { EChartsOption, EChartsType, init, registerMap } from 'echarts';
+import { observable } from 'mobx';
+import { attribute, component, observer,WebCell } from 'web-cell';
 import { formatDate } from 'web-utility';
 
 import { getHistory, Province } from '../../../service/Epidemic';
@@ -61,7 +61,8 @@ export class EChartsMap
 
         this.chart = init(this);
 
-        this.listen(), this.loadData();
+        this.listen();
+        this.loadData();
 
         self.addEventListener('resize', () => {
             this.chart.resize();
@@ -94,16 +95,14 @@ export class EChartsMap
                     hovered = '';
                 }
             })
-            .on('click', 'timeline', async ({ dataIndex }) => {
+            .on('click', 'timeline', ({ dataIndex }) => {
                 const formattedDate = formatDate(dataIndex, 'YYYY-MM-DD');
                 chart.dispatchAction({
                     type: 'timelineChange',
                     // index of time point
                     currentIndex: data.findIndex(d => d === dataIndex)
                 });
-                const newData = await getHistory(formattedDate);
-
-                this.updateChartData(newData);
+                getHistory(formattedDate).then(this.updateChartData);
             });
     }
 
@@ -125,7 +124,8 @@ export class EChartsMap
 
         chart.hideLoading();
     }
-    updateChartData(newData: Province[]) {
+
+    updateChartData = (newData: Province[]) =>
         this.chart.setOption({
             series: [
                 {
@@ -136,5 +136,4 @@ export class EChartsMap
                 }
             ]
         });
-    }
 }

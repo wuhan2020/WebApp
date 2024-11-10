@@ -1,14 +1,15 @@
 import { Hour } from 'web-utility';
+
+import { Base, City, Province, StatisticData } from '../../../service/Epidemic';
+import { long2short } from './long2short'; // some city names are NOT short names so we also convert them here
 import {
-    CountryOverviewData,
-    CountryData,
-    ProvinceData,
     CityData,
+    CountryData,
+    CountryOverviewData,
     PatientStatData,
+    ProvinceData,
     Series
 } from './patientStatInterface';
-import { long2short } from './long2short'; // some city names are NOT short names so we also convert them here
-import { Base, City, Province, StatisticData } from '../../../service/Epidemic';
 
 export const convertStat = ({
     id,

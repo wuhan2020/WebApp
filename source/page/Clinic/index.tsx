@@ -1,9 +1,9 @@
-import { component, observer } from 'web-cell';
 import { Badge, BGIcon, Card, CardTitle } from 'boot-cell';
+import { component, observer } from 'web-cell';
 
-import { CardsPage } from '../../component/CardsPage';
 import { AuditBar } from '../../component/AuditBar';
-import { clinic, Clinic } from '../../model';
+import { CardsPage } from '../../component/CardsPage';
+import { Clinic,clinic } from '../../model';
 import { getIsLive } from './time';
 
 @component({ tagName: 'clinic-list' })
@@ -22,13 +22,13 @@ export default class ClinicList extends CardsPage<Clinic> {
         remark,
         ...rest
     }: Clinic) => (
-        <Card body key={name}>
+        <Card key={name} body>
             <CardTitle>
                 {url ? (
                     <a
                         className="text-decoration-none"
                         target="_blank"
-                        href={url}
+                        href={url} rel="noreferrer"
                     >
                         {name}
                     </a>

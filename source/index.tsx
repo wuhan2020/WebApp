@@ -13,12 +13,12 @@ configure({ enforceActions: 'never' });
 self.addEventListener('unhandledrejection', ({ reason }) => {
     if (!(reason instanceof URIError)) return;
 
-    let { message, response } = reason as HTTPError;
+    const { message, response } = reason as HTTPError;
     const { statusText, body } = response || {};
 
-    message = body?.message || message || statusText;
+    const tips = body?.message || message || statusText;
 
-    if (message) alert(message);
+    if (tips) alert(tips);
 });
 
 const { serviceWorker } = window.navigator;

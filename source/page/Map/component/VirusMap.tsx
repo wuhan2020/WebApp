@@ -1,13 +1,12 @@
-import { WebCell, component, attribute, observer } from 'web-cell';
 import { observable } from 'mobx';
+import { attribute, component, observer,WebCell } from 'web-cell';
 import { Day, Hour } from 'web-utility';
 
-import { EChartsMapProps, EChartsMap } from './EChartsMap';
-import { VirusChart } from './VirusChart';
-import { PatientStatData, OverallCountryData } from '../adapter';
-
-import { createPieces } from '../utility';
+import { OverallCountryData,PatientStatData } from '../adapter';
 import MapUrls from '../data/province';
+import { createPieces } from '../utility';
+import { EChartsMap,EChartsMapProps } from './EChartsMap';
+import { VirusChart } from './VirusChart';
 import * as style from './VirusMap.module.css';
 
 export type MapDataType = Record<string, PatientStatData>;
@@ -94,7 +93,7 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
         mapScale: 1,
         chartArea: this.name
     };
-   
+
     get basicVisualMap() {
         return {
             show: true,
@@ -194,14 +193,14 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
             isAdjustLabel = true,
             domWidth = chart.getWidth(),
             domHeight = chart.getHeight();
-            
+
         let options = this.baseOptions(this.name, this.breaks);
 
         if (isForceRatio)
-            if (domHeight > domWidth * isForceRatio)
-                (options.visualMap[0].left = '0'),
-                    (options.visualMap[0].top = '50px');
-            else options.visualMap[0].left = '20px';
+            if (domHeight > domWidth * isForceRatio) {
+                options.visualMap[0].left = '0';
+                options.visualMap[0].top = '50px';
+            } else options.visualMap[0].left = '20px';
 
         const scale = 1;
 
@@ -222,12 +221,11 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
                   options
               ) as any)
             : (this.getChartOptions(this.data as MapDataType, options) as any);
-                
+
         chart.setOption(options);
     };
 
     getChartOptions = (data: MapDataType, options?: any) => {
-
         options ||= this.baseOptions(this.name, this.breaks);
 
         const extra = this.overrides(data);
@@ -288,10 +286,10 @@ export class VirusMap extends HTMLElement implements WebCell<VirusMapProps> {
     mountedCallback() {
         this.classList.add(style.box);
     }
-   
+
     render() {
         const { name, data, currentChartArea, chartData, chartPath } = this;
-        
+
         return (
             <>
                 <EChartsMap

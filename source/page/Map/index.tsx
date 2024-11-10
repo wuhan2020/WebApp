@@ -1,20 +1,19 @@
-import { attribute, component, observer } from 'web-cell';
-import { observable } from 'mobx';
 import { SpinnerBox } from 'boot-cell';
+import { observable } from 'mobx';
+import { attribute, component, observer } from 'web-cell';
 import { CustomElement, Hour } from 'web-utility';
 
-import { HierarchicalVirusMap } from './component';
+import { getCurrent, getHistory, getOverall } from '../../service';
 import {
-    Series,
-    ProvinceData,
-    CountryOverviewData,
-    CountryData,
     convertCountry,
-    convertProvincesSeries,
     convertCountrySeries,
-    convertStat
-} from './adapter';
-import { getHistory, getCurrent, getOverall } from '../../service';
+    convertProvincesSeries,
+    convertStat,
+    CountryData,
+    CountryOverviewData,
+    ProvinceData,
+    Series} from './adapter';
+import { HierarchicalVirusMap } from './component';
 import * as style from './index.module.css';
 
 const resolution = Hour * 24;
@@ -45,10 +44,13 @@ export default class MapsPage extends HTMLElement implements CustomElement {
             getCurrent(),
             getOverall()
         ]);
-       
+
         this.virusData = {
             provincesSeries: convertProvincesSeries(rawData, resolution, true),
-            countrySeries: convertCountrySeries(overviewData.map(convertStat), resolution),
+            countrySeries: convertCountrySeries(
+                overviewData.map(convertStat),
+                resolution
+            ),
             countryData: convertCountry(rawCurrentData)
         };
         this.loading = false;

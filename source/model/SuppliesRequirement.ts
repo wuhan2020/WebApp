@@ -1,6 +1,6 @@
-import { VerifiableData, VerifiableModel } from './BaseModel';
-import { Place } from '../service';
 import { District } from '../component';
+import { Place } from '../service';
+import { VerifiableData, VerifiableModel } from './BaseModel';
 
 export interface Supplies {
     name: string;

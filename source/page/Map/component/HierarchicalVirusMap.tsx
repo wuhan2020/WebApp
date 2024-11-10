@@ -1,21 +1,18 @@
-import { WebCell, component, attribute, observer } from 'web-cell';
-import { observable } from 'mobx';
 import { BGIcon } from 'boot-cell';
-import { Hour } from 'web-utility';
 import classNames from 'classnames';
+import { observable } from 'mobx';
+import { attribute, component, observer,WebCell } from 'web-cell';
+import { Hour } from 'web-utility';
 
-import { EChartsMapProps } from './EChartsMap';
-import { VirusMap, STMapDataType } from './VirusMap';
-
-import { autoBreaks } from '../utility';
 import {
-    Series,
-    ProvinceData,
+    extractCitiesSeries,
     OverallCountryData,
-    extractCitiesSeries
-} from '../adapter';
-
+    ProvinceData,
+    Series} from '../adapter';
+import { autoBreaks } from '../utility';
+import { EChartsMapProps } from './EChartsMap';
 import * as style from './HierarchicalVirusMap.module.css';
+import { STMapDataType,VirusMap } from './VirusMap';
 
 export interface HierarchicalVirusMapProps {
     /**
@@ -134,7 +131,7 @@ export class HierarchicalVirusMap
                         )
                     )
                 ];
-            
+
         return (
             <>
                 <VirusMap

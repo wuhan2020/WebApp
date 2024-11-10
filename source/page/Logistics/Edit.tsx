@@ -1,18 +1,17 @@
-import { WebCell, component, attribute, observer } from 'web-cell';
-import { observable } from 'mobx';
 import {
+    Button,
+    FormControl,
     FormField,
-    InputGroup,
     FormGroup,
     FormLabel,
-    FormControl,
-    Button
-} from 'boot-cell';
+    InputGroup} from 'boot-cell';
+import { observable } from 'mobx';
+import { attribute, component, observer,WebCell } from 'web-cell';
 
-import { RouteRoot } from '../data/menu';
-import { Logistics, logistics, ServiceArea } from '../../model';
-import { SessionBox } from '../../component/SessionBox';
 import { ContactField } from '../../component/ContactField';
+import { SessionBox } from '../../component/SessionBox';
+import { Logistics, logistics, ServiceArea } from '../../model';
+import { RouteRoot } from '../data/menu';
 
 const initServiceArea: ServiceArea = {
     city: '',
@@ -93,9 +92,9 @@ export default class LogisticsEdit
         await logistics.updateOne(
             {
                 ...data,
-                // @ts-ignore
+                // @ts-expect-error Back-end type error
                 serviceArea: serviceArea.filter(({ city }) => city?.trim()),
-                // @ts-ignore
+                // @ts-expect-error Back-end type error
                 contacts: contacts.filter(
                     ({ name, phone }) => name?.trim() && phone?.trim()
                 )
@@ -210,7 +209,7 @@ export default class LogisticsEdit
                         <Button
                             type="submit"
                             variant="primary"
-                            disabled={logistics.uploading>0}
+                            disabled={logistics.uploading > 0}
                         >
                             提交
                         </Button>

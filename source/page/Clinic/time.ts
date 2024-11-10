@@ -9,5 +9,4 @@ export const getIsLive = (startTimeStr: string, endTimeStr: string) => {
         endTime = +getTimeFromTimeStr(endTimeStr);
 
     return now > startTime && now < endTime;
-}
-
+};

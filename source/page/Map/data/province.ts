@@ -1,5 +1,5 @@
-const server_root =
-    'https://oss-toolbox.kaiyuanshe.cn/proxy/geo.datav.aliyun.com/areas_v3/bound/';
+export const server_root =
+    'https://test.oss-toolbox.kaiyuanshe.cn/proxy/geo.datav.aliyun.com/areas_v3/bound/';
 
 export default {
     中国: server_root + '100000_full.json',

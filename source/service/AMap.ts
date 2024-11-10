@@ -1,6 +1,8 @@
 import { HTTPClient, HTTPError } from 'koajax';
 import { buildURLData, parseURLData } from 'web-utility';
 
+import { Area, dataVClient, DistrictResponse } from '../model/Area';
+
 const key = '8325164e247e15eea68b59e89200988b';
 
 type AMapError = Record<
@@ -42,11 +44,28 @@ export interface District
     districts: District[];
 }
 
-export async function getSubDistricts(keywords = '中国') {
-    const { body } = await amapClient.get<District>(
-        `config/district?${buildURLData({ keywords })}`
+export async function getSubDistricts(
+    parent = '100000',
+    maxLevel: Area['level'] = 'province'
+) {
+    const { body } = await dataVClient.get<DistrictResponse>(
+        `${parent}_full.json`
     );
-    return body!.districts[0].districts;
+    const districts = body.features.map(
+        async ({ properties: { adcode, name, level, center } }) =>
+            level &&
+            ({
+                adcode,
+                name,
+                level,
+                center: center + '',
+                districts:
+                    level === maxLevel
+                        ? []
+                        : await getSubDistricts(adcode + '', maxLevel)
+            } as District)
+    );
+    return (await Promise.all(districts)).filter(Boolean) as District[];
 }
 
 export type GeoCode = Record<

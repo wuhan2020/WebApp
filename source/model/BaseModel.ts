@@ -1,7 +1,7 @@
 import { Filter, ListModel, toggle } from 'mobx-restful';
 import { buildURLData } from 'web-utility';
 
-import { DataItem, service, PageData, User } from '../service';
+import { DataItem, PageData, service, User } from '../service';
 import { session } from '.';
 
 export abstract class BaseModel<
