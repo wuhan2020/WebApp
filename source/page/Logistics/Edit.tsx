@@ -4,9 +4,10 @@ import {
     FormField,
     FormGroup,
     FormLabel,
-    InputGroup} from 'boot-cell';
+    InputGroup
+} from 'boot-cell';
 import { observable } from 'mobx';
-import { attribute, component, observer,WebCell } from 'web-cell';
+import { attribute, component, observer, WebCell } from 'web-cell';
 
 import { ContactField } from '../../component/ContactField';
 import { SessionBox } from '../../component/SessionBox';
@@ -92,9 +93,7 @@ export default class LogisticsEdit
         await logistics.updateOne(
             {
                 ...data,
-                // @ts-expect-error Back-end type error
                 serviceArea: serviceArea.filter(({ city }) => city?.trim()),
-                // @ts-expect-error Back-end type error
                 contacts: contacts.filter(
                     ({ name, phone }) => name?.trim() && phone?.trim()
                 )

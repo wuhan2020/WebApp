@@ -1,10 +1,10 @@
-import { Button,FormField, FormGroup, FormLabel } from 'boot-cell';
+import { Button, FormField, FormGroup, FormLabel } from 'boot-cell';
 import { observable } from 'mobx';
-import { attribute, component, observer,WebCell } from 'web-cell';
+import { attribute, component, observer, WebCell } from 'web-cell';
 
-import { AddressField, ContactField,SessionBox } from '../../component';
+import { AddressField, ContactField, SessionBox } from '../../component';
 import { Hotel, hotel } from '../../model';
-import { Contact,GeoCoord } from '../../service';
+import { Contact, GeoCoord } from '../../service';
 import { RouteRoot } from '../data/menu';
 
 export interface HotelEditProps {
@@ -90,7 +90,6 @@ export default class HotelEdit
             {
                 ...data,
                 capacity: +capacity,
-                // @ts-expect-error Back-end type error
                 contacts: contacts.filter(
                     ({ name, phone }) => name?.trim() && phone?.trim()
                 )

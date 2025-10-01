@@ -1,20 +1,18 @@
-import { FC, lazy } from 'web-cell';
-import { createRouter } from 'cell-router';
 import {
     Container,
-    OffcanvasNavbar,
-    NavLink,
+    DropdownButton,
     DropdownItem,
-    DropdownButton
-} from 'boot-cell';
+    NavLink,
+    OffcanvasNavbar} from 'boot-cell';
+import { createRouter } from 'cell-router';
+import { FC, lazy } from 'web-cell';
 
+import Disclaimer from '../../Disclaimer.md';
+import logo from '../image/wuhan2020.png';
 import { session } from '../model';
 import { RoleNames } from '../service';
 import menu, { RouteRoot } from './data/menu';
-import logo from '../image/wuhan2020.png';
-
 import { HomePage } from './Home';
-import Disclaimer from '../../Disclaimer.md';
 
 const HospitalPage = lazy(() => import('./Hospital')),
     HospitalEdit = lazy(() => import('./Hospital/Edit')),
@@ -44,7 +42,7 @@ const userMenu = [
 ];
 
 const { location } = globalThis,
-    { Route } = createRouter();
+    { Router, Route } = createRouter();
 
 export const PageFrame: FC = () => (
     <>
@@ -90,7 +88,7 @@ export const PageFrame: FC = () => (
             )}
         </OffcanvasNavbar>
 
-        <Container>
+        <Router className="container">
             <Route path="" component={HomePage} />
             <Route path={RouteRoot.Hospital} component={HospitalPage} />
             <Route
@@ -126,7 +124,7 @@ export const PageFrame: FC = () => (
                     />
                 )}
             />
-        </Container>
+        </Router>
 
         <footer className="d-md-flex justify-content-around text-center bg-light py-5">
             <p>
@@ -134,7 +132,7 @@ export const PageFrame: FC = () => (
                 <a
                     className="mx-1"
                     target="_blank"
-                    href="https://web-cell.dev/"
+                    href="https://web-cell.dev/" rel="noreferrer"
                 >
                     WebCell v3
                 </a>
@@ -142,7 +140,7 @@ export const PageFrame: FC = () => (
                 <a
                     className="mx-1"
                     target="_blank"
-                    href="https://web-cell.dev/BootCell/"
+                    href="https://web-cell.dev/BootCell/" rel="noreferrer"
                 >
                     BootCell v2
                 </a>
