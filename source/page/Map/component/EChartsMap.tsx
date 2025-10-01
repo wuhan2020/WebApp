@@ -4,9 +4,10 @@ import 'echarts-jsx/dist/components/geo';
 import { DataObject } from 'dom-renderer';
 import { EChartsOption, EChartsType, init, registerMap } from 'echarts';
 import { observable } from 'mobx';
-import { attribute, component, observer,WebCell } from 'web-cell';
+import { attribute, component, observer, WebCell } from 'web-cell';
 import { formatDate } from 'web-utility';
 
+import { GeoJSON } from '../../../model/Area';
 import { getHistory, Province } from '../../../service/Epidemic';
 import { long2short } from '../adapter';
 
@@ -42,10 +43,7 @@ export interface EChartsMap extends WebCell<EChartsMapProps> {}
  */
 @component({ tagName: 'echarts-map' })
 @observer
-export class EChartsMap
-    extends HTMLElement
-    implements WebCell<EChartsMapProps>
-{
+export class EChartsMap extends HTMLElement implements WebCell<EChartsMapProps> {
     @attribute
     @observable
     accessor mapUrl = '';
@@ -114,28 +112,26 @@ export class EChartsMap
 
         chart.showLoading();
 
-        const data = await (await fetch(mapUrl)).json();
+        const data: GeoJSON = await (await fetch(mapUrl)).json();
 
-        for (const { properties } of data.features)
-            properties.name = long2short(properties.name);
+        for (const { properties } of data.features) properties.name = long2short(properties.name);
 
         registerMap(mapName, data);
-    
+
         this.adjustLabel();
         chart.hideLoading();
     }
+
     render() {
         const options = this.chartOptions;
 
         return (
             <ec-svg-renderer>
-                <ec-geo
-                    map={this.mapName}
-                    data={options.options[0].series[0]?.data}
-                />
+                <ec-geo map={this.mapName} />
             </ec-svg-renderer>
         );
     }
+
     updateChartData = (newData: Province[]) =>
         this.chart.setOption({
             series: [

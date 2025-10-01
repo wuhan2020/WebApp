@@ -1,9 +1,4 @@
-import {
-    Container,
-    DropdownButton,
-    DropdownItem,
-    NavLink,
-    OffcanvasNavbar} from 'boot-cell';
+import { DropdownButton, DropdownItem, NavLink, OffcanvasNavbar } from 'boot-cell';
 import { createRouter } from 'cell-router';
 import { FC, lazy } from 'web-cell';
 
@@ -50,13 +45,7 @@ export const PageFrame: FC = () => (
             variant="light"
             expand="md"
             sticky="top"
-            brand={
-                <img
-                    alt="新冠战疫信息平台"
-                    src={logo}
-                    style={{ height: '2rem' }}
-                />
-            }
+            brand={<img alt="新冠战疫信息平台" src={logo} style={{ height: '2rem' }} />}
         >
             {menu.map(({ href, title }) => (
                 <NavLink
@@ -91,24 +80,15 @@ export const PageFrame: FC = () => (
         <Router className="container">
             <Route path="" component={HomePage} />
             <Route path={RouteRoot.Hospital} component={HospitalPage} />
-            <Route
-                path={RouteRoot.Hospital + '/edit'}
-                component={HospitalEdit}
-            />
+            <Route path={RouteRoot.Hospital + '/edit'} component={HospitalEdit} />
             <Route path={RouteRoot.Logistics} component={LogisticsPage} />
-            <Route
-                path={RouteRoot.Logistics + '/edit'}
-                component={LogisticsEdit}
-            />
+            <Route path={RouteRoot.Logistics + '/edit'} component={LogisticsEdit} />
             <Route path={RouteRoot.Hotel} component={HotelPage} />
             <Route path={RouteRoot.Hotel + '/edit'} component={HotelEdit} />
             <Route path={RouteRoot.Factory} component={FactoryPage} />
             <Route path={RouteRoot.Factory + '/edit'} component={FactoryEdit} />
             <Route path={RouteRoot.Donation} component={DonationPage} />
-            <Route
-                path={RouteRoot.Donation + '/edit'}
-                component={DonationEdit}
-            />
+            <Route path={RouteRoot.Donation + '/edit'} component={DonationEdit} />
             <Route path={RouteRoot.Clinic} component={ClinicList} />
             <Route path={RouteRoot.Clinic + '/edit'} component={ClinicEdit} />
             <Route path={RouteRoot.Maps} component={MapsPage} />
@@ -117,11 +97,7 @@ export const PageFrame: FC = () => (
             <Route
                 path="disclaimer"
                 component={({ className = '', ...props }) => (
-                    <article
-                        className={`py-5 ${className}`}
-                        {...props}
-                        innerHTML={Disclaimer}
-                    />
+                    <article className={`py-5 ${className}`} {...props} innerHTML={Disclaimer} />
                 )}
             />
         </Router>
@@ -129,18 +105,15 @@ export const PageFrame: FC = () => (
         <footer className="d-md-flex justify-content-around text-center bg-light py-5">
             <p>
                 Proudly developed with
-                <a
-                    className="mx-1"
-                    target="_blank"
-                    href="https://web-cell.dev/" rel="noreferrer"
-                >
+                <a className="mx-1" target="_blank" href="https://web-cell.dev/" rel="noreferrer">
                     WebCell v3
                 </a>
                 &amp;
                 <a
                     className="mx-1"
                     target="_blank"
-                    href="https://web-cell.dev/BootCell/" rel="noreferrer"
+                    href="https://web-cell.dev/BootCell/"
+                    rel="noreferrer"
                 >
                     BootCell v2
                 </a>

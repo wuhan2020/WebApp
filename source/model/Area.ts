@@ -1,14 +1,10 @@
+import { registerMap } from 'echarts';
 import { HTTPClient } from 'koajax';
 import { observable } from 'mobx';
 import { BaseModel, persist, restore, toggle } from 'mobx-restful';
 
 import { server_root } from '../page/Map/data/province';
 import { District, getSubDistricts } from '../service';
-
-export interface Geometry {
-    type: 'MultiPolygon' | 'Polygon';
-    coordinates: (number[] | number)[][][];
-}
 
 export interface Area {
     adcode: number | string;
@@ -23,16 +19,13 @@ export interface Area {
     acroutes?: number[];
 }
 
-export interface Feature {
-    type: 'Feature';
-    properties: Area;
-    geometry: Geometry;
-}
+type ExtractGeoJSON<T> = T extends { type: 'FeatureCollection' }
+    ? T extends { UTF8Encoding?: boolean }
+        ? never
+        : T
+    : never;
 
-export interface DistrictResponse {
-    type: 'FeatureCollection';
-    features: Feature[];
-}
+export type GeoJSON = ExtractGeoJSON<Parameters<typeof registerMap>[1]>;
 
 export const dataVClient = new HTTPClient({
     baseURI: server_root,
