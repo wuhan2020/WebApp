@@ -21,19 +21,19 @@
 
 ## 技术栈
 
--   逻辑语言: [TypeScript v5][6]
--   组件引擎: [WebCell v3][7]
--   组件库: [BootCell v2][8]
--   状态管理: [MobX v6][9]
--   PWA 框架: [Workbox v7][10]
--   打包工具: [Parcel v2][11]
--   CI / CD: GitHub [Actions][12] + [Pages][13]
+- 逻辑语言: [TypeScript v5][6]
+- 组件引擎: [WebCell v3][7]
+- 组件库: [BootCell v2][8]
+- 状态管理: [MobX v6][9]
+- PWA 框架: [Workbox v7][10]
+- 打包工具: [Parcel v2][11]
+- CI / CD: GitHub [Actions][12] + [Pages][13]
 
 ## 开发需求
 
--   任务看板：https://github.com/orgs/wuhan2020/projects/1?fullscreen=true
+- 任务看板：https://github.com/orgs/wuhan2020/projects/1?fullscreen=true
 
--   UI 设计：正在赶制，参与开发的先参照现有页面
+- UI 设计：正在赶制，参与开发的先参照现有页面
 
 ## 本地开发
 
@@ -49,14 +49,16 @@
 
 3. `git clone https://github.com/wuhan2020/WebApp.git`
 
-4. 在本项目文件夹中执行命令
+4. [生成 GitHub 个人访问令牌][14]，并以 `GH_PAT` 为变量名存入项目根目录的 `.env.personal.local` 文件
+
+5. 在本项目文件夹中执行命令
 
     ```shell
-    pnpm i
+    pnpm e i
     npm start
     ```
 
-（Windows 用户请在 [PowerShell 5.1+][14]、[Git Bash][15] 或 [WSL][16] 中运行）
+（Windows 用户请在 [PowerShell 5.1+][15]、[Git Bash][16] 或 [WSL][17] 中运行）
 
 ### 连接本地测试服务器
 
@@ -72,15 +74,15 @@ https://github.com/wuhan2020/WebApp/graphs/contributors
 
 ### 域名贡献者
 
-[开源社][17] 提供国内备案域名 https://wuhan2020.kaiyuanshe.cn/ ，以解决[国内应用软件内分享时的障碍][18]。
+[开源社][18] 提供国内备案域名 https://wuhan2020.kaiyuanshe.cn/ ，以解决[国内应用软件内分享时的障碍][19]。
 
 ### 疫情数据提供方
 
 特别感谢以下同学提供了来自丁香园的疫情数据：
 
--   [@hack-fang](https://github.com/hack-fang/nCov/blob/master/API.md)
+- [@hack-fang](https://github.com/hack-fang/nCov/blob/master/API.md)
 
--   [@BlankerL](https://github.com/BlankerL/DXY-2019-nCoV-Crawler)
+- [@BlankerL](https://github.com/BlankerL/DXY-2019-nCoV-Crawler)
 
 [1]: https://developers.google.cn/web/progressive-web-apps
 [2]: https://gitpod.io/?autostart=true#https://github.com/wuhan2020/WebApp
@@ -95,8 +97,9 @@ https://github.com/wuhan2020/WebApp/graphs/contributors
 [11]: https://parceljs.org
 [12]: https://github.com/features/actions
 [13]: https://pages.github.com/
-[14]: https://docs.microsoft.com/zh-cn/powershell/scripting/learn/using-familiar-command-names?view=powershell-5.1
-[15]: https://gitforwindows.org/#bash
-[16]: https://docs.microsoft.com/en-us/windows/wsl/install-win10
-[17]: https://kaiyuanshe.cn/
-[18]: https://github.com/wuhan2020/WebApp/issues/21
+[14]: https://github.com/wuhan2020/rest-api/pkgs/npm/rest-api
+[15]: https://docs.microsoft.com/zh-cn/powershell/scripting/learn/using-familiar-command-names?view=powershell-5.1
+[16]: https://gitforwindows.org/#bash
+[17]: https://docs.microsoft.com/en-us/windows/wsl/install-win10
+[18]: https://kaiyuanshe.cn/
+[19]: https://github.com/wuhan2020/WebApp/issues/21

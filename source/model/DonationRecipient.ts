@@ -1,12 +1,6 @@
-import { VerifiableData, VerifiableModel } from './BaseModel';
-import { Organization } from '../service';
+import { DonationRecipient } from '@wuhan2020/rest-api';
 
-export type BankAccount = Record<'name' | 'number' | 'bank', string>;
-
-export interface DonationRecipient extends VerifiableData, Organization {
-    name?: string;
-    accounts?: BankAccount[];
-}
+import { VerifiableModel } from './BaseModel';
 
 export class DonationRecipientModel extends VerifiableModel<DonationRecipient> {
     baseURI = '/donation/recipient/';

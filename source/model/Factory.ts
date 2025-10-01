@@ -1,14 +1,7 @@
-import { VerifiableData, VerifiableModel } from './BaseModel';
-import { Place } from '../service';
-import { Supplies } from './SuppliesRequirement';
+import { Vendor } from '@wuhan2020/rest-api';
 
-export interface Factory
-    extends VerifiableData,
-        Place,
-        Record<'name' | 'qualification' | 'category' | 'capability', string> {
-    supplies?: Supplies[];
-}
+import { VerifiableModel } from './BaseModel';
 
-export class FactoryModel extends VerifiableModel<Factory> {
+export class FactoryModel extends VerifiableModel<Vendor> {
     baseURI = '/vendor/';
 }

@@ -1,10 +1,6 @@
-import { Place } from '../service';
-import { VerifiableData, VerifiableModel } from './BaseModel';
+import { Hotel } from '@wuhan2020/rest-api';
 
-export interface Hotel extends VerifiableData, Place {
-    name?: string;
-    capacity?: number;
-}
+import { VerifiableModel } from './BaseModel';
 
 export class HotelModel extends VerifiableModel<Hotel> {
     baseURI = '/hotel/';

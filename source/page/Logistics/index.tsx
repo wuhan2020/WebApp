@@ -1,17 +1,11 @@
+import { Logistics, ServiceArea } from '@wuhan2020/rest-api';
+import { Contact } from '@wuhan2020/rest-api';
+import { Badge, BGIcon, Card, CardBody, CardFooter, CardTitle } from 'boot-cell';
 import { component, observer } from 'web-cell';
-import {
-    Badge,
-    Card,
-    CardBody,
-    CardFooter,
-    CardTitle,
-    BGIcon
-} from 'boot-cell';
 
 import { AuditBar } from '../../component/AuditBar';
 import { CardsPage } from '../../component/CardsPage';
-import { logistics, Logistics, ServiceArea } from '../../model';
-import { Contact } from '../../service';
+import { logistics } from '../../model';
 
 const DIREACTION = {
     in: '寄入',
@@ -26,14 +20,7 @@ export default class LogisticsPage extends CardsPage<Logistics> {
     model = logistics;
     name = '物流公司';
 
-    renderItem = ({
-        url,
-        name,
-        serviceArea,
-        contacts,
-        remark,
-        ...rest
-    }: Logistics) => (
+    renderItem = ({ url, name, serviceArea, contacts, remark, ...rest }: Logistics) => (
         <Card key={name}>
             <CardBody>
                 <CardTitle>
@@ -42,6 +29,7 @@ export default class LogisticsPage extends CardsPage<Logistics> {
                             className="text-decoration-none"
                             target="_blank"
                             href={url}
+                            rel="noreferrer"
                         >
                             {name}
                         </a>
@@ -57,7 +45,7 @@ export default class LogisticsPage extends CardsPage<Logistics> {
                 <p className="text-muted">{remark}</p>
             </CardBody>
             <CardFooter>
-                <AuditBar scope="logistics" model={logistics} {...rest} />
+                <AuditBar scope="logistics" model={logistics} name={name} {...rest} />
             </CardFooter>
         </Card>
     );
@@ -77,11 +65,8 @@ export default class LogisticsPage extends CardsPage<Logistics> {
     );
 
     renderContact = ({ name, phone }: Contact) => (
-        <p className="mb-1" key={name}>
-            <a
-                className="text-center text-decoration-none"
-                href={'tel:' + phone}
-            >
+        <p key={name} className="mb-1">
+            <a className="text-center text-decoration-none" href={'tel:' + phone}>
                 <BGIcon name="phone" /> {name} {phone}
             </a>
         </p>

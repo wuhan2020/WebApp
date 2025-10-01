@@ -1,18 +1,12 @@
-import { WebCell, attribute, component, observer } from 'web-cell';
+import { Clinic } from '@wuhan2020/rest-api';
+import { Button, FormControl, FormField, FormGroup, FormLabel, InputGroup } from 'boot-cell';
 import { observable } from 'mobx';
-import {
-    FormField,
-    InputGroup,
-    FormGroup,
-    FormLabel,
-    FormControl,
-    Button
-} from 'boot-cell';
+import { attribute, component, observer, WebCell } from 'web-cell';
 
-import { Clinic, clinic } from '../../model';
-import { RouteRoot } from '../data/menu';
 import { ContactField } from '../../component/ContactField';
 import { SessionBox } from '../../component/SessionBox';
+import { clinic } from '../../model';
+import { RouteRoot } from '../data/menu';
 
 export interface ClinicEditProps {
     dataId?: string;
@@ -22,10 +16,7 @@ export default interface ClinicEdit extends WebCell<ClinicEditProps> {}
 
 @component({ tagName: 'clinic-edit' })
 @observer
-export default class ClinicEdit
-    extends HTMLElement
-    implements WebCell<ClinicEditProps>
-{
+export default class ClinicEdit extends HTMLElement implements WebCell<ClinicEditProps> {
     @attribute
     @observable
     accessor dataId = '';
@@ -38,13 +29,14 @@ export default class ClinicEdit
         endTime: '18:00',
         contacts: [{ name: '', phone: '' }],
         remark: ''
-    } as Clinic;
+    } as Partial<Clinic>;
 
     async mountedCallback() {
         if (!this.dataId) return;
 
-        const { name, url, contacts, startTime, endTime, remark } =
-            await clinic.getOne(this.dataId);
+        const { name, url, contacts, startTime, endTime, remark } = await clinic.getOne(
+            this.dataId
+        );
 
         this.state = { name, url, contacts, startTime, endTime, remark };
     }
@@ -63,10 +55,7 @@ export default class ClinicEdit
         await clinic.updateOne(
             {
                 ...data,
-                // @ts-ignore
-                contacts: contacts.filter(
-                    ({ name, phone }) => name?.trim() && phone?.trim()
-                )
+                contacts: contacts.filter(({ name, phone }) => name?.trim() && phone?.trim())
             },
             this.dataId
         );
@@ -85,12 +74,7 @@ export default class ClinicEdit
                 <h2>义诊服务{dataId ? '发布' : '修改'}</h2>
 
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
-                    <FormField
-                        name="name"
-                        required
-                        defaultValue={name}
-                        label="机构/个人名"
-                    />
+                    <FormField name="name" required defaultValue={name} label="机构/个人名" />
                     <FormField
                         type="url"
                         name="url"
@@ -122,22 +106,11 @@ export default class ClinicEdit
 
                     <ContactField
                         list={contacts}
-                        onChange={({ detail }: CustomEvent) =>
-                            (this.state.contacts = detail)
-                        }
+                        onChange={({ detail }: CustomEvent) => (this.state.contacts = detail)}
                     />
-                    <FormField
-                        as="textarea"
-                        name="remark"
-                        defaultValue={remark}
-                        label="备注"
-                    />
+                    <FormField as="textarea" name="remark" defaultValue={remark} label="备注" />
                     <FormGroup className="mt-3 d-flex flex-column flex-sm-row">
-                        <Button
-                            type="submit"
-                            variant="primary"
-                            disabled={clinic.uploading > 0}
-                        >
+                        <Button type="submit" variant="primary" disabled={clinic.uploading > 0}>
                             提交
                         </Button>
                         <Button

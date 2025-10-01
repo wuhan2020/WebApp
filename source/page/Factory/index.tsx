@@ -1,4 +1,4 @@
-import { component, observer } from 'web-cell';
+import { Vendor } from '@wuhan2020/rest-api';
 import {
     Badge,
     Button,
@@ -9,14 +9,15 @@ import {
     DropdownButton,
     DropdownItem
 } from 'boot-cell';
+import { component, observer } from 'web-cell';
 
-import { factory, Factory } from '../../model';
 import { AuditBar } from '../../component/AuditBar';
 import { CardsPage } from '../../component/CardsPage';
+import { factory, VerifiableModel } from '../../model';
 
 @component({ tagName: 'factory-page' })
 @observer
-export default class FactoryPage extends CardsPage<Factory> {
+export default class FactoryPage extends CardsPage<Vendor> {
     scope = 'factory';
     model = factory;
     name = '生产厂商';
@@ -34,7 +35,7 @@ export default class FactoryPage extends CardsPage<Factory> {
         contacts,
         remark,
         ...rest
-    }: Factory) => (
+    }: Vendor) => (
         <Card key={name}>
             <CardBody>
                 <CardTitle>
@@ -43,6 +44,7 @@ export default class FactoryPage extends CardsPage<Factory> {
                             className="text-decoration-none"
                             target="_blank"
                             href={url}
+                            rel="noreferrer"
                         >
                             {name}
                         </a>
@@ -69,11 +71,7 @@ export default class FactoryPage extends CardsPage<Factory> {
                 <div className="text-center">
                     <Button
                         variant="primary"
-                        onClick={() =>
-                            this.clip2board(
-                                province + city + district + address
-                            )
-                        }
+                        onClick={() => this.clip2board(province + city + district + address)}
                     >
                         复制地址
                     </Button>
@@ -94,7 +92,12 @@ export default class FactoryPage extends CardsPage<Factory> {
                 </div>
             </CardBody>
             <CardFooter>
-                <AuditBar scope="factory" model={factory} {...rest} />
+                <AuditBar
+                    scope="factory"
+                    model={factory as VerifiableModel}
+                    name={name}
+                    {...rest}
+                />
             </CardFooter>
         </Card>
     );

@@ -64,7 +64,7 @@ export const PageFrame: FC = () => (
                     variant="primary"
                     // alignType="right"
                     // alignSize="md"
-                    caption={session.user.username}
+                    caption={session.user.name}
                 >
                     {userMenu.map(
                         ({ roles, title, ...rest }) =>

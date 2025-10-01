@@ -1,18 +1,14 @@
-import { component, attribute, observer, WebCell } from 'web-cell';
-import { FormField, FormGroup, FormLabel, Button } from 'boot-cell';
+import { Supplies, Vendor } from '@wuhan2020/rest-api';
+import { Contact, GeoCoord } from '@wuhan2020/rest-api';
+import { Button, FormField, FormGroup, FormLabel } from 'boot-cell';
 import { observable } from 'mobx';
+import { attribute, component, observer, WebCell } from 'web-cell';
 
+import { AddressField, ContactField, SessionBox, SuppliesField } from '../../component';
+import { factory } from '../../model';
 import { mergeList } from '../../utility';
-import { GeoCoord, Contact } from '../../service';
-import { Supplies, factory, Factory } from '../../model';
 import { RouteRoot } from '../data/menu';
 import CommonSupplies from '../data/Supplies';
-import {
-    SessionBox,
-    AddressField,
-    SuppliesField,
-    ContactField
-} from '../../component';
 
 export interface FactoryEditProps {
     dataId: string;
@@ -22,10 +18,7 @@ export default interface FactoryEdit extends WebCell<FactoryEditProps> {}
 
 @component({ tagName: 'factory-edit' })
 @observer
-export default class FactoryEdit
-    extends HTMLElement
-    implements WebCell<FactoryEditProps>
-{
+export default class FactoryEdit extends HTMLElement implements WebCell<FactoryEditProps> {
     @attribute
     @observable
     accessor dataId = '';
@@ -43,7 +36,7 @@ export default class FactoryEdit
         supplies: CommonSupplies as Supplies[],
         contacts: [{} as Contact],
         remark: ''
-    } as Factory;
+    } as Partial<Vendor>;
 
     async mountedCallback() {
         if (!this.dataId) return;
@@ -71,14 +64,10 @@ export default class FactoryEdit
             address,
             coords,
             url,
-            supplies: mergeList<Supplies>(
-                'name',
-                this.state.supplies,
-                supplies
-            ),
+            supplies: mergeList<Supplies>('name', this.state.supplies, supplies),
             contacts,
             remark
-        } as Factory;
+        };
     }
 
     changeText = ({ target }: Event) => {
@@ -87,9 +76,7 @@ export default class FactoryEdit
         this.state = { ...this.state, [name]: value };
     };
 
-    changeAddress = ({
-        detail: { latitude, longitude, ...rest }
-    }: CustomEvent) =>
+    changeAddress = ({ detail: { latitude, longitude, ...rest } }: CustomEvent) =>
         Object.assign(this.state, {
             ...rest,
             coords: { latitude, longitude }
@@ -103,12 +90,8 @@ export default class FactoryEdit
         await factory.updateOne(
             {
                 ...data,
-                // @ts-ignore
                 supplies: supplies.filter(({ count }) => count),
-                // @ts-ignore
-                contacts: contacts.filter(
-                    ({ name, phone }) => name?.trim() && phone?.trim()
-                )
+                contacts: contacts.filter(({ name, phone }) => name?.trim() && phone?.trim())
             },
             this.dataId
         );
@@ -136,12 +119,7 @@ export default class FactoryEdit
                 <h2>生产厂商发布</h2>
 
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
-                    <FormField
-                        name="name"
-                        required
-                        defaultValue={name}
-                        label="厂商名字"
-                    />
+                    <FormField name="name" required defaultValue={name} label="厂商名字" />
                     <FormGroup>
                         <FormLabel>机构地址</FormLabel>
                         <AddressField
@@ -151,13 +129,7 @@ export default class FactoryEdit
                         />
                     </FormGroup>
 
-                    <FormField
-                        type="url"
-                        name="url"
-                        required
-                        defaultValue={url}
-                        label="官方网址"
-                    />
+                    <FormField type="url" name="url" required defaultValue={url} label="官方网址" />
                     <FormField
                         name="qualification"
                         required
@@ -166,28 +138,15 @@ export default class FactoryEdit
                     />
                     <SuppliesField
                         list={supplies}
-                        onChange={({ detail }: CustomEvent) =>
-                            (this.state.supplies = detail)
-                        }
+                        onChange={({ detail }: CustomEvent) => (this.state.supplies = detail)}
                     />
                     <ContactField
                         list={contacts}
-                        onChange={({ detail }: CustomEvent) =>
-                            (this.state.contacts = detail)
-                        }
+                        onChange={({ detail }: CustomEvent) => (this.state.contacts = detail)}
                     />
-                    <FormField
-                        as="textarea"
-                        name="remark"
-                        label="备注"
-                        defaultValue={remark}
-                    />
+                    <FormField as="textarea" name="remark" label="备注" defaultValue={remark} />
                     <FormGroup className="mt-3 d-flex flex-column">
-                        <Button
-                            type="submit"
-                            variant="primary"
-                            disabled={factory.uploading > 0}
-                        >
+                        <Button type="submit" variant="primary" disabled={factory.uploading > 0}>
                             提交
                         </Button>
                         <Button

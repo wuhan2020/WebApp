@@ -1,9 +1,10 @@
+import { SignedLink, User } from '@wuhan2020/rest-api';
 import { HTTPError } from 'koajax';
 import { observable } from 'mobx';
 import { BaseModel, persist, restore, toggle } from 'mobx-restful';
 import { blobOf } from 'web-utility';
 
-import { FileData, RoleNames, User, service } from '../service';
+import { RoleNames, service, UserRoles } from '../service';
 
 export class Session extends BaseModel {
     @persist()
@@ -48,7 +49,7 @@ export class Session extends BaseModel {
     }
 
     hasRole(name: RoleNames) {
-        return this.user?.roles.includes(name);
+        return !!this.user?.roles.includes(UserRoles[name]);
     }
 
     @toggle('uploading')
@@ -61,8 +62,8 @@ export class Session extends BaseModel {
 
         data.append('file', file);
 
-        const { body } = await service.post<FileData>('/file', data);
+        const { body } = await service.post<SignedLink>('/file', data);
 
-        return body.url;
+        return body.getLink;
     }
 }

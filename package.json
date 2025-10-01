@@ -39,6 +39,7 @@
         "@softonus/prettier-plugin-duplicate-remover": "^1.1.2",
         "@types/eslint-config-prettier": "^6.11.3",
         "@types/node": "^22.18.8",
+        "@wuhan2020/rest-api": "^2.0.0-rc.1",
         "buffer": "^6.0.3",
         "cross-env": "^10.1.0",
         "eslint": "^9.36.0",
@@ -95,6 +96,7 @@
     },
     "browserslist": "> 0.5%, last 2 versions, not dead, IE 11",
     "scripts": {
+        "e": "pnpx @dotenvx/dotenvx run -f .env.personal.local -- pnpm",
         "prepare": "husky",
         "test": "lint-staged  &&  tsc --noEmit",
         "clean": "rimraf .parcel-cache/ dist/",
