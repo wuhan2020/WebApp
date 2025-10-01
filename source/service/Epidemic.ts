@@ -1,11 +1,15 @@
 // 疫情数据调用封装
 // NOTE: 访问接口地址并不是和系统对应的接口是同一服务
 import { EpidemicAreaDaily, EpidemicOverall } from '@wuhan2020/rest-api';
+import { registerMap } from 'echarts';
 import { HTTPClient } from 'koajax';
-import { computed } from 'mobx';
+import { computed, observable } from 'mobx';
+import { Filter, persist, restore, toggle } from 'mobx-restful';
 import { groupBy, sum } from 'web-utility';
 
 import { TableModel } from '../model';
+import { GeoJSON } from '../model/Area';
+import province from '../page/Map/data/province';
 
 // @credit: https://github.com/BlankerL/DXY-COVID-19-Data 提供了丁香园的疫情数据
 
@@ -81,6 +85,35 @@ export class AreaDailyModel extends TableModel<EpidemicAreaDaily> {
             );
             return { name, value };
         });
+    }
+
+    @persist()
+    @observable
+    accessor mapData: Record<string, GeoJSON> = {};
+
+    restored = restore(this, 'AreaDaily').then(() => {
+        for (const areaName in this.mapData) registerMap(areaName, this.mapData[areaName]);
+    });
+
+    @toggle('downloading')
+    async loadMapData(areaName = '') {
+        const mapURL = province[areaName] || province.世界;
+
+        const data: GeoJSON = await (await fetch(mapURL)).json();
+
+        registerMap(areaName, data);
+
+        return data;
+    }
+
+    async getList(filter?: Filter<EpidemicAreaDaily>, pageIndex?: number, pageSize?: number) {
+        await this.restored;
+
+        const areaName = filter?.countryName || filter?.provinceName;
+
+        this.mapData[areaName] ??= await this.loadMapData(areaName);
+
+        return super.getList(filter, pageIndex, pageSize);
     }
 }
 
