@@ -1,83 +1,93 @@
 import 'echarts-jsx/dist/renderers/SVG';
+import 'echarts-jsx/dist/components/grid';
 import 'echarts-jsx/dist/components/geo';
+import 'echarts-jsx/dist/charts/bar';
 import 'echarts-jsx/dist/charts/map';
 
+import { EpidemicAreaReport } from '@wuhan2020/rest-api';
 import { SpinnerBox } from 'boot-cell';
-import { observable } from 'mobx';
-import { attribute, component, observer } from 'web-cell';
-import { CustomElement, Hour, isEmpty } from 'web-utility';
+import { CallbackDataParams } from 'echarts/types/dist/shared';
+import { computed } from 'mobx';
+import { component, observer } from 'web-cell';
+import { CustomElement, isEmpty, sum } from 'web-utility';
 
-import { AreaDailyModel, getCurrent, getHistory, getOverall } from '../../service';
-import {
-    convertCountry,
-    convertCountrySeries,
-    convertProvincesSeries,
-    convertStat,
-    CountryData,
-    CountryOverviewData,
-    ProvinceData,
-    Series
-} from './adapter';
-import { HierarchicalVirusMap } from './component';
+import { CountryMonthlyModel, ProvinceMonthlyModel } from '../../service';
 import * as style from './index.module.css';
-
-const resolution = Hour * 24;
 
 @component({ tagName: 'maps-page' })
 @observer
 export default class MapsPage extends HTMLElement implements CustomElement {
-    areaDailyStore = new AreaDailyModel();
+    countryMonthlyStore = new CountryMonthlyModel();
+    provinceMonthlyStore = new ProvinceMonthlyModel();
 
-    @attribute
-    @observable
-    accessor loading = true;
+    @computed
+    get barXAxis() {
+        return this.countryMonthlyStore.allItems.map(({ month }) => month);
+    }
 
-    @observable
-    accessor virusData: {
-        provincesSeries: Series<ProvinceData>;
-        countrySeries: Series<CountryOverviewData>;
-        countryData?: CountryData;
-    };
+    @computed
+    get barStacks() {
+        return this.countryMonthlyStore.allItems.reduce(
+            (sum, { continentName, countryName, month, ...data }) => {
+                for (const key in data) (sum[key] ??= []).push(data[key]);
 
-    mountedCallback() {
+                return sum;
+            },
+            {} as Record<keyof EpidemicAreaReport, number[]>
+        );
+    }
+
+    @computed
+    get mapData() {
+        return this.provinceMonthlyStore.allItems.map(
+            ({ provinceName, suspectedCount, confirmedCount, curedCount, deadCount }) => ({
+                name: provinceName,
+                value: sum(suspectedCount, confirmedCount, curedCount, deadCount)
+            })
+        );
+    }
+
+    async mountedCallback() {
         this.classList.add(style.box);
 
-        this.areaDailyStore.getAll({ countryName: '中国', updateTime: '2022-11-27' });
+        await this.countryMonthlyStore.getAll({ countryName: '中国' });
+
+        const { month } = this.countryMonthlyStore.allItems.at(-1) ?? {};
+
+        await this.provinceMonthlyStore.getAll({ countryName: '中国', month });
     }
 
-    async loadMapData() {
-        const [rawData, rawCurrentData, overviewData] = await Promise.all([
-            getHistory(),
-            getCurrent(),
-            getOverall()
-        ]);
+    changeDate = ({ detail }) => {
+        const month = this.barXAxis[(detail as CallbackDataParams).dataIndex];
 
-        this.virusData = {
-            provincesSeries: convertProvincesSeries(rawData, resolution, true),
-            countrySeries: convertCountrySeries(overviewData.map(convertStat), resolution),
-            countryData: convertCountry(rawCurrentData)
-        };
-        this.loading = false;
-    }
+        return this.provinceMonthlyStore.getAll({ countryName: '中国', month });
+    };
+
+    renderMap = () => (
+        <ec-svg-renderer>
+            <ec-geo map="中国" />
+            <ec-map-chart map="中国" data={this.mapData} onClick={console.log} />
+        </ec-svg-renderer>
+    );
+
+    renderBarChart = () => (
+        <ec-svg-renderer>
+            <ec-x-axis type="category" data={this.barXAxis} />
+            <ec-y-axis type="value" />
+            {Object.entries(this.barStacks).map(([name, data]) => (
+                <ec-bar-chart stack="month" {...{ name, data }} onClick={this.changeDate} />
+            ))}
+        </ec-svg-renderer>
+    );
 
     render() {
-        const { virusData, areaDailyStore } = this;
-        const { downloading, currentCountryCounts } = areaDailyStore;
+        const { barStacks, mapData } = this;
 
         return (
-            <SpinnerBox cover={downloading > 0}>
-                {virusData && <HierarchicalVirusMap data={virusData} resolution={resolution} />}
+            <SpinnerBox cover={isEmpty(mapData)}>
+                {!isEmpty(mapData) && this.renderMap()}
 
-                {!isEmpty(currentCountryCounts) && (
-                    <ec-svg-renderer>
-                        <ec-geo map="中国" />
-                        <ec-map-chart
-                            map="中国"
-                            data={currentCountryCounts}
-                            onClick={console.log}
-                        />
-                    </ec-svg-renderer>
-                )}
+                {!isEmpty(barStacks) && this.renderBarChart()}
             </SpinnerBox>
         );
     }

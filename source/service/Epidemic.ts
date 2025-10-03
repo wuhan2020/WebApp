@@ -1,11 +1,15 @@
 // 疫情数据调用封装
 // NOTE: 访问接口地址并不是和系统对应的接口是同一服务
-import { EpidemicAreaDaily, EpidemicOverall } from '@wuhan2020/rest-api';
+import {
+    EpidemicAreaDaily,
+    EpidemicCityMonthly,
+    EpidemicCountryMonthly,
+    EpidemicProvinceMonthly
+} from '@wuhan2020/rest-api';
 import { registerMap } from 'echarts';
 import { HTTPClient } from 'koajax';
-import { computed, observable } from 'mobx';
+import { observable } from 'mobx';
 import { Filter, persist, restore, toggle } from 'mobx-restful';
-import { groupBy, sum } from 'web-utility';
 
 import { TableModel } from '../model';
 import { GeoJSON } from '../model/Area';
@@ -47,46 +51,9 @@ export interface Province extends Base, StatisticData {
     cities?: City[];
 }
 
-export class AreaDailyModel extends TableModel<EpidemicAreaDaily> {
-    baseURI = 'epidemic/area-daily';
+export type EpidemicAreaMonthly = EpidemicAreaDaily & EpidemicCityMonthly;
 
-    @computed
-    get currentCountryCounts() {
-        const { countryName, countryEnglishName } = this.filter;
-
-        if (!countryName && !countryEnglishName) return [];
-
-        const provinceGroup = groupBy(this.allItems, 'provinceName');
-
-        return Object.entries(provinceGroup).map(([name, provinceData]) => {
-            const value = sum(
-                ...provinceData.map(
-                    ({ provinceSuspectedCount, provinceConfirmedCount, provinceDeadCount }) =>
-                        sum(provinceSuspectedCount, provinceConfirmedCount, provinceDeadCount)
-                )
-            );
-            return { name, value };
-        });
-    }
-
-    @computed
-    get currentProvinceCounts() {
-        const { provinceName, provinceEnglishName } = this.filter;
-
-        if (!provinceName && !provinceEnglishName) return [];
-
-        const cityGroup = groupBy(this.allItems, 'cityName');
-
-        return Object.entries(cityGroup).map(([name, cityData]) => {
-            const value = sum(
-                ...cityData.map(({ citySuspectedCount, cityConfirmedCount, cityDeadCount }) =>
-                    sum(citySuspectedCount, cityConfirmedCount, cityDeadCount)
-                )
-            );
-            return { name, value };
-        });
-    }
-
+export abstract class AreaMonthlyModel<T extends EpidemicAreaMonthly> extends TableModel<T> {
     @persist()
     @observable
     accessor mapData: Record<string, GeoJSON> = {};
@@ -106,10 +73,12 @@ export class AreaDailyModel extends TableModel<EpidemicAreaDaily> {
         return data;
     }
 
-    async getList(filter?: Filter<EpidemicAreaDaily>, pageIndex?: number, pageSize?: number) {
+    async getList(filter?: Filter<T>, pageIndex?: number, pageSize?: number) {
         await this.restored;
 
-        const areaName = filter?.countryName || filter?.provinceName;
+        const { countryName, provinceName } = (filter || {}) as Filter<EpidemicAreaMonthly>;
+
+        const areaName = countryName || provinceName;
 
         this.mapData[areaName] ??= await this.loadMapData(areaName);
 
@@ -117,39 +86,20 @@ export class AreaDailyModel extends TableModel<EpidemicAreaDaily> {
     }
 }
 
-export async function getOverall() {
-    const { body } = await epidemic.get<EpidemicOverall[]>('Overall', { Range: '0-9' });
-
-    return body;
-}
-export async function getHistory(date = '2022-09-01') {
-    const startOfDay = `${date}T00:00:00`;
-    const endOfDay = `${date}T23:59:59`;
-
-    const { body } = await epidemic.get<EpidemicAreaDaily[]>(
-        `Area?${new URLSearchParams([
-            ['updateTime', `gt.${startOfDay}`],
-            ['updateTime', `lt.${endOfDay}`],
-            ['countryName', 'eq.中国'],
-            ['limit', '299']
-        ])}`
-    );
-
-    const updatedBody = body.map(item => ({
-        id: item.id,
-        updateTime: item.updateTime,
-        provinceShortName: item.provinceName,
-        confirmedCount: item.provinceConfirmedCount,
-        suspectedCount: item.provinceSuspectedCount,
-        curedCount: item.provinceCuredCount,
-        deadCount: item.provinceDeadCount
-    }));
-
-    return updatedBody as Province[];
+export class CountryMonthlyModel extends AreaMonthlyModel<
+    EpidemicCountryMonthly & Required<EpidemicAreaDaily>
+> {
+    baseURI = 'epidemic/area-monthly/country';
 }
 
-export async function getCurrent() {
-    const { body } = await epidemic.get<Province[]>('Area', { Range: '0-9' });
+export class ProvinceMonthlyModel extends AreaMonthlyModel<
+    EpidemicProvinceMonthly & Required<EpidemicAreaDaily>
+> {
+    baseURI = 'epidemic/area-monthly/province';
+}
 
-    return body;
+export class CityMonthlyModel extends AreaMonthlyModel<
+    EpidemicCityMonthly & Required<EpidemicAreaDaily>
+> {
+    baseURI = 'epidemic/area-monthly/city';
 }
