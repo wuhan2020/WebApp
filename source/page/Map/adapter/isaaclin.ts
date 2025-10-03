@@ -18,11 +18,11 @@ export const convertStat = ({
 }: Base & StatisticData): Base & PatientStatData => ({
     id,
     updateTime,
-    suspected: source.suspectedCount,
-    confirmed: source.confirmedCount,
-    serious: source.seriousCount,
-    cured: source.curedCount,
-    dead: source.deadCount
+    suspected: +source.suspectedCount,
+    confirmed: +source.confirmedCount,
+    serious: +source.seriousCount,
+    cured: +source.curedCount,
+    dead: +source.deadCount
 });
 
 /**
@@ -49,10 +49,7 @@ export function convertProvince(province: Province): ProvinceData {
         cities:
             cities &&
             Object.fromEntries(
-                cities.map(item => [
-                    long2short(item.cityName),
-                    convertCity(item, +updateTime)
-                ])
+                cities.map(item => [long2short(item.cityName), convertCity(item, +updateTime)])
             ),
         ...convertStat(province)
     };
@@ -73,9 +70,7 @@ function roundTime(t: number, resolution: number) {
     return Math.floor((t + offset) / resolution) * resolution - offset;
 }
 
-function fillForward<T extends ProvinceData | CityData | CountryData>(
-    series: Series<T>
-) {
+function fillForward<T extends ProvinceData | CityData | CountryData>(series: Series<T>) {
     const all_ts = Object.keys(series).sort();
 
     for (const [i, t] of all_ts.entries())
@@ -83,8 +78,7 @@ function fillForward<T extends ProvinceData | CityData | CountryData>(
             for (const name of Object.keys(series[t])) {
                 const next_t = parseInt(all_ts[i + 1], 10);
 
-                if (series[next_t][name] === undefined)
-                    series[next_t][name] = series[t][name];
+                if (series[next_t][name] === undefined) series[next_t][name] = series[t][name];
             }
 }
 
@@ -98,9 +92,7 @@ export function convertProvincesSeries(
 ) {
     const res: Series<ProvinceData> = {};
 
-    source = [...source].sort(
-        ({ updateTime: a }, { updateTime: b }) => +b - +a
-    );
+    source = [...source].sort(({ updateTime: a }, { updateTime: b }) => +b - +a);
 
     for (const item of source) {
         const t = roundTime(+new Date(item.updateTime), resolution);
@@ -127,8 +119,7 @@ export function extractCitiesSeries(
             .map(provs => {
                 const { timestamp, cities } = provs[name] || {};
 
-                if (timestamp != null)
-                    return [roundTime(timestamp, resolution), cities];
+                if (timestamp != null) return [roundTime(timestamp, resolution), cities];
             })
             .filter(Boolean)
     );
@@ -146,8 +137,5 @@ export const convertCountrySeries = (
     resolution: number
 ): Series<CountryOverviewData> =>
     Object.fromEntries(
-        source.map(item => [
-            roundTime(+new Date(item.updateTime), resolution),
-            item
-        ])
+        source.map(item => [roundTime(+new Date(item.updateTime), resolution), item])
     );

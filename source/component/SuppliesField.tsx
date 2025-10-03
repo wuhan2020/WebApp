@@ -1,18 +1,9 @@
-import { WebCell, component, observer, reaction } from 'web-cell';
-import {
-    FormControl,
-    FormControlProps,
-    FormField,
-    FormLabel,
-    InputGroup,
-    Button
-} from 'boot-cell';
+import { Supplies } from '@wuhan2020/rest-api';
+import { Button, FormControl, FormControlProps, FormField, FormLabel, InputGroup } from 'boot-cell';
 import { observable } from 'mobx';
+import { component, observer, reaction, WebCell } from 'web-cell';
 
-import { Supplies } from '../model';
-
-export interface SuppliesFieldProps
-    extends Omit<FormControlProps<'input'>, 'list'> {
+export interface SuppliesFieldProps extends Omit<FormControlProps<'input'>, 'list'> {
     list: Supplies[];
 }
 
@@ -20,10 +11,7 @@ export interface SuppliesField extends WebCell<SuppliesFieldProps> {}
 
 @component({ tagName: 'supplies-field' })
 @observer
-export class SuppliesField
-    extends HTMLElement
-    implements WebCell<SuppliesFieldProps>
-{
+export class SuppliesField extends HTMLElement implements WebCell<SuppliesFieldProps> {
     @observable
     accessor list: Supplies[] = [];
 
@@ -64,15 +52,9 @@ export class SuppliesField
                 {list.map(({ name, count, remark }, index) => (
                     <InputGroup
                         className="my-1"
-                        onChange={(event: Event) =>
-                            this.changeItem(index, event)
-                        }
+                        onChange={(event: Event) => this.changeItem(index, event)}
                     >
-                        <FormControl
-                            name="name"
-                            value={name}
-                            placeholder="名称"
-                        />
+                        <FormControl name="name" value={name} placeholder="名称" />
                         <FormControl
                             type="number"
                             name="count"
@@ -80,11 +62,7 @@ export class SuppliesField
                             value={count + ''}
                             placeholder="数量"
                         />
-                        <FormControl
-                            name="remark"
-                            value={remark}
-                            placeholder="备注"
-                        />
+                        <FormControl name="remark" value={remark} placeholder="备注" />
                         <Button variant="primary" onClick={this.addItem}>
                             +
                         </Button>

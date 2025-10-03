@@ -1,3 +1,4 @@
+import { UserRole } from '@wuhan2020/rest-api';
 import { HTTPClient } from 'koajax';
 
 export const baseUri = {
@@ -7,57 +8,13 @@ export const baseUri = {
 };
 
 export const service = new HTTPClient({
-    baseURI:
-        location.hostname === 'localhost'
-            ? baseUri[process.env.HTTP_ENV]
-            : baseUri.remote,
+    baseURI: location.hostname === 'localhost' ? baseUri[process.env.HTTP_ENV] : baseUri.remote,
     withCredentials: true,
     responseType: 'json'
 });
 
-export type DataItem = Partial<
-    Record<'objectId' | 'createdAt' | 'updatedAt', string>
->;
+export const UserRoles = { Admin: 0, Worker: 1, Client: 2 } as const;
 
-export interface PageData<T> {
-    data: T[];
-    count: number;
-}
+export type RoleNames = keyof typeof UserRole;
 
-export enum Role {
-    Admin
-}
-
-export type RoleNames = keyof typeof Role;
-
-export interface User extends DataItem {
-    username: string;
-    mobilePhoneNumber: string;
-    roles: RoleNames[];
-}
-
-export interface FileData extends DataItem {
-    url: string;
-}
-
-export type Contact = Record<'name' | 'phone', string>;
-
-export interface Organization {
-    url?: string;
-    contacts?: Contact[];
-    remark?: string;
-    creator?: User;
-    verified?: boolean;
-    verifier?: User;
-}
-
-export type GeoCoord = Record<'latitude' | 'longitude', number>;
-
-export type Address = Record<
-    'province' | 'city' | 'district' | 'address',
-    string
->;
-
-export interface Place extends Organization, Partial<Address> {
-    coords?: GeoCoord;
-}
+export type Address = Record<'province' | 'city' | 'district' | 'address', string>;

@@ -1,18 +1,9 @@
-import { WebCell, component, observer, reaction } from 'web-cell';
+import { Contact } from '@wuhan2020/rest-api';
+import { Button, FormControl, FormControlProps, FormGroup, FormLabel, InputGroup } from 'boot-cell';
 import { observable } from 'mobx';
-import {
-    FormControl,
-    FormControlProps,
-    FormGroup,
-    FormLabel,
-    InputGroup,
-    Button
-} from 'boot-cell';
+import { component, observer, reaction, WebCell } from 'web-cell';
 
-import { Contact } from '../service';
-
-export interface ContactFieldProps
-    extends Omit<FormControlProps<'input'>, 'list'> {
+export interface ContactFieldProps extends Omit<FormControlProps<'input'>, 'list'> {
     list: Contact[];
 }
 
@@ -20,10 +11,7 @@ export interface ContactField extends WebCell<ContactFieldProps> {}
 
 @component({ tagName: 'contact-field' })
 @observer
-export class ContactField
-    extends HTMLElement
-    implements WebCell<ContactFieldProps>
-{
+export class ContactField extends HTMLElement implements WebCell<ContactFieldProps> {
     @observable
     accessor list: Contact[] = [];
 
@@ -39,11 +27,7 @@ export class ContactField
         const item = list[index],
             { name, value } = event.target as HTMLInputElement;
 
-        this.list = [
-            ...list.slice(0, index),
-            { ...item, [name]: value },
-            ...list.slice(index + 1)
-        ];
+        this.list = [...list.slice(0, index), { ...item, [name]: value }, ...list.slice(index + 1)];
     }
 
     addItem = () => (this.list = [...this.list, {} as Contact]);
@@ -64,15 +48,9 @@ export class ContactField
                 {list.map(({ name, phone }, index) => (
                     <InputGroup
                         className="my-1"
-                        onChange={(event: Event) =>
-                            this.changeItem(index, event)
-                        }
+                        onChange={(event: Event) => this.changeItem(index, event)}
                     >
-                        <FormControl
-                            name="name"
-                            value={name}
-                            placeholder="姓名"
-                        />
+                        <FormControl name="name" value={name} placeholder="姓名" />
                         <FormControl
                             type="tel"
                             name="phone"

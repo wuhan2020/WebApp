@@ -1,9 +1,6 @@
-import { VerifiableData, VerifiableModel } from './BaseModel';
-import { Organization } from '../service';
+import { Clinic } from '@wuhan2020/rest-api';
 
-export type Clinic = VerifiableData &
-    Organization &
-    Partial<Record<'name' | 'startTime' | 'endTime', string>>;
+import { VerifiableModel } from './BaseModel';
 
 export class ClinicModel extends VerifiableModel<Clinic> {
     baseURI = '/clinic/';

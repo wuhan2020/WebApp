@@ -1,7 +1,7 @@
 import { HTTPClient, HTTPError } from 'koajax';
 import { buildURLData, parseURLData } from 'web-utility';
 
-import { Area, dataVClient, DistrictResponse } from '../model/Area';
+import { Area, dataVClient, GeoJSON } from '../model/Area';
 
 const key = '8325164e247e15eea68b59e89200988b';
 
@@ -27,10 +27,7 @@ const amapClient = new HTTPClient({
     response.body = rest;
 });
 
-type POI = Record<
-    `${'' | 'p' | 'city' | 'ad'}name` | 'address' | 'location',
-    string
->;
+type POI = Record<`${'' | 'p' | 'city' | 'ad'}name` | 'address' | 'location', string>;
 
 export async function searchAddress(keywords: string) {
     const { body } = await amapClient.get<{ pois: POI[] }>(
@@ -39,18 +36,12 @@ export async function searchAddress(keywords: string) {
     return body!.pois.sort(({ name }) => (name === keywords ? -1 : 1));
 }
 
-export interface District
-    extends Record<'adcode' | 'name' | 'level' | 'center', string> {
+export interface District extends Record<'adcode' | 'name' | 'level' | 'center', string> {
     districts: District[];
 }
 
-export async function getSubDistricts(
-    parent = '100000',
-    maxLevel: Area['level'] = 'province'
-) {
-    const { body } = await dataVClient.get<DistrictResponse>(
-        `${parent}_full.json`
-    );
+export async function getSubDistricts(parent = '100000', maxLevel: Area['level'] = 'province') {
+    const { body } = await dataVClient.get<GeoJSON>(`${parent}_full.json`);
     const districts = body.features.map(
         async ({ properties: { adcode, name, level, center } }) =>
             level &&
@@ -59,10 +50,7 @@ export async function getSubDistricts(
                 name,
                 level,
                 center: center + '',
-                districts:
-                    level === maxLevel
-                        ? []
-                        : await getSubDistricts(adcode + '', maxLevel)
+                districts: level === maxLevel ? [] : await getSubDistricts(adcode + '', maxLevel)
             } as District)
     );
     return (await Promise.all(districts)).filter(Boolean) as District[];

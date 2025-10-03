@@ -1,20 +1,13 @@
-import { FC, lazy } from 'web-cell';
+import { DropdownButton, DropdownItem, NavLink, OffcanvasNavbar } from 'boot-cell';
 import { createRouter } from 'cell-router';
-import {
-    Container,
-    OffcanvasNavbar,
-    NavLink,
-    DropdownItem,
-    DropdownButton
-} from 'boot-cell';
+import { FC, lazy } from 'web-cell';
 
+import Disclaimer from '../../Disclaimer.md';
+import logo from '../image/wuhan2020.png';
 import { session } from '../model';
 import { RoleNames } from '../service';
 import menu, { RouteRoot } from './data/menu';
-import logo from '../image/wuhan2020.png';
-
 import { HomePage } from './Home';
-import Disclaimer from '../../Disclaimer.md';
 
 const HospitalPage = lazy(() => import('./Hospital')),
     HospitalEdit = lazy(() => import('./Hospital/Edit')),
@@ -44,7 +37,7 @@ const userMenu = [
 ];
 
 const { location } = globalThis,
-    { Route } = createRouter();
+    { Router, Route } = createRouter();
 
 export const PageFrame: FC = () => (
     <>
@@ -52,13 +45,7 @@ export const PageFrame: FC = () => (
             variant="light"
             expand="md"
             sticky="top"
-            brand={
-                <img
-                    alt="新冠战疫信息平台"
-                    src={logo}
-                    style={{ height: '2rem' }}
-                />
-            }
+            brand={<img alt="新冠战疫信息平台" src={logo} style={{ height: '2rem' }} />}
         >
             {menu.map(({ href, title }) => (
                 <NavLink
@@ -77,7 +64,7 @@ export const PageFrame: FC = () => (
                     variant="primary"
                     // alignType="right"
                     // alignSize="md"
-                    caption={session.user.username}
+                    caption={session.user.name}
                 >
                     {userMenu.map(
                         ({ roles, title, ...rest }) =>
@@ -90,27 +77,18 @@ export const PageFrame: FC = () => (
             )}
         </OffcanvasNavbar>
 
-        <Container>
+        <Router className="container">
             <Route path="" component={HomePage} />
             <Route path={RouteRoot.Hospital} component={HospitalPage} />
-            <Route
-                path={RouteRoot.Hospital + '/edit'}
-                component={HospitalEdit}
-            />
+            <Route path={RouteRoot.Hospital + '/edit'} component={HospitalEdit} />
             <Route path={RouteRoot.Logistics} component={LogisticsPage} />
-            <Route
-                path={RouteRoot.Logistics + '/edit'}
-                component={LogisticsEdit}
-            />
+            <Route path={RouteRoot.Logistics + '/edit'} component={LogisticsEdit} />
             <Route path={RouteRoot.Hotel} component={HotelPage} />
             <Route path={RouteRoot.Hotel + '/edit'} component={HotelEdit} />
             <Route path={RouteRoot.Factory} component={FactoryPage} />
             <Route path={RouteRoot.Factory + '/edit'} component={FactoryEdit} />
             <Route path={RouteRoot.Donation} component={DonationPage} />
-            <Route
-                path={RouteRoot.Donation + '/edit'}
-                component={DonationEdit}
-            />
+            <Route path={RouteRoot.Donation + '/edit'} component={DonationEdit} />
             <Route path={RouteRoot.Clinic} component={ClinicList} />
             <Route path={RouteRoot.Clinic + '/edit'} component={ClinicEdit} />
             <Route path={RouteRoot.Maps} component={MapsPage} />
@@ -119,23 +97,15 @@ export const PageFrame: FC = () => (
             <Route
                 path="disclaimer"
                 component={({ className = '', ...props }) => (
-                    <article
-                        className={`py-5 ${className}`}
-                        {...props}
-                        innerHTML={Disclaimer}
-                    />
+                    <article className={`py-5 ${className}`} {...props} innerHTML={Disclaimer} />
                 )}
             />
-        </Container>
+        </Router>
 
         <footer className="d-md-flex justify-content-around text-center bg-light py-5">
             <p>
                 Proudly developed with
-                <a
-                    className="mx-1"
-                    target="_blank"
-                    href="https://web-cell.dev/"
-                >
+                <a className="mx-1" target="_blank" href="https://web-cell.dev/" rel="noreferrer">
                     WebCell v3
                 </a>
                 &amp;
@@ -143,6 +113,7 @@ export const PageFrame: FC = () => (
                     className="mx-1"
                     target="_blank"
                     href="https://web-cell.dev/BootCell/"
+                    rel="noreferrer"
                 >
                     BootCell v2
                 </a>

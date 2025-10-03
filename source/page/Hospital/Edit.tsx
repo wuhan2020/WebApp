@@ -1,22 +1,14 @@
-import { WebCell, component, attribute, observer } from 'web-cell';
-import { FormField, Button, FormGroup } from 'boot-cell';
+import { Supplies, SuppliesRequirement } from '@wuhan2020/rest-api';
+import { Contact, GeoCoord } from '@wuhan2020/rest-api';
+import { Button, FormField, FormGroup } from 'boot-cell';
 import { observable } from 'mobx';
+import { attribute, component, observer, WebCell } from 'web-cell';
 
+import { AddressField, ContactField, SessionBox, SuppliesField } from '../../component';
+import { suppliesRequirement } from '../../model';
 import { mergeList } from '../../utility';
 import { RouteRoot } from '../data/menu';
 import CommonSupplies from '../data/Supplies';
-import {
-    SuppliesRequirement,
-    Supplies,
-    suppliesRequirement
-} from '../../model';
-import { GeoCoord, Contact } from '../../service';
-import {
-    SessionBox,
-    ContactField,
-    AddressField,
-    SuppliesField
-} from '../../component';
 
 export interface HospitalEditProps {
     dataId: string;
@@ -26,10 +18,7 @@ export default interface HospitalEdit extends WebCell<HospitalEditProps> {}
 
 @component({ tagName: 'hospital-edit' })
 @observer
-export default class HospitalEdit
-    extends HTMLElement
-    implements WebCell<HospitalEditProps>
-{
+export default class HospitalEdit extends HTMLElement implements WebCell<HospitalEditProps> {
     @attribute
     @observable
     accessor dataId = '';
@@ -46,37 +35,23 @@ export default class HospitalEdit
         supplies: CommonSupplies as Supplies[],
         contacts: [{} as Contact],
         remark: ''
-    } as SuppliesRequirement;
+    } as Partial<SuppliesRequirement>;
 
     async mountedCallback() {
         if (!this.dataId) return;
 
-        const {
-            hospital,
-            province,
-            city,
-            district,
-            address,
-            coords,
-            url,
-            supplies,
-            contacts,
-            remark
-        } = await suppliesRequirement.getOne(this.dataId);
+        const { name, province, city, district, address, coords, url, supplies, contacts, remark } =
+            await suppliesRequirement.getOne(this.dataId);
 
         this.state = {
-            hospital,
+            name,
             province,
             city,
             district,
             address,
             coords,
             url,
-            supplies: mergeList<Supplies>(
-                'name',
-                this.state.supplies,
-                supplies
-            ),
+            supplies: mergeList<Supplies>('name', this.state.supplies, supplies),
             contacts,
             remark
         };
@@ -88,9 +63,7 @@ export default class HospitalEdit
         this.state = { ...this.state, [name]: value };
     };
 
-    changeAddress = ({
-        detail: { latitude, longitude, ...rest }
-    }: CustomEvent) =>
+    changeAddress = ({ detail: { latitude, longitude, ...rest } }: CustomEvent) =>
         Object.assign(this.state, {
             ...rest,
             coords: { latitude, longitude }
@@ -104,12 +77,8 @@ export default class HospitalEdit
         await suppliesRequirement.updateOne(
             {
                 ...data,
-                // @ts-ignore
                 supplies: supplies.filter(({ count }) => count),
-                // @ts-ignore
-                contacts: contacts.filter(
-                    ({ name, phone }) => name?.trim() && phone?.trim()
-                )
+                contacts: contacts.filter(({ name, phone }) => name?.trim() && phone?.trim())
             },
             this.dataId
         );
@@ -119,17 +88,8 @@ export default class HospitalEdit
     };
 
     render() {
-        const {
-            hospital,
-            province,
-            city,
-            district,
-            address,
-            url,
-            supplies,
-            contacts,
-            remark
-        } = this.state;
+        const { name, province, city, district, address, url, supplies, contacts, remark } =
+            this.state;
 
         return (
             <SessionBox>
@@ -137,45 +97,30 @@ export default class HospitalEdit
 
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
                     <FormField
-                        name="hospital"
+                        name="name"
                         required
-                        defaultValue={hospital}
+                        defaultValue={name}
                         label="医疗机构"
                         placeholder="可详细至分院、院区、科室"
                     />
                     <FormField label="机构地址">
                         <AddressField
-                            place={hospital}
+                            place={name}
                             {...{ province, city, district, address }}
                             onChange={this.changeAddress}
                         />
                     </FormField>
 
-                    <FormField
-                        type="url"
-                        name="url"
-                        required
-                        defaultValue={url}
-                        label="官方网址"
-                    />
+                    <FormField type="url" name="url" required defaultValue={url} label="官方网址" />
                     <SuppliesField
                         list={supplies}
-                        onChange={({ detail }: CustomEvent) =>
-                            (this.state.supplies = detail)
-                        }
+                        onChange={({ detail }: CustomEvent) => (this.state.supplies = detail)}
                     />
                     <ContactField
                         list={contacts}
-                        onChange={({ detail }: CustomEvent) =>
-                            (this.state.contacts = detail)
-                        }
+                        onChange={({ detail }: CustomEvent) => (this.state.contacts = detail)}
                     />
-                    <FormField
-                        is="textarea"
-                        name="remark"
-                        label="备注"
-                        defaultValue={remark}
-                    />
+                    <FormField is="textarea" name="remark" label="备注" defaultValue={remark} />
                     <FormGroup className="mt-3 d-flex flex-column">
                         <Button
                             type="submit"

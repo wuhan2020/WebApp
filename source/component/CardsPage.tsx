@@ -1,19 +1,13 @@
+import { VerificationBase } from '@wuhan2020/rest-api';
+import { Button, FormCheck, ScrollBoundary, SpinnerBox, TouchHandler } from 'boot-cell';
 import { JsxChildren } from 'dom-renderer';
-import {
-    SpinnerBox,
-    Button,
-    FormCheck,
-    ScrollBoundary,
-    TouchHandler
-} from 'boot-cell';
-import { CustomElement } from 'web-utility';
 import { Filter } from 'mobx-restful';
+import { CustomElement } from 'web-utility';
 
-import { DistrictEvent, DistrictFilter, District } from './DistrictFilter';
-import { VerifiableModel, session } from '../model';
-import { DataItem } from '../service';
+import { session, VerifiableModel } from '../model';
+import { District, DistrictEvent, DistrictFilter } from './DistrictFilter';
 
-export abstract class CardsPage<T extends DataItem>
+export abstract class CardsPage<T extends VerificationBase>
     extends HTMLElement
     implements CustomElement
 {
@@ -69,9 +63,7 @@ export abstract class CardsPage<T extends DataItem>
                     </span>
                 </header>
                 <div className="d-flex justify-content-between">
-                    {districtFilter && (
-                        <DistrictFilter onChange={this.changeDistrict} />
-                    )}
+                    {districtFilter && <DistrictFilter onChange={this.changeDistrict} />}
                     {admin && (
                         <FormCheck type="switch" onClick={this.changeVerified}>
                             审核
@@ -84,14 +76,12 @@ export abstract class CardsPage<T extends DataItem>
                         className="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3"
                     >
                         {allItems.map(item => (
-                            <div key={item.objectId} className="col">
+                            <div key={item.id} className="col">
                                 {this.renderItem(item as T)}
                             </div>
                         ))}
                     </SpinnerBox>
-                    <p className="text-center mt-2">
-                        {noMore ? '没有更多数据了' : '加载更多...'}
-                    </p>
+                    <p className="text-center mt-2">{noMore ? '没有更多数据了' : '加载更多...'}</p>
                 </ScrollBoundary>
             </>
         );

@@ -1,18 +1,19 @@
-import { component, observer } from 'web-cell';
+import { SuppliesRequirement } from '@wuhan2020/rest-api';
 import {
+    Badge,
+    Button,
     Card,
     CardBody,
     CardFooter,
     CardTitle,
-    Button,
     DropdownButton,
-    DropdownItem,
-    Badge
+    DropdownItem
 } from 'boot-cell';
+import { component, observer } from 'web-cell';
 
-import { suppliesRequirement, SuppliesRequirement } from '../../model';
 import { AuditBar } from '../../component/AuditBar';
 import { CardsPage } from '../../component/CardsPage';
+import { suppliesRequirement } from '../../model';
 
 @component({ tagName: 'hospital-page' })
 @observer
@@ -23,7 +24,7 @@ export default class HospitalPage extends CardsPage<SuppliesRequirement> {
     districtFilter = true;
 
     renderItem = ({
-        hospital,
+        name,
         supplies = [],
         province,
         city,
@@ -32,9 +33,9 @@ export default class HospitalPage extends CardsPage<SuppliesRequirement> {
         contacts,
         ...rest
     }: SuppliesRequirement) => (
-        <Card key={hospital}>
+        <Card key={name}>
             <CardBody>
-                <CardTitle>{hospital}</CardTitle>
+                <CardTitle>{name}</CardTitle>
                 <ol>
                     {supplies.map(({ name, count, remark }) => (
                         <li key={name} title={remark}>
@@ -45,11 +46,7 @@ export default class HospitalPage extends CardsPage<SuppliesRequirement> {
                 <div className="text-center">
                     <Button
                         variant="primary"
-                        onClick={() =>
-                            this.clip2board(
-                                province + city + district + address
-                            )
-                        }
+                        onClick={() => this.clip2board(province + city + district + address)}
                     >
                         邮寄地址
                     </Button>
@@ -71,11 +68,7 @@ export default class HospitalPage extends CardsPage<SuppliesRequirement> {
                 </div>
             </CardBody>
             <CardFooter>
-                <AuditBar
-                    scope="hospital"
-                    model={suppliesRequirement}
-                    {...rest}
-                />
+                <AuditBar scope="hospital" model={suppliesRequirement} name={name} {...rest} />
             </CardFooter>
         </Card>
     );

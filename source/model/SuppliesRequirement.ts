@@ -1,22 +1,8 @@
+import { SuppliesRequirement } from '@wuhan2020/rest-api';
+
 import { District } from '../component';
-import { Place } from '../service';
-import { VerifiableData, VerifiableModel } from './BaseModel';
+import { VerifiableModel } from './BaseModel';
 
-export interface Supplies {
-    name: string;
-    type: 'face' | 'leg' | 'disinfection' | 'device' | 'other';
-    remark: string;
-    count: number;
-}
-
-export interface SuppliesRequirement extends VerifiableData, Place {
-    hospital?: string;
-    supplies?: Supplies[];
-}
-
-export class SuppliesRequirementModel extends VerifiableModel<
-    SuppliesRequirement,
-    District
-> {
+export class SuppliesRequirementModel extends VerifiableModel<SuppliesRequirement, District> {
     baseURI = '/supplies/requirement/';
 }

@@ -1,18 +1,19 @@
-import { component, observer } from 'web-cell';
+import { Hotel } from '@wuhan2020/rest-api';
 import {
+    Badge,
+    Button,
     Card,
     CardBody,
     CardFooter,
     CardTitle,
-    Badge,
-    Button,
     DropdownButton,
     DropdownItem
 } from 'boot-cell';
+import { component, observer } from 'web-cell';
 
-import { hotel, Hotel } from '../../model';
 import { AuditBar } from '../../component/AuditBar';
 import { CardsPage } from '../../component/CardsPage';
+import { hotel } from '../../model';
 
 @component({ tagName: 'hotel-page' })
 @observer
@@ -43,6 +44,7 @@ export default class HotelPage extends CardsPage<Hotel> {
                             className="text-decoration-none"
                             target="_blank"
                             href={url}
+                            rel="noreferrer"
                         >
                             {name}
                         </a>
@@ -92,7 +94,7 @@ export default class HotelPage extends CardsPage<Hotel> {
                 </div>
             </CardBody>
             <CardFooter>
-                <AuditBar scope="hotel" model={hotel} {...rest} />
+                <AuditBar scope="hotel" model={hotel} name={name} {...rest} />
             </CardFooter>
         </Card>
     );

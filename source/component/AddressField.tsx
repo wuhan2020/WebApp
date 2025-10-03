@@ -1,15 +1,9 @@
-import {
-    WebCellProps,
-    component,
-    WebCell,
-    attribute,
-    observer,
-    reaction
-} from 'web-cell';
-import { observable } from 'mobx';
+import { GeoCoord } from '@wuhan2020/rest-api';
 import { FormControl } from 'boot-cell';
+import { observable } from 'mobx';
+import { attribute, component, observer, reaction, WebCell, WebCellProps } from 'web-cell';
 
-import { Address, GeoCoord, searchAddress, coordsOf } from '../service';
+import { Address, coordsOf, searchAddress } from '../service';
 
 export interface AddressFieldProps
     extends Address,
@@ -22,10 +16,7 @@ export interface AddressField extends WebCell<AddressFieldProps> {}
 
 @component({ tagName: 'address-field' })
 @observer
-export class AddressField
-    extends HTMLElement
-    implements WebCell<AddressFieldProps>
-{
+export class AddressField extends HTMLElement implements WebCell<AddressFieldProps> {
     @attribute
     @observable
     accessor place: string;
@@ -108,9 +99,7 @@ export class AddressField
 
         const { province, city, district, address } = this;
 
-        const [{ latitude, longitude }] = await coordsOf(
-            province + city + district + address
-        );
+        const [{ latitude, longitude }] = await coordsOf(province + city + district + address);
         this.latitude = latitude;
         this.longitude = longitude;
 

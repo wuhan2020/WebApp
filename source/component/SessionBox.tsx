@@ -1,8 +1,8 @@
-import { WebCell, attribute, component, observer } from 'web-cell';
+import { User } from '@wuhan2020/rest-api';
+import { Button, FormControl, InputGroup } from 'boot-cell';
 import { observable } from 'mobx';
-import { InputGroup, FormControl, Button } from 'boot-cell';
+import { attribute, component, observer, WebCell } from 'web-cell';
 
-import { User } from '../service';
 import { session } from '../model';
 
 export interface SessionBox extends WebCell {}
@@ -27,15 +27,10 @@ export class SessionBox extends HTMLElement implements WebCell {
     handleSMSCode = () => {
         this.countDown = 60;
 
-        const timer = setInterval(
-                () => --this.countDown! || clearInterval(timer),
-                1000
-            ),
+        const timer = setInterval(() => --this.countDown! || clearInterval(timer), 1000),
             { elements } = this.firstElementChild as HTMLFormElement;
 
-        return session.sendSMSCode(
-            (elements.namedItem('phone') as HTMLInputElement).value
-        );
+        return session.sendSMSCode((elements.namedItem('phone') as HTMLInputElement).value);
     };
 
     handleSignIn = (event: Event) => {
@@ -77,27 +72,17 @@ export class SessionBox extends HTMLElement implements WebCell {
                 </InputGroup>
 
                 <InputGroup size="lg" className="mb-3">
-                    <FormControl
-                        name="code"
-                        required
-                        placeholder="短信验证码"
-                        autocomplete="off"
-                    />
+                    <FormControl name="code" required placeholder="短信验证码" autocomplete="off" />
                     <Button
                         variant="outline-secondary"
-                        onClick={this.handleSMSCode}
                         disabled={!!countDown}
+                        onClick={this.handleSMSCode}
                     >
                         {countDown ? countDown + 's' : '获取'}
                     </Button>
                 </InputGroup>
 
-                <Button
-                    type="submit"
-                    className="d-block w-100"
-                    variant="primary"
-                    size="lg"
-                >
+                <Button type="submit" className="d-block w-100" variant="primary" size="lg">
                     登录
                 </Button>
             </form>

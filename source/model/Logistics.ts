@@ -1,16 +1,6 @@
-import { VerifiableData, VerifiableModel } from './BaseModel';
-import { Organization } from '../service';
+import { Logistics } from '@wuhan2020/rest-api';
 
-export interface ServiceArea {
-    city: string;
-    direction: 'in' | 'out' | 'both';
-    personal: boolean;
-}
-
-export interface Logistics extends VerifiableData, Organization {
-    name?: string;
-    serviceArea?: ServiceArea[];
-}
+import { VerifiableModel } from './BaseModel';
 
 export class LogisticsModel extends VerifiableModel<Logistics> {
     baseURI = '/logistics/';

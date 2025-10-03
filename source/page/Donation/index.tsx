@@ -1,16 +1,10 @@
+import { BankAccount, DonationRecipient } from '@wuhan2020/rest-api';
+import { Card, CardBody, CardFooter, CardTitle, DropdownButton, DropdownItem } from 'boot-cell';
 import { component, observer } from 'web-cell';
-import {
-    Card,
-    CardBody,
-    CardFooter,
-    CardTitle,
-    DropdownButton,
-    DropdownItem
-} from 'boot-cell';
 
-import { CardsPage } from '../../component/CardsPage';
 import { AuditBar } from '../../component/AuditBar';
-import { donationRecipient, BankAccount, DonationRecipient } from '../../model';
+import { CardsPage } from '../../component/CardsPage';
+import { donationRecipient } from '../../model';
 
 @component({ tagName: 'donation-page' })
 @observer
@@ -24,28 +18,19 @@ export default class DonationPage extends CardsPage<DonationRecipient> {
             <dl className="mb-2">
                 <dt>户名</dt>
                 <dd>
-                    <code
-                        className="ms-1"
-                        onClick={() => this.clip2board(name)}
-                    >
+                    <code className="ms-1" onClick={() => this.clip2board(name)}>
                         {name}
                     </code>
                 </dd>
                 <dt>账号</dt>
                 <dd>
-                    <code
-                        className="ms-1"
-                        onClick={() => this.clip2board(number)}
-                    >
+                    <code className="ms-1" onClick={() => this.clip2board(number)}>
                         {number}
                     </code>
                 </dd>
                 <dt>开户行</dt>
                 <dd>
-                    <code
-                        className="ms-1"
-                        onClick={() => this.clip2board(bank)}
-                    >
+                    <code className="ms-1" onClick={() => this.clip2board(bank)}>
                         {bank}
                     </code>
                 </dd>
@@ -53,14 +38,7 @@ export default class DonationPage extends CardsPage<DonationRecipient> {
         </li>
     );
 
-    renderItem = ({
-        url,
-        name,
-        accounts,
-        remark,
-        contacts,
-        ...rest
-    }: DonationRecipient) => (
+    renderItem = ({ url, name, accounts, remark, contacts, ...rest }: DonationRecipient) => (
         <Card key={name}>
             <CardBody>
                 <CardTitle>
@@ -69,6 +47,7 @@ export default class DonationPage extends CardsPage<DonationRecipient> {
                             className="text-decoration-none"
                             target="_blank"
                             href={url}
+                            rel="noreferrer"
                         >
                             {name}
                         </a>
@@ -77,9 +56,7 @@ export default class DonationPage extends CardsPage<DonationRecipient> {
                     )}
                 </CardTitle>
 
-                <ol className="list-unstyled">
-                    {accounts.map(this.renderAccount)}
-                </ol>
+                <ol className="list-unstyled">{accounts.map(this.renderAccount)}</ol>
 
                 {remark && <p className="text-muted">{remark}</p>}
 
@@ -101,11 +78,7 @@ export default class DonationPage extends CardsPage<DonationRecipient> {
                 </div>
             </CardBody>
             <CardFooter>
-                <AuditBar
-                    scope="donation"
-                    model={donationRecipient}
-                    {...rest}
-                />
+                <AuditBar scope="donation" model={donationRecipient} name={name} {...rest} />
             </CardFooter>
         </Card>
     );

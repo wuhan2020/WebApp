@@ -1,26 +1,16 @@
+import { User } from '@wuhan2020/rest-api';
+import { Button, FormCheck, FormControl, ScrollBoundary, Table, TouchHandler } from 'boot-cell';
 import { component, observer } from 'web-cell';
-import {
-    FormCheck,
-    Button,
-    ScrollBoundary,
-    TouchHandler,
-    Table,
-    FormControl
-} from 'boot-cell';
 import { CustomElement } from 'web-utility';
 
 import { SessionBox } from '../../component';
-import { User } from '../../service';
 import { user } from '../../model';
+import { UserRoles } from '../../service';
 
 @component({ tagName: 'user-admin' })
 @observer
 export default class UserAdmin extends HTMLElement implements CustomElement {
     filter: { phone?: string } = {};
-
-    mountedCallback() {
-        user.getRoles();
-    }
 
     loadMore: TouchHandler = detail => {
         if (detail === 'bottom') return user.getList(this.filter);
@@ -35,29 +25,24 @@ export default class UserAdmin extends HTMLElement implements CustomElement {
         return user.getList((this.filter = value ? { phone: value } : {}), 1);
     };
 
-    toggleRole(uid: string, rid: string, { target }: MouseEvent) {
+    toggleRole(uid: number, rid: number, { target }: MouseEvent) {
         const { checked } = target as HTMLInputElement;
 
         return checked ? user.addRole(uid, rid) : user.removeRole(uid, rid);
     }
 
-    renderItem = ({
-        mobilePhoneNumber,
-        createdAt,
-        roles,
-        objectId: uid
-    }: User) => (
+    renderItem = ({ mobilePhone, createdAt, roles, id: uid }: User) => (
         <tr key={uid}>
-            <td>{mobilePhoneNumber}</td>
+            <td>{mobilePhone}</td>
             <td>{new Date(createdAt).toLocaleString()}</td>
             <td>
-                {user.roles?.map(({ objectId, name }) => (
+                {Object.entries(UserRoles).map(([name, id]) => (
                     <FormCheck
                         type="switch"
-                        label={<>{name}</>}
-                        value={objectId}
-                        checked={roles.includes(name)}
-                        onClick={event => this.toggleRole(uid, objectId, event)}
+                        label={name}
+                        value={id + ''}
+                        checked={roles.includes(id)}
+                        onClick={event => this.toggleRole(uid, id, event)}
                     />
                 ))}
             </td>
@@ -73,16 +58,8 @@ export default class UserAdmin extends HTMLElement implements CustomElement {
                     <h1>用户管理</h1>
 
                     <form className="d-flex" onSubmit={this.search}>
-                        <FormControl
-                            type="search"
-                            className="me-3"
-                            name="phone"
-                        />
-                        <Button
-                            className="text-nowrap"
-                            type="submit"
-                            variant="primary"
-                        >
+                        <FormControl type="search" className="me-3" name="phone" />
+                        <Button className="text-nowrap" type="submit" variant="primary">
                             搜索
                         </Button>
                     </form>

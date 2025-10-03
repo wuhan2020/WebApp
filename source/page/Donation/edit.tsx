@@ -1,19 +1,13 @@
-import { WebCell, component, attribute, observer } from 'web-cell';
+import { BankAccount, DonationRecipient } from '@wuhan2020/rest-api';
+import { Contact } from '@wuhan2020/rest-api';
+import { Button, FormControl, FormField, FormGroup, FormLabel, InputGroup } from 'boot-cell';
 import { observable } from 'mobx';
-import {
-    FormField,
-    InputGroup,
-    FormGroup,
-    FormLabel,
-    FormControl,
-    Button
-} from 'boot-cell';
+import { attribute, component, observer, WebCell } from 'web-cell';
 
-import { RouteRoot } from '../data/menu';
-import { donationRecipient, DonationRecipient, BankAccount } from '../../model';
-import { Contact } from '../../service';
-import { SessionBox } from '../../component/SessionBox';
 import { ContactField } from '../../component/ContactField';
+import { SessionBox } from '../../component/SessionBox';
+import { donationRecipient } from '../../model';
+import { RouteRoot } from '../data/menu';
 
 export interface DonationEditProps {
     dataId: string;
@@ -23,10 +17,7 @@ export default interface DonationEdit extends WebCell<DonationEditProps> {}
 
 @component({ tagName: 'donation-edit' })
 @observer
-export default class DonationEdit
-    extends HTMLElement
-    implements WebCell<DonationEditProps>
-{
+export default class DonationEdit extends HTMLElement implements WebCell<DonationEditProps> {
     @attribute
     @observable
     accessor dataId = '';
@@ -38,7 +29,7 @@ export default class DonationEdit
         accounts: [{} as BankAccount],
         url: '', //官方网址
         remark: '' //备注
-    } as DonationRecipient;
+    } as Partial<DonationRecipient>;
 
     async mountedCallback() {
         if (!this.dataId) return;
@@ -82,10 +73,7 @@ export default class DonationEdit
     deleteAccount(index: number) {
         const { accounts } = this.state;
 
-        this.state.accounts = [
-            ...accounts.slice(0, index),
-            ...accounts.slice(index + 1)
-        ];
+        this.state.accounts = [...accounts.slice(0, index), ...accounts.slice(index + 1)];
     }
 
     handleSubmit = async (event: Event) => {
@@ -96,15 +84,10 @@ export default class DonationEdit
         await donationRecipient.updateOne(
             {
                 ...data,
-                // @ts-ignore
                 accounts: accounts.filter(
-                    ({ name, number, bank }) =>
-                        name?.trim() && number?.trim() && bank?.trim()
+                    ({ name, number, bank }) => name?.trim() && number?.trim() && bank?.trim()
                 ),
-                // @ts-ignore
-                contacts: contacts.filter(
-                    ({ name, phone }) => name?.trim() && phone?.trim()
-                )
+                contacts: contacts.filter(({ name, phone }) => name?.trim() && phone?.trim())
             },
             this.dataId
         );
@@ -122,12 +105,7 @@ export default class DonationEdit
                 <h2>捐赠信息发布</h2>
 
                 <form onChange={this.changeText} onSubmit={this.handleSubmit}>
-                    <FormField
-                        name="name"
-                        required
-                        defaultValue={name}
-                        label="机构名称"
-                    />
+                    <FormField name="name" required defaultValue={name} label="机构名称" />
                     <FormField
                         name="url"
                         required
@@ -141,9 +119,7 @@ export default class DonationEdit
                         {accounts.map(({ name, number, bank }, index) => (
                             <InputGroup
                                 className="my-1"
-                                onChange={(event: Event) =>
-                                    this.changeAccount(index, event)
-                                }
+                                onChange={(event: Event) => this.changeAccount(index, event)}
                             >
                                 <FormControl
                                     name="name"
@@ -163,10 +139,7 @@ export default class DonationEdit
                                     defaultValue={bank}
                                     placeholder="开户行"
                                 />
-                                <Button
-                                    variant="primary"
-                                    onClick={this.addAccount}
-                                >
+                                <Button variant="primary" onClick={this.addAccount}>
                                     +
                                 </Button>
                                 <Button
@@ -182,16 +155,9 @@ export default class DonationEdit
 
                     <ContactField
                         list={contacts}
-                        onChange={({ detail }: CustomEvent) =>
-                            (this.state.contacts = detail)
-                        }
+                        onChange={({ detail }: CustomEvent) => (this.state.contacts = detail)}
                     />
-                    <FormField
-                        as="textarea"
-                        name="remark"
-                        label="备注"
-                        defaultValue={remark}
-                    />
+                    <FormField as="textarea" name="remark" label="备注" defaultValue={remark} />
                     <FormGroup className="mt-3 d-flex flex-column">
                         <Button
                             type="submit"
