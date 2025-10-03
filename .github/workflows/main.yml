@@ -22,7 +22,10 @@ jobs:
           cache: pnpm
       - name: Install & Build
         run: |
-          pnpm i --frozen-lockfile
+          cat > .env.personal.local <<EOF
+          ${{ secrets.ENV_FILE }}
+          EOF
+          pnpm e i --frozen-lockfile
           pnpm build
 
       - name: Deploy to GitHub pages
