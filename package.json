@@ -94,7 +94,7 @@
         "*.{html,md,less,json,yml,js,mjs,ts,tsx}": "prettier --write",
         "*.{js,mjs,ts,tsx}": "eslint --fix"
     },
-    "browserslist": "> 0.5%, last 2 versions, not dead, IE 11",
+    "browserslist": "> 0.5%, last 2 versions, not dead",
     "scripts": {
         "e": "pnpx @dotenvx/dotenvx run -f .env.personal.local -- pnpm",
         "prepare": "husky",
